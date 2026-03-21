@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useSchool } from '../../context/SchoolContext'
-import { Send, Sparkles, Trophy, Star, Users } from 'lucide-react'
+import { Send, Sparkles, Trophy, Star, Users, ShoppingCart } from 'lucide-react'
 
 const N8N_WEBHOOK = import.meta.env.VITE_N8N_WEBHOOK_URL
 
