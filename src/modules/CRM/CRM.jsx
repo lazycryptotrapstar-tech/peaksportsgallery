@@ -118,7 +118,7 @@ export default function CRM() {
 
       {/* ── CAMPAIGN SELECTOR ─────────────────────────── */}
       {stage === 'campaign' && (
-        <div style={{ maxWidth:800, margin:'0 auto', padding:'48px 28px' }}>
+        <div style={{ maxWidth:760, margin:'0 auto', padding:'24px 24px' }}>
           <p className="pb-label" style={{ marginBottom:8 }}>The Playbook · {school.short}</p>
           <h1 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'clamp(40px,6vw,60px)', color:'var(--pb-text)', margin:'0 0 6px', letterSpacing:'0.03em' }}>
             Choose a Campaign
@@ -149,7 +149,7 @@ export default function CRM() {
           </div>
 
           {/* Quick stats */}
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:12 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
             {[
               { label:'Total Contacts', value:'9' },
               { label:'Hot Leads',      value:'5' },
@@ -166,8 +166,8 @@ export default function CRM() {
 
       {/* ── CONTACT LIST ──────────────────────────────── */}
       {stage === 'contacts' && (
-        <div style={{ maxWidth:800, margin:'0 auto', padding:'40px 28px' }}>
-          <button className="pb-btn" onClick={reset} style={{ marginBottom:28 }}>
+        <div style={{ maxWidth:760, margin:'0 auto', padding:'20px 24px' }}>
+          <button className="pb-btn" onClick={reset} style={{ marginBottom:20 }}>
             <ArrowLeft size={15} /> Back to Campaigns
           </button>
 
@@ -246,8 +246,8 @@ export default function CRM() {
 
       {/* ── DRAFT REVIEW ──────────────────────────────── */}
       {stage === 'review' && parsed && (
-        <div style={{ maxWidth:800, margin:'0 auto', padding:'32px 28px' }}>
-          <button className="pb-btn" onClick={() => setStage('contacts')} style={{ marginBottom:24 }}>
+        <div style={{ maxWidth:760, margin:'0 auto', padding:'20px 24px' }}>
+          <button className="pb-btn" onClick={() => setStage('contacts')} style={{ marginBottom:16 }}>
             <ArrowLeft size={15} /> Back to Contacts
           </button>
 

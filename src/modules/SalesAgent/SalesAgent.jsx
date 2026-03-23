@@ -118,15 +118,14 @@ export default function SalesAgent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: input,
-          systemPrompt: buildSystemPrompt(school, activeCampaign.id),
-          history: history.slice(-6).map(m => ({ role: m.role, content: m.content })),
-          school: school.id,
-          campaign: activeCampaign.id,
+          chatInput: `[SCHOOL:${school.name}|CAMPAIGN:${activeCampaign.id}|CONTEXT:${buildSystemPrompt(school, activeCampaign.id).slice(0,400)}]
+
+${input}`,
+          sessionId: `${school.id}-${activeCampaign.id}`,
         }),
       })
       const data = await res.json()
-      const reply = data.output || data.message || data.text || "I'm having trouble connecting right now. Try again in a moment."
+      const reply = data.output || data.text || (data.content && data.content[0]?.text) || data.message || "I'm having trouble connecting. Try again in a moment."
       setMessages(prev => [...prev, { role: 'assistant', content: reply, ts: Date.now() }])
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: "Connection issue — try again in a moment.", ts: Date.now() }])
