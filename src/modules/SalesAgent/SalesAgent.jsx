@@ -196,7 +196,7 @@ ${input}`,
 
   // ── CHAT VIEW ────────────────────────────────────────────────
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', minHeight: '100%', padding: '16px', background: c.bg }}>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', minHeight: '100%', padding: '12px 12px 20px', background: c.bg, boxSizing: 'border-box' }}>
       {/* iPhone frame — responsive */}
       <div style={{
         width: '100%',
@@ -211,7 +211,7 @@ ${input}`,
         position: 'relative',
       }}>
         {/* Phone top notch */}
-        <div style={{ background: '#000', padding: '14px 24px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <div style={{ background: '#000', padding: '8px 20px 6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700 }}>9:41</span>
           <div style={{ width: 120, height: 30, background: '#000', borderRadius: 20, border: '2px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'rgba(255,255,255,0.3)' }} />
