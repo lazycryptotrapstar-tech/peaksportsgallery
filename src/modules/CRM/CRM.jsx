@@ -110,13 +110,14 @@ export default function CRM() {
 
   const reset = () => { setStage('campaign'); setCampaign(null); setContact(null); setTouch(1); setParsed(null); setEditMode(false) }
 
+  const highlight = c.accent;
   const vars = {
-    '--pb-bg':      c.primary,
-    '--pb-surface': 'rgba(255,255,255,0.05)',
-    '--pb-surface2':'rgba(255,255,255,0.09)',
-    '--pb-border':  'rgba(255,255,255,0.1)',
-    '--pb-text':    '#f0f0f0',
-    '--pb-muted':   'rgba(255,255,255,0.4)',
+    '--pb-bg':      '#08090b',
+    '--pb-surface': '#111318',
+    '--pb-surface2':'#181c23',
+    '--pb-border':  highlight + '33',
+    '--pb-text':    '#f0efe9',
+    '--pb-muted':   '#6b7280',
   }
 
   const avatarBg = (name) => {
