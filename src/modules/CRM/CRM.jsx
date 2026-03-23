@@ -53,11 +53,11 @@ const CSS = (primary) => `
   .pb-btn-primary { background:${primary}; border-color:${primary}; color:#fff !important; }
   .pb-btn-primary:hover { opacity:0.9; }
   .pb-label { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:${primary}; }
-  .pb-score { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-size:13px; font-weight:700; }
+  .pb-score { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-size:13px; font-weight:700; color:#fff; }
   .pb-contact-row { display:flex; align-items:center; padding:14px 18px; border-radius:12px; border:1px solid var(--pb-border); background:var(--pb-surface); cursor:pointer; transition:all 0.15s; gap:14px; }
   .pb-contact-row:hover { border-color:${primary}; background:var(--pb-surface2); transform:translateX(2px); }
   .pb-campaign-card { padding:28px 24px; border-radius:20px; border:1px solid var(--pb-border); background:var(--pb-surface); cursor:pointer; transition:all 0.2s; text-align:left; }
-  .pb-campaign-card:hover { border-color:${primary}; transform:translateY(-2px); box-shadow:0 8px 32px rgba(0,0,0,0.3); }
+  .pb-campaign-card:hover { border-color:${primary}; transform:translateY(-2px); box-shadow:0 8px 32px rgba(0,0,0,0.12); }
   .pb-touch-btn { width:40px; height:40px; border-radius:10px; border:1px solid var(--pb-border); background:var(--pb-surface2); color:var(--pb-muted); cursor:pointer; font-weight:700; font-size:15px; transition:all 0.15s; }
   .pb-touch-btn.active { background:${primary}; border-color:${primary}; color:#fff; }
   .pb-input { width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--pb-border); background:var(--pb-surface2); color:var(--pb-text); font-size:14px; font-family:'DM Sans',sans-serif; outline:none; box-sizing:border-box; }
@@ -71,7 +71,7 @@ const CSS = (primary) => `
 export default function CRM() {
   const { school } = useSchool()
   const c = school.colors
-  const primary = c.accent
+  const primary = c.accent  // accent = highlight color
 
   const [stage, setStage]               = useState('campaign')
   const [campaign, setCampaign]         = useState(null)
@@ -110,19 +110,22 @@ export default function CRM() {
 
   const reset = () => { setStage('campaign'); setCampaign(null); setContact(null); setTouch(1); setParsed(null); setEditMode(false) }
 
-  const highlight = c.accent;   // mid tone — bubble backgrounds
+  // Light school-color theme
+  // bg = lightest school color, text = darkest school color, accent = highlight
+  const highlight = c.accent
+
   const vars = {
-    '--pb-bg':      c.bg,          // lightest school color — page background
-    '--pb-surface': c.border,      // slightly darker — card backgrounds
-    '--pb-surface2':c.accent2 + '55', // accent2 tint — hover/active states
-    '--pb-border':  c.border,      // border color
-    '--pb-text':    c.primary,     // darkest — all body text
-    '--pb-muted':   c.accent,      // mid tone — secondary text
+    '--pb-bg':      c.bg,
+    '--pb-surface': '#ffffff',
+    '--pb-surface2': c.bg,
+    '--pb-border':  c.border,
+    '--pb-text':    c.primary,
+    '--pb-muted':   c.accent,
   }
 
   const avatarBg = (name) => {
     const initials = name.split(' ').map(n=>n[0]).slice(0,2).join('')
-    return { bg: `${primary}22`, initials }
+    return { bg: c.border, initials }
   }
 
   return (
@@ -221,13 +224,13 @@ export default function CRM() {
                     <p style={{ margin:0, fontSize:12, color:'var(--pb-muted)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{ct.title}</p>
                   </div>
                   {/* Score */}
-                  <div className="pb-score" style={{ background:`${SCORE_COLOR(ct.score)}18`, color:SCORE_COLOR(ct.score), flexShrink:0 }}>
+                  <div className="pb-score" style={{ background:SCORE_COLOR(ct.score), color:'#fff', flexShrink:0 }}>
                     {ct.score}
                   </div>
                   {/* Status */}
-                  <div style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 12px', borderRadius:20, background:`${SCORE_COLOR(ct.score)}18`, flexShrink:0 }}>
-                    <span style={{ width:6, height:6, borderRadius:'50%', background:SCORE_COLOR(ct.score), display:'inline-block' }} />
-                    <span style={{ fontFamily:"'Space Mono',monospace", fontSize:10, color:SCORE_COLOR(ct.score), fontWeight:700 }}>{STATUS_LABEL[ct.status]}</span>
+                  <div style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 12px', borderRadius:20, background:SCORE_COLOR(ct.score), flexShrink:0 }}>
+                    <span style={{ width:6, height:6, borderRadius:'50%', background:'rgba(255,255,255,0.5)', display:'inline-block' }} />
+                    <span style={{ fontFamily:"'Space Mono',monospace", fontSize:10, color:'#fff', fontWeight:700 }}>{STATUS_LABEL[ct.status]}</span>
                   </div>
                   <ChevronRight size={16} color={primary} style={{ flexShrink:0 }} />
                 </button>
@@ -265,7 +268,7 @@ export default function CRM() {
           </button>
 
           {/* Angle badge */}
-          <div style={{ padding:'14px 18px', borderRadius:14, background:`${primary}18`, border:`1px solid ${primary}33`, marginBottom:20, display:'flex', alignItems:'flex-start', gap:12 }}>
+          <div style={{ padding:'14px 18px', borderRadius:14, background:`${primary}22`, border:`1px solid ${primary}55`, marginBottom:20, display:'flex', alignItems:'flex-start', gap:12 }}>
             <div style={{ width:36, height:36, borderRadius:10, background:`${primary}22`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginTop:2 }}>
               <Zap size={16} color={primary} />
             </div>
@@ -292,7 +295,7 @@ export default function CRM() {
                   <RefreshCw size={13} /> Regenerate
                 </button>
                 <button className="pb-btn" onClick={() => setEditMode(!editMode)}
-                  style={{ padding:'7px 14px', fontSize:12, ...(editMode ? { background:primary, borderColor:primary, color:'#000' } : {}) }}>
+                  style={{ padding:'7px 14px', fontSize:12, ...(editMode ? { background:primary, borderColor:primary, color:c.bg } : {}) }}>
                   <Edit2 size={13} /> {editMode ? 'Preview' : 'Edit'}
                 </button>
               </div>
@@ -319,9 +322,9 @@ export default function CRM() {
 
           {/* Follow-up note */}
           {parsed.followUp && (
-            <div style={{ padding:'12px 16px', borderRadius:12, background:'rgba(60,219,122,0.12)', border:'1px solid rgba(60,219,122,0.2)', marginBottom:20 }}>
-              <p style={{ margin:'0 0 4px', fontFamily:"'Space Mono',monospace", fontSize:10, color:'#3CDB7A', textTransform:'uppercase', letterSpacing:'0.1em', fontWeight:700 }}>Rep Note</p>
-              <p style={{ margin:0, fontSize:13, color:'rgba(60,219,122,0.85)', lineHeight:1.6 }}>{parsed.followUp}</p>
+            <div style={{ padding:'12px 16px', borderRadius:12, background:'#f0fdf4', border:'1px solid #86efac', marginBottom:20 }}>
+              <p style={{ margin:'0 0 4px', fontFamily:"'Space Mono',monospace", fontSize:10, color:'#16a34a', textTransform:'uppercase', letterSpacing:'0.1em', fontWeight:700 }}>Rep Note</p>
+              <p style={{ margin:0, fontSize:13, color:'#166534', lineHeight:1.6 }}>{parsed.followUp}</p>
             </div>
           )}
 
