@@ -144,22 +144,15 @@ export default function SalesAgent() {
         <h2 style={{ fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 'clamp(32px,5vw,48px)', color: c.primary, margin: '0 0 6px' }}>Choose a Campaign</h2>
         <p style={{ color: c.accent, fontSize: 14, marginBottom: 28, opacity: 0.8 }}>Select a campaign to see {school.mascotName} in action</p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+        {/* Campaign bubbles */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
           {CAMPAIGNS.map(cam => {
             const Icon = cam.icon
             return (
               <button key={cam.id} onClick={() => selectCampaign(cam)}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 20px', borderRadius: 16, border: `1px solid ${c.border}`, background: 'white', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s ease', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <div style={{ width: 42, height: 42, borderRadius: 12, background: `${c.accent}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Icon size={20} color={c.accent} />
-                  </div>
-                  <div>
-                    <p style={{ margin: 0, fontFamily: "'Inter',sans-serif", fontWeight: 700, fontSize: 15, color: c.primary }}>{cam.label}</p>
-                    <p style={{ margin: 0, fontFamily: "'Space Mono',monospace", fontSize: 10, color: c.accent, marginTop: 2, opacity: 0.8 }}>{cam.sub}</p>
-                  </div>
-                </div>
-                <span style={{ color: c.accent, fontSize: 18 }}>→</span>
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 16px', borderRadius: 24, border: `1.5px solid ${c.accent}`, background: 'white', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 6px rgba(0,0,0,0.06)' }}>
+                <Icon size={15} color={c.accent} />
+                <span style={{ fontFamily: "'Inter',sans-serif", fontWeight: 700, fontSize: 13, color: c.primary }}>{cam.label}</span>
               </button>
             )
           })}
@@ -191,9 +184,9 @@ export default function SalesAgent() {
       {/* iPhone frame */}
       <div style={{
         width: 390,
-        background: c.primary,
+        background: '#000',
         borderRadius: 52,
-        boxShadow: `0 32px 80px rgba(0,0,0,0.3), 0 0 0 12px ${c.primary}, 0 0 0 14px ${c.accent}44`,
+        boxShadow: '0 32px 80px rgba(0,0,0,0.45), 0 0 0 12px #1a1a1a, 0 0 0 14px #333',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
@@ -201,10 +194,10 @@ export default function SalesAgent() {
         position: 'relative',
       }}>
         {/* Phone top notch */}
-        <div style={{ background: c.primary, padding: '14px 24px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <div style={{ background: '#000', padding: '14px 24px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700 }}>9:41</span>
-          <div style={{ width: 120, height: 30, background: c.primary, borderRadius: 20, border: `2px solid ${c.accent}33`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ width: 10, height: 10, borderRadius: '50%', background: c.accent, opacity: 0.7 }} />
+          <div style={{ width: 120, height: 30, background: '#000', borderRadius: 20, border: '2px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'rgba(255,255,255,0.3)' }} />
           </div>
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
             <div style={{ width: 16, height: 10, borderRadius: 3, border: '1.5px solid rgba(255,255,255,0.5)', position: 'relative' }}>
@@ -213,7 +206,7 @@ export default function SalesAgent() {
           </div>
         </div>
 
-        {/* Chat header */}
+        {/* Chat header — school colored */}
         <div style={{ padding: '10px 20px 12px', background: c.primary, borderBottom: `1px solid ${c.accent}22`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 36, height: 36, borderRadius: 12, background: `${c.accent}22`, border: `1px solid ${c.accent}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
@@ -282,8 +275,8 @@ export default function SalesAgent() {
         </div>
 
         {/* Home indicator */}
-        <div style={{ background: 'white', paddingBottom: 8, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
-          <div style={{ width: 120, height: 5, borderRadius: 3, background: c.border }} />
+        <div style={{ background: '#000', paddingBottom: 8, paddingTop: 4, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ width: 120, height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.25)' }} />
         </div>
       </div>
 
@@ -298,21 +291,21 @@ function PhoneFrame({ school }) {
   return (
     <div style={{
       width: 300,
-      background: c.primary,
+      background: '#000',
       borderRadius: 44,
-      boxShadow: `0 24px 64px rgba(0,0,0,0.25), 0 0 0 10px ${c.primary}, 0 0 0 12px ${c.accent}44`,
+      boxShadow: '0 24px 64px rgba(0,0,0,0.35), 0 0 0 10px #1a1a1a, 0 0 0 12px #333',
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
       height: 560,
     }}>
       {/* Notch */}
-      <div style={{ background: c.primary, padding: '12px 20px 8px', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: 100, height: 24, background: c.primary, borderRadius: 16, border: `2px solid ${c.accent}33`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: 8, height: 8, borderRadius: '50%', background: c.accent, opacity: 0.7 }} />
+      <div style={{ background: '#000', padding: '12px 20px 8px', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: 100, height: 24, background: '#000', borderRadius: 16, border: '2px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'rgba(255,255,255,0.3)' }} />
         </div>
       </div>
-      {/* Header */}
+      {/* Header — school colored */}
       <div style={{ padding: '8px 18px 10px', background: c.primary, borderBottom: `1px solid ${c.accent}22` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ width: 30, height: 30, borderRadius: 9, background: `${c.accent}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>{school.emoji}</div>
@@ -352,8 +345,8 @@ function PhoneFrame({ school }) {
         </div>
       </div>
       {/* Home bar */}
-      <div style={{ background: 'white', paddingBottom: 6, display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: 90, height: 4, borderRadius: 2, background: c.border }} />
+      <div style={{ background: '#000', paddingBottom: 6, paddingTop: 4, display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: 90, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.25)' }} />
       </div>
     </div>
   )
