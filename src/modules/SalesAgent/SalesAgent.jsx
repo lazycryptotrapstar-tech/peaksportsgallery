@@ -3,7 +3,7 @@ import { useSchool } from '../../context/SchoolContext'
 import { Send, ShoppingCart, Trophy, Star, Users } from 'lucide-react'
 import { getContacts } from '../../data/contacts'
 
-const N8N_WEBHOOK = import.meta.env.VITE_N8N_WEBHOOK_URL
+const N8N_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/2e28cfe9-961f-48fb-a548-3f0306448996/chat'
 
 // ── SYSTEM PROMPT ──────────────────────────────────────────────────
 const buildSystemPrompt = (school, campaignId) => `You are ${school.mascotName}, the AI-powered revenue agent for ${school.name} ${school.mascot} athletics, operated by Peak Sports MGMT.
@@ -143,7 +143,7 @@ export default function SalesAgent() {
     const fanInitials = activeFan.name.split(' ').map(n=>n[0]).slice(0,2).join('')
 
     return (
-      <div style={{ maxWidth: 520, margin: '0 auto', padding: '32px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+      <div style={{ maxWidth: 600, margin: '0 auto', padding: '32px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
 
         {/* Header */}
         <div style={{ width: '100%', textAlign: 'center' }}>
@@ -153,7 +153,7 @@ export default function SalesAgent() {
         </div>
 
         {/* Campaign badges — horizontal scroll */}
-        <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+        <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none', paddingBottom: 4 }}>
           <div style={{ display: 'flex', gap: 8, paddingBottom: 4, width: 'max-content' }}>
             {CAMPAIGNS.map(cam => {
               const Icon = cam.icon
@@ -197,17 +197,18 @@ export default function SalesAgent() {
 
   // ── CHAT VIEW ────────────────────────────────────────────────
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100%', padding: '24px', background: c.bg }}>
-      {/* iPhone frame */}
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', minHeight: '100%', padding: '16px', background: c.bg }}>
+      {/* iPhone frame — responsive */}
       <div style={{
-        width: 390,
+        width: '100%',
+        maxWidth: 390,
         background: '#000',
-        borderRadius: 52,
-        boxShadow: '0 32px 80px rgba(0,0,0,0.45), 0 0 0 12px #1a1a1a, 0 0 0 14px #333',
+        borderRadius: 'clamp(24px, 6vw, 52px)',
+        boxShadow: '0 24px 64px rgba(0,0,0,0.45), 0 0 0 8px #1a1a1a, 0 0 0 10px #333',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        height: 720,
+        height: 'min(720px, calc(100vh - 120px))',
         position: 'relative',
       }}>
         {/* Phone top notch */}
