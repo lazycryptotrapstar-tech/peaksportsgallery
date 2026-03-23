@@ -7,23 +7,7 @@ import {
 } from 'lucide-react'
 
 const PLAYBOOK_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/playbook'
-
-// ── CONTACT DATA ─────────────────────────────────────────────────
-const WOFFORD_CONTACTS = {
-  TICKETS: [
-    { id:1, name:'Scott Kull',          email:'kullsr@wofford.edu',                 title:'Director of Athletics',        purchase_count:8, last_purchase_date:'2024-11-15', last_purchase_sport:'football',   last_purchase_type:'season',  last_game_type:'regular', is_lapsed_season:false, is_alumni:true,  status:'warm', score:82 },
-    { id:2, name:'Nayef Samhat',        email:'samhatnr@wofford.edu',               title:'President',                    purchase_count:4, last_purchase_date:'2024-10-20', last_purchase_sport:'football',   last_purchase_type:'premium', last_game_type:'rivalry', is_lapsed_season:false, is_alumni:false, status:'warm', score:74 },
-    { id:3, name:'Shawn Watson',        email:'watsonsc@wofford.edu',               title:'Head Football Coach',          purchase_count:6, last_purchase_date:'2025-01-10', last_purchase_sport:'basketball', last_purchase_type:'season',  last_game_type:'regular', is_lapsed_season:false, is_alumni:false, status:'hot',  score:91 },
-    { id:4, name:'Kevin Giltner',       email:'giltnerkj@wofford.edu',              title:'Head Basketball Coach',        purchase_count:5, last_purchase_date:'2025-02-14', last_purchase_sport:'basketball', last_purchase_type:'season',  last_game_type:'regular', is_lapsed_season:false, is_alumni:true,  status:'hot',  score:88 },
-    { id:5, name:'Calhoun Kennedy Jr.', email:'kennedycl@wofford.edu',              title:'VP Philanthropy & Engagement', purchase_count:2, last_purchase_date:'2024-09-01', last_purchase_sport:'football',   last_purchase_type:'single',  last_game_type:'regular', is_lapsed_season:false, is_alumni:true,  status:'hot',  score:79 },
-  ],
-  SPONSORSHIP: [
-    { id:6, name:'Hub City Tap House',   email:'manager@hubcitytap.com',            title:'Owner',              business_type:'restaurant', sponsor_status:'prospect', status:'hot',  score:85 },
-    { id:7, name:'Spartanburg Regional', email:'marketing@spartanburgregional.com', title:'Marketing Director', business_type:'healthcare', sponsor_status:'current',  renewal_date:'2026-06-01', annual_value:8000, status:'warm', score:77 },
-    { id:8, name:'R.J. Rockers Brewing', email:'info@rjrockers.com',                title:'Owner',              business_type:'restaurant', sponsor_status:'lapsed',   status:'warm', score:68 },
-    { id:9, name:'Beacon Drive-In',      email:'hello@beacondrivein.com',           title:'Manager',            business_type:'restaurant', sponsor_status:'prospect', status:'cold', score:44 },
-  ],
-}
+import { getContacts } from '../../data/contacts'
 
 const SCORE_COLOR = (s) => s >= 80 ? '#3CDB7A' : s >= 60 ? '#F5C842' : '#f97316'
 const STATUS_LABEL = { hot:'Hot Lead', warm:'Warm', cold:'Cold' }
@@ -83,7 +67,7 @@ export default function CRM() {
   const [editedSubject, setEditedSubject] = useState('')
   const [editedBody, setEditedBody]     = useState('')
 
-  const contacts = campaign ? (WOFFORD_CONTACTS[campaign] || []) : []
+  const contacts = campaign ? getContacts(school.id, campaign) : []
 
   const requestDraft = async (ct, t) => {
     setLoading(true); setStage('drafting'); setParsed(null)
@@ -145,8 +129,8 @@ export default function CRM() {
 
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:40 }}>
             {[
-              { id:'TICKETS',     label:'Ticket Reactivation',  sub:'Lapsed buyers · Season renewals · Group sales',      icon:ShoppingCart, count:WOFFORD_CONTACTS.TICKETS.length     },
-              { id:'SPONSORSHIP', label:'Sponsorship Outreach', sub:'Local businesses · Current partners · Prospects',    icon:Trophy,       count:WOFFORD_CONTACTS.SPONSORSHIP.length },
+              { id:'TICKETS',     label:'Ticket Reactivation',  sub:'Lapsed buyers · Season renewals · Group sales',      icon:ShoppingCart, count:getContacts(school.id,'TICKETS').length     },
+              { id:'SPONSORSHIP', label:'Sponsorship Outreach', sub:'Local businesses · Current partners · Prospects',    icon:Trophy,       count:getContacts(school.id,'SPONSORSHIP').length },
             ].map(cam => {
               const Icon = cam.icon
               return (
