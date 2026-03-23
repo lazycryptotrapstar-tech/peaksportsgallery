@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useSchool } from '../../context/SchoolContext'
 import { Send, ShoppingCart, Trophy, Star, Users } from 'lucide-react'
+import { getContacts } from '../../data/contacts'
 
 const N8N_WEBHOOK = import.meta.env.VITE_N8N_WEBHOOK_URL
 
@@ -135,48 +136,64 @@ export default function SalesAgent() {
   }
 
   // ── CAMPAIGN SELECTOR ────────────────────────────────────────
-  if (!activeCampaign) return (
-    <div style={{ display: 'flex', gap: 40, maxWidth: 1000, margin: '0 auto', padding: '40px 24px', alignItems: 'flex-start' }}>
+  if (!activeCampaign) {
+    // Get top-scored contact for this school as the active fan
+    const topContacts = getContacts(school.id, 'TICKETS')
+    const activeFan = topContacts.sort((a,b) => b.score - a.score)[0] || { name: school.agent?.name, title: school.agent?.title, score: 90 }
+    const fanInitials = activeFan.name.split(' ').map(n=>n[0]).slice(0,2).join('')
 
-      {/* Left — campaign list */}
-      <div style={{ flex: 1 }}>
-        <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: c.accent, marginBottom: 8 }}>Sales Agent</p>
-        <h2 style={{ fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 'clamp(32px,5vw,48px)', color: c.primary, margin: '0 0 6px' }}>Choose a Campaign</h2>
-        <p style={{ color: c.accent, fontSize: 14, marginBottom: 28, opacity: 0.8 }}>Select a campaign to see {school.mascotName} in action</p>
+    return (
+      <div style={{ maxWidth: 520, margin: '0 auto', padding: '32px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
 
-        {/* Campaign bubbles */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
-          {CAMPAIGNS.map(cam => {
-            const Icon = cam.icon
-            return (
-              <button key={cam.id} onClick={() => selectCampaign(cam)}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 16px', borderRadius: 24, border: `1.5px solid ${c.accent}`, background: 'white', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 6px rgba(0,0,0,0.06)' }}>
-                <Icon size={15} color={c.accent} />
-                <span style={{ fontFamily: "'Inter',sans-serif", fontWeight: 700, fontSize: 13, color: c.primary }}>{cam.label}</span>
-              </button>
-            )
-          })}
+        {/* Header */}
+        <div style={{ width: '100%', textAlign: 'center' }}>
+          <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: c.accent, marginBottom: 6 }}>Sales Agent · {school.short}</p>
+          <h2 style={{ fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 'clamp(28px,5vw,40px)', color: c.primary, margin: '0 0 4px' }}>Choose a Campaign</h2>
+          <p style={{ color: c.accent, fontSize: 13, opacity: 0.75, margin: 0 }}>Tap a campaign to start a live conversation with {school.mascotName}</p>
         </div>
 
-        {/* Fan profile */}
-        <div style={{ padding: '16px 20px', borderRadius: 16, border: `1px solid ${c.border}`, background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-          <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: c.accent, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12 }}>Active Fan Profile</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 44, height: 44, borderRadius: '50%', background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 900, fontSize: 16 }}>SK</div>
-            <div>
-              <p style={{ margin: 0, fontFamily: "'Inter',sans-serif", fontWeight: 700, fontSize: 15, color: c.primary }}>Scott Kull</p>
-              <p style={{ margin: 0, fontSize: 13, color: c.accent, opacity: 0.8 }}>⭐ Platinum · Director of Athletics</p>
-            </div>
+        {/* Campaign badges — horizontal scroll */}
+        <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+          <div style={{ display: 'flex', gap: 8, paddingBottom: 4, width: 'max-content' }}>
+            {CAMPAIGNS.map(cam => {
+              const Icon = cam.icon
+              return (
+                <button key={cam.id} onClick={() => selectCampaign(cam)}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 18px', borderRadius: 28, border: `1.5px solid ${c.accent}`, background: 'white', cursor: 'pointer', transition: 'all 0.18s ease', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', whiteSpace: 'nowrap', flexShrink: 0 }}
+                  onMouseEnter={e => { e.currentTarget.style.background = c.primary; e.currentTarget.style.color = 'white' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.color = c.primary }}>
+                  <Icon size={15} color={c.accent} />
+                  <span style={{ fontFamily: "'Inter',sans-serif", fontWeight: 700, fontSize: 13, color: c.primary }}>{cam.label}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
-      </div>
 
-      {/* Right — iPhone frame preview */}
-      <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* iPhone preview */}
         <PhoneFrame school={school} />
+
+        {/* Active fan profile — dynamic per school */}
+        <div style={{ width: '100%', padding: '14px 18px', borderRadius: 16, border: `1px solid ${c.border}`, background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ flexShrink: 0 }}>
+            <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: c.accent, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Top Contact · {school.short}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 40, height: 40, borderRadius: '50%', background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 900, fontSize: 14 }}>{fanInitials}</div>
+              <div>
+                <p style={{ margin: 0, fontFamily: "'Inter',sans-serif", fontWeight: 700, fontSize: 14, color: c.primary }}>{activeFan.name}</p>
+                <p style={{ margin: 0, fontSize: 12, color: c.accent, opacity: 0.8 }}>{activeFan.title}</p>
+              </div>
+            </div>
+          </div>
+          <div style={{ marginLeft: 'auto', textAlign: 'right', flexShrink: 0 }}>
+            <p style={{ margin: '0 0 2px', fontFamily: "'Space Mono',monospace", fontSize: 9, color: c.accent, textTransform: 'uppercase' }}>Score</p>
+            <p style={{ margin: 0, fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 28, color: activeFan.score >= 80 ? '#3CDB7A' : activeFan.score >= 60 ? '#F5C842' : '#f97316' }}>{activeFan.score}</p>
+          </div>
+        </div>
+
       </div>
-    </div>
-  )
+    )
+  }
 
   // ── CHAT VIEW ────────────────────────────────────────────────
   return (
