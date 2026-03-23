@@ -3,6 +3,7 @@ import { useSchool } from '../../context/SchoolContext'
 import { Send, Sparkles, Trophy, Star, Users, ShoppingCart } from 'lucide-react'
 
 const N8N_WEBHOOK = import.meta.env.VITE_N8N_WEBHOOK_URL
+import { SG_PROMPTS } from '../../data/prompts'
 
 // ── ELITE SALES METHODOLOGY ──────────────────────────────────────────────────
 // Inspired by: Challenger Sale, SPIN Selling, Gap Selling, Fanatical Prospecting
@@ -224,7 +225,11 @@ export default function SalesAgent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: input,
-          systemPrompt: buildSystemPrompt(school, activeCampaign.id),
+          systemPrompt: activeTouchNumber === 1
+              ? SG_PROMPTS.TOUCH_1(school, selectedContact, contactData)
+              : activeTouchNumber === 2
+              ? SG_PROMPTS.TOUCH_2(school, selectedContact, contactData)
+              : SG_PROMPTS.TOUCH_3(school, selectedContact, contactData),
           history: newMessages.slice(-6).map(m => ({ role: m.role, content: m.content })),
           school: school.id,
           campaign: activeCampaign.id,
@@ -247,10 +252,10 @@ export default function SalesAgent() {
         <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: school.colors.accent, marginBottom: 8 }}>
           Sales Agent
         </p>
-        <h2 style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 'clamp(32px,5vw,52px)', color: '#111', margin: '0 0 8px' }}>
+        <h2 style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 'clamp(32px,5vw,52px)', color: school.colors.primary, margin: '0 0 8px' }}>
           Choose a Campaign
         </h2>
-        <p style={{ color: '#64748b', fontSize: 14, marginBottom: 32 }}>
+        <p style={{ color: school.colors.accent, fontSize: 14, marginBottom: 32 }}>
           Select a campaign type to see {school.mascotName} in action with live {school.name} data
         </p>
 
@@ -263,15 +268,15 @@ export default function SalesAgent() {
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   padding: '20px 24px', borderRadius: 16, border: `1px solid ${school.colors.border}`,
                   background: 'white', cursor: 'pointer', textAlign: 'left',
-                  transition: 'all 0.2s ease', boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                  transition: 'all 0.2s ease', boxShadow: `0 2px 8px rgba(0,0,0,0.04)`, border: `1px solid ${school.colors.border}`,
                 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                   <div style={{ width: 44, height: 44, borderRadius: 12, background: `${school.colors.accent}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Icon size={20} color={school.colors.accent} />
                   </div>
                   <div>
-                    <p style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 16, color: '#111' }}>{c.label}</p>
-                    <p style={{ margin: 0, fontFamily: "'Space Mono', monospace", fontSize: 10, color: '#94a3b8', marginTop: 2 }}>{c.sub}</p>
+                    <p style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 16, color: school.colors.primary }}>{c.label}</p>
+                    <p style={{ margin: 0, fontFamily: "'Space Mono', monospace", fontSize: 10, color: school.colors.accent, marginTop: 2 }}>{c.sub}</p>
                   </div>
                 </div>
                 <span style={{ color: school.colors.accent, fontSize: 18 }}>→</span>
@@ -281,13 +286,13 @@ export default function SalesAgent() {
         </div>
 
         {/* Active fan profile */}
-        <div style={{ padding: '16px 20px', borderRadius: 16, border: `1px solid ${school.colors.border}`, background: 'white' }}>
-          <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12 }}>Active Fan Profile</p>
+        <div style={{ padding: '16px 20px', borderRadius: 16, border: `1px solid ${school.colors.border}`, background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+          <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: school.colors.accent, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12 }}>Active Fan Profile</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{ width: 44, height: 44, borderRadius: '50%', background: school.colors.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 900, fontSize: 16 }}>SK</div>
             <div>
-              <p style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 16, color: '#111' }}>Scott Kull</p>
-              <p style={{ margin: 0, fontSize: 13, color: '#64748b' }}>⭐ Platinum · Director of Athletics</p>
+              <p style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 16, color: school.colors.primary }}>Scott Kull</p>
+              <p style={{ margin: 0, fontSize: 13, color: school.colors.accent }}>⭐ Platinum · Director of Athletics</p>
             </div>
           </div>
         </div>
@@ -305,12 +310,12 @@ export default function SalesAgent() {
             {school.emoji}
           </div>
           <div>
-            <p style={{ margin: 0, fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 17, color: '#111' }}>{activeCampaign.label}</p>
-            <p style={{ margin: 0, fontFamily: "'Space Mono', monospace", fontSize: 9, color: '#94a3b8' }}>{school.name} · LIVE</p>
+            <p style={{ margin: 0, fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 17, color: school.colors.primary }}>{activeCampaign.label}</p>
+            <p style={{ margin: 0, fontFamily: "'Space Mono', monospace", fontSize: 9, color: school.colors.accent }}>{school.name} · LIVE</p>
           </div>
         </div>
         <button onClick={() => setActiveCampaign(null)}
-          style={{ padding: '6px 14px', borderRadius: 8, border: `1px solid ${school.colors.border}`, background: 'white', cursor: 'pointer', fontSize: 12, color: '#64748b', fontFamily: "'Inter', sans-serif" }}>
+          style={{ padding: '6px 14px', borderRadius: 8, border: `1px solid ${school.colors.border}`, background: 'white', cursor: 'pointer', fontSize: 12, color: school.colors.accent, fontFamily: "'Inter', sans-serif" }}>
           ← Back
         </button>
       </div>
@@ -372,7 +377,7 @@ export default function SalesAgent() {
             <Send size={18} color="white" />
           </button>
         </div>
-        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: '#94a3b8', textAlign: 'center', marginTop: 8 }}>
+        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: school.colors.accent, textAlign: 'center', marginTop: 8 }}>
           {school.mascotName} · {school.name} · Powered by Simple Genius
         </p>
       </div>
