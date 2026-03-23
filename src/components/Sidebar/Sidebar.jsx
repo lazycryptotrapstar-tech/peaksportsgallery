@@ -4,12 +4,12 @@ import { MEMBERSHIP_TIERS } from '../../data/tiers'
 import { Sparkles, ShoppingCart, Mail, TrendingUp, Network, BarChart2 } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { id: 'agent',     label: 'Sales Agent',   sub: 'AI Chat · CRM',        icon: Sparkles },
-  { id: 'ticketing', label: 'Ticket Hub',    sub: 'Marketplace',           icon: ShoppingCart },
-  { id: 'crm',       label: 'CRM Outreach',  sub: 'AI Emails · Leads',     icon: Mail },
-  { id: 'analytics', label: 'Analytics',     sub: 'Performance',           icon: TrendingUp },
-  { id: 'insights',  label: 'AI Productivity', sub: 'AI vs Manual',        icon: BarChart2 },
-  { id: 'stack',     label: 'Tech Stack',    sub: 'Infrastructure',         icon: Network },
+  { id: 'agent',     label: 'Sales Agent',     sub: 'AI Chat',          icon: Sparkles },
+  { id: 'crm',       label: 'CRM Outreach',    sub: 'AI Emails · Leads', icon: Mail },
+  { id: 'ticketing', label: 'Ticket Hub',      sub: 'Marketplace',       icon: ShoppingCart },
+  { id: 'analytics', label: 'Analytics',       sub: 'Performance',       icon: TrendingUp },
+  { id: 'insights',  label: 'AI Productivity', sub: 'AI vs Manual',      icon: BarChart2 },
+  { id: 'stack',     label: 'Tech Stack',      sub: 'Infrastructure',    icon: Network },
 ]
 
 export default function Sidebar({ activeTab, onTabChange }) {

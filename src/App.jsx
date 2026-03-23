@@ -64,8 +64,8 @@ function AppShell() {
 function MobileNav({ activeTab, onTabChange }) {
   const tabs = [
     { id: 'agent',     label: 'Agent',    emoji: '🤖' },
-    { id: 'ticketing', label: 'Tickets',  emoji: '🎟️' },
     { id: 'crm',       label: 'CRM',      emoji: '📧' },
+    { id: 'ticketing', label: 'Tickets',  emoji: '🎟️' },
     { id: 'analytics', label: 'Analytics',emoji: '📊' },
     { id: 'insights',  label: 'AI vs Manual', emoji: '⚡' },
   ]
