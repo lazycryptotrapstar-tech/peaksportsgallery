@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { SCHOOL_LIST } from '../../data/schools'
 import { useSchool } from '../../context/SchoolContext'
+import { useUser } from '../../context/UserContext'
 
 export default function Gallery() {
-  const { school, activeSchoolId, switchSchool } = useSchool()
+  const { school, activeSchoolId, switchSchool, canSwitchSchool } = useSchool()
+  const { user, logout } = useUser()
   const [expanded, setExpanded] = useState(false)
-  const [search, setSearch] = useState('')
+  const [search, setSearch]     = useState('')
 
   const filtered = search
     ? SCHOOL_LIST.filter(s =>
@@ -24,8 +26,9 @@ export default function Gallery() {
       top: 0,
       zIndex: 50,
     }}>
-      {/* Top row — thin header */}
+      {/* Top row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, height: 36 }}>
+
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
           {/* Peak Sports logo */}
           <img
@@ -34,6 +37,7 @@ export default function Gallery() {
             style={{ height: 28, width: 'auto', objectFit: 'contain', flexShrink: 0 }}
           />
           <span style={{ color: '#ddd', flexShrink: 0 }}>|</span>
+
           {/* Active school pill */}
           <div style={{
             display: 'flex', alignItems: 'center', gap: 5,
@@ -46,32 +50,61 @@ export default function Gallery() {
             <span style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 12, color: 'white', whiteSpace: 'nowrap' }}>
               {school.short}
             </span>
-            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: school.colors.accent2, opacity: 0.9, display: 'none' }} className="conf-label">
-              {school.conference}
-            </span>
           </div>
         </div>
 
-        {/* Switch button — compact */}
-        <button
-          onClick={() => setExpanded(e => !e)}
-          style={{
-            height: 30, padding: '0 12px',
-            borderRadius: 8, border: '1px solid #e0e0e0',
-            background: '#f9f9f9', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: 4,
-            fontFamily: "'Space Mono', monospace", fontSize: 10, color: '#666',
-            transition: 'all 0.15s ease', flexShrink: 0,
-          }}
-        >
-          Switch {expanded ? '▲' : '▼'}
-        </button>
+        {/* Right side — Switch button (admins/staff only) + user info + logout */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+
+          {/* User name — small */}
+          {user && (
+            <span style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: 9,
+              color: '#999',
+              letterSpacing: '0.08em',
+              whiteSpace: 'nowrap',
+            }}>
+              {user.name.split(' ')[0].toUpperCase()}
+            </span>
+          )}
+
+          {/* Switch School — only for admin / peak_staff */}
+          {canSwitchSchool && (
+            <button
+              onClick={() => setExpanded(e => !e)}
+              style={{
+                height: 30, padding: '0 12px',
+                borderRadius: 8, border: '1px solid #e0e0e0',
+                background: '#f9f9f9', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: 4,
+                fontFamily: "'Space Mono', monospace", fontSize: 10, color: '#666',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              Switch {expanded ? '▲' : '▼'}
+            </button>
+          )}
+
+          {/* Logout */}
+          <button
+            onClick={logout}
+            style={{
+              height: 30, padding: '0 10px',
+              borderRadius: 8, border: '1px solid #e0e0e0',
+              background: '#f9f9f9', cursor: 'pointer',
+              fontFamily: "'Space Mono', monospace", fontSize: 10, color: '#999',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            Sign out
+          </button>
+        </div>
       </div>
 
-      {/* Expanded picker */}
-      {expanded && (
+      {/* Expanded school picker — admins/staff only */}
+      {expanded && canSwitchSchool && (
         <div style={{ marginTop: 8 }}>
-          {/* Search */}
           <div style={{ position: 'relative', marginBottom: 8 }}>
             <input
               value={search}
@@ -88,7 +121,6 @@ export default function Gallery() {
             <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', fontSize: 12 }}>🔍</span>
           </div>
 
-          {/* School cards */}
           <div style={{
             display: 'flex', gap: 6, overflowX: 'auto',
             paddingBottom: 6, WebkitOverflowScrolling: 'touch',
