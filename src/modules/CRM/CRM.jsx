@@ -1,14 +1,16 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { useSchool } from '../../context/SchoolContext'
 import {
   ShoppingCart, Trophy, ArrowLeft, Edit2,
   RefreshCw, ExternalLink, Zap,
   ChevronRight, Search, SlidersHorizontal
 } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 
 const PLAYBOOK_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/playbook'
 import { getContacts } from '../../data/contacts'
 
+// ── Scoring ───────────────────────────────────────────────────────────────────
 const computeScore = (ct) => {
   let s = 30
   s += Math.min(ct.purchase_count * 10, 40)
@@ -39,6 +41,7 @@ const parseDraft = (raw) => {
   return { angle, reason, subject, body: body.trim(), followUp }
 }
 
+// ── CSS ───────────────────────────────────────────────────────────────────────
 const CSS = (primary) => `
   .pb-shell { background:var(--pb-bg); min-height:100%; font-family:'DM Sans',Inter,sans-serif; color:var(--pb-text); }
   .pb-card { background:var(--pb-surface); border:1px solid var(--pb-border); border-radius:16px; }
@@ -72,6 +75,35 @@ const CSS = (primary) => `
   @keyframes pb-bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-8px)} }
 `
 
+// ── Touch badge component ─────────────────────────────────────────────────────
+// Shows T1 T2 T3 pills — green if drafted, gray if not
+const TouchBadges = ({ contactId, touchMap }) => {
+  const touches = touchMap[contactId] || new Set()
+  return (
+    <div style={{ display: 'flex', gap: 3, flexShrink: 0 }}>
+      {[1, 2, 3].map(t => {
+        const done = touches.has(String(t)) || touches.has(t)
+        return (
+          <div key={t} style={{
+            width: 22, height: 22,
+            borderRadius: 6,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: "'Space Mono', monospace",
+            fontSize: 9,
+            fontWeight: 700,
+            background:   done ? 'rgba(60,219,122,0.15)' : 'rgba(0,0,0,0.06)',
+            border:       done ? '1px solid rgba(60,219,122,0.4)' : '1px solid rgba(0,0,0,0.1)',
+            color:        done ? '#3CDB7A' : '#bbb',
+            letterSpacing: '0.04em',
+          }}>
+            T{t}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export default function CRM() {
   const { school } = useSchool()
   const c = school.colors
@@ -88,6 +120,44 @@ export default function CRM() {
   const [sportFilter, setSportFilter]     = useState('All')
   const [search, setSearch]               = useState('')
   const [sortBy, setSortBy]               = useState('priority')
+
+  // ── Touch history state ───────────────────────────────────────────────────
+  // touchMap: { [contact_id]: Set<touch_number> }
+  const [touchMap, setTouchMap]   = useState({})
+  const [touchLoading, setTouchLoading] = useState(false)
+
+  // Fetch sequences for current school + campaign whenever campaign is selected
+  const fetchTouchHistory = useCallback(async (schoolId, camp) => {
+    if (!schoolId || !camp) return
+    setTouchLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('sequences')
+        .select('contact_id, touch_number')
+        .eq('school_id', schoolId)
+        .eq('campaign', camp)
+
+      if (error || !data) return
+
+      // Build map: contact_id → Set of touch numbers drafted
+      const map = {}
+      data.forEach(row => {
+        if (!map[row.contact_id]) map[row.contact_id] = new Set()
+        map[row.contact_id].add(String(row.touch_number))
+      })
+      setTouchMap(map)
+    } catch (e) {
+      console.error('Touch history fetch error:', e)
+    } finally {
+      setTouchLoading(false)
+    }
+  }, [])
+
+  // Re-fetch whenever school or campaign changes
+  useEffect(() => {
+    if (campaign) fetchTouchHistory(school.id, campaign)
+    else setTouchMap({})
+  }, [school.id, campaign, fetchTouchHistory])
 
   const allContacts = useMemo(() =>
     campaign ? getContacts(school.id, campaign) : []
@@ -158,6 +228,15 @@ export default function CRM() {
       const p = parseDraft(data.draft || '')
       setParsed(p); setEditedSubject(p.subject); setEditedBody(p.body)
       setStage('review')
+
+      // Update touch map optimistically — mark this touch as drafted
+      setTouchMap(prev => {
+        const updated = { ...prev }
+        if (!updated[ct.id]) updated[ct.id] = new Set()
+        else updated[ct.id] = new Set(updated[ct.id])
+        updated[ct.id].add(String(t))
+        return updated
+      })
     } catch {
       setParsed({ angle: 'Connection Error', reason: 'Check n8n webhook', subject: '', body: 'Could not connect to AI.', followUp: '' })
       setStage('review')
@@ -174,25 +253,34 @@ export default function CRM() {
     setStage('campaign'); setCampaign(null); setContact(null)
     setTouch(1); setParsed(null); setEditMode(false)
     setSportFilter('All'); setSearch(''); setSortBy('priority')
+    setTouchMap({})
   }
 
   const vars = { '--pb-bg': c.bg, '--pb-surface': '#ffffff', '--pb-surface2': c.bg, '--pb-border': c.border, '--pb-text': c.primary, '--pb-muted': c.accent }
-
   const avatarBg = (name) => ({ bg: c.border, initials: (name || '??').split(' ').map(n => n[0]).slice(0, 2).join('') })
 
+  // ── Contact row ───────────────────────────────────────────────────────────
   const ContactRow = ({ ct }) => {
-    const av = avatarBg(ct.name)
+    const av    = avatarBg(ct.name)
     const score = computeScore(ct)
-    const meta = [ct.city, ct.last_year ? `Last: ${ct.last_year}` : null].filter(Boolean).join(' · ')
+    const meta  = [ct.city, ct.last_year ? `Last: ${ct.last_year}` : null].filter(Boolean).join(' · ')
     return (
       <button className="pb-contact-row" onClick={() => { setContact(ct); requestDraft(ct, touch) }}>
-        <div style={{ width: 44, height: 44, borderRadius: 12, background: av.bg, border: `1px solid ${primary}33`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Bebas Neue',sans-serif", fontSize: 16, color: primary, flexShrink: 0, letterSpacing: '0.05em' }}>{av.initials}</div>
+        {/* Avatar */}
+        <div style={{ width: 44, height: 44, borderRadius: 12, background: av.bg, border: `1px solid ${primary}33`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Bebas Neue',sans-serif", fontSize: 16, color: primary, flexShrink: 0, letterSpacing: '0.05em' }}>
+          {av.initials}
+        </div>
+        {/* Info */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: 'var(--pb-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ct.name}</p>
           <p style={{ margin: 0, fontSize: 12, color: 'var(--pb-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ct.title}</p>
           {meta ? <p style={{ margin: 0, fontSize: 11, color: 'var(--pb-muted)', opacity: 0.7, fontFamily: "'Space Mono',monospace" }}>{meta}</p> : null}
         </div>
+        {/* Touch history badges */}
+        <TouchBadges contactId={ct.id} touchMap={touchMap} />
+        {/* Score */}
         <div className="pb-score" style={{ background: SCORE_COLOR(score), flexShrink: 0 }}>{score}</div>
+        {/* Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '4px 12px', borderRadius: 20, background: SCORE_COLOR(score), flexShrink: 0 }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,0.5)', display: 'inline-block' }} />
           <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: '#fff', fontWeight: 700 }}>{STATUS_LABEL[ct.status] || 'Warm'}</span>
@@ -206,6 +294,7 @@ export default function CRM() {
     <div className="pb-shell" style={vars}>
       <style>{CSS(primary)}</style>
 
+      {/* ── CAMPAIGN SELECTOR ──────────────────────────────────── */}
       {stage === 'campaign' && (
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '24px 24px' }}>
           <p className="pb-label" style={{ marginBottom: 8 }}>The Playbook · {school.short}</p>
@@ -240,6 +329,7 @@ export default function CRM() {
         </div>
       )}
 
+      {/* ── CONTACT LIST ───────────────────────────────────────── */}
       {stage === 'contacts' && (
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '20px 24px' }}>
           <button className="pb-btn" onClick={reset} style={{ marginBottom: 20 }}><ArrowLeft size={15} /> Back to Campaigns</button>
@@ -286,9 +376,21 @@ export default function CRM() {
             </div>
           )}
 
-          <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: 'var(--pb-muted)', marginBottom: 12 }}>
-            {contacts.length} contact{contacts.length !== 1 ? 's' : ''}{search ? ` matching "${search}"` : ''} · Touch {touch} · {touch === 1 ? 'The Moment' : touch === 2 ? 'The Identity' : 'The Door'}
-          </p>
+          {/* Touch history legend */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: 'var(--pb-muted)', margin: 0 }}>
+              {contacts.length} contact{contacts.length !== 1 ? 's' : ''}{search ? ` matching "${search}"` : ''} · Touch {touch} · {touch === 1 ? 'The Moment' : touch === 2 ? 'The Identity' : 'The Door'}
+            </p>
+            {touchLoading && (
+              <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: 'var(--pb-muted)', opacity: 0.6 }}>Loading history…</span>
+            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 'auto' }}>
+              <div style={{ width: 18, height: 18, borderRadius: 5, background: 'rgba(60,219,122,0.15)', border: '1px solid rgba(60,219,122,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 7, color: '#3CDB7A', fontWeight: 700 }}>T1</span>
+              </div>
+              <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: 'var(--pb-muted)' }}>= drafted</span>
+            </div>
+          </div>
 
           {contacts.length === 0 ? (
             <div style={{ padding: '40px 20px', textAlign: 'center', color: 'var(--pb-muted)', fontFamily: "'Space Mono',monospace", fontSize: 12 }}>No contacts match your search</div>
@@ -313,6 +415,7 @@ export default function CRM() {
         </div>
       )}
 
+      {/* ── DRAFTING ───────────────────────────────────────────── */}
       {stage === 'drafting' && (
         <div style={{ maxWidth: 800, margin: '0 auto', padding: '80px 28px', textAlign: 'center' }}>
           <div style={{ width: 72, height: 72, borderRadius: '50%', background: `${primary}22`, border: `1px solid ${primary}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', fontSize: 32 }}>{school.emoji}</div>
@@ -324,6 +427,7 @@ export default function CRM() {
         </div>
       )}
 
+      {/* ── DRAFT REVIEW ───────────────────────────────────────── */}
       {stage === 'review' && parsed && (
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '20px 24px' }}>
           <button className="pb-btn" onClick={() => setStage('contacts')} style={{ marginBottom: 16 }}><ArrowLeft size={15} /> Back to Contacts</button>
