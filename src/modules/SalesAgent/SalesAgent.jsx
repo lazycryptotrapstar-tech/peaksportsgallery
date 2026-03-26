@@ -5,7 +5,21 @@ import { getContacts } from '../../data/contacts'
 
 const N8N_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/2e28cfe9-961f-48fb-a548-3f0306448996/chat'
 
-// ── SYSTEM PROMPT ──────────────────────────────────────────────────
+// ── Compute score (mirrors CRM logic) ─────────────────────────────────────────
+const computeScore = (ct) => {
+  let s = 30
+  s += Math.min((ct.purchase_count || 0) * 10, 40)
+  if (ct.status === 'hot')  s += 20
+  if (ct.status === 'warm') s += 10
+  if (ct.status === 'cold') s -= 10
+  if ((ct.last_year || 0) >= 2025) s += 10
+  else if ((ct.last_year || 0) >= 2023) s += 5
+  return Math.min(100, Math.max(0, s))
+}
+
+const SCORE_COLOR = (s) => s >= 80 ? '#3CDB7A' : s >= 60 ? '#F5C842' : '#f97316'
+
+// ── System prompt ─────────────────────────────────────────────────────────────
 const buildSystemPrompt = (school, campaignId) => `You are ${school.mascotName}, the AI-powered revenue agent for ${school.name} ${school.mascot} athletics, operated by Peak Sports MGMT.
 
 SCHOOL: ${school.name} | ${school.conference} | ${school.location}
@@ -56,7 +70,7 @@ GOAL: Sell group packages to former students
 - Use graduation year as nostalgia anchor
 - The ${school.rivals?.[0]} rivalry game is the one worth coming back for` : ''}`
 
-// ── CAMPAIGNS ──────────────────────────────────────────────────────
+// ── Campaigns ──────────────────────────────────────────────────────────────────
 const CAMPAIGNS = [
   {
     id: 'TICKETS',
@@ -92,14 +106,22 @@ export default function SalesAgent() {
   const { school } = useSchool()
   const c = school.colors
   const [activeCampaign, setActiveCampaign] = useState(null)
-  const [messages, setMessages] = useState([])
-  const [input, setInput] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
+  const [messages, setMessages]             = useState([])
+  const [input, setInput]                   = useState('')
+  const [isTyping, setIsTyping]             = useState(false)
+  const [sessionId] = useState(() => `${Date.now()}-${Math.random().toString(36).slice(2)}`)
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  // Reset when school changes
+  useEffect(() => {
+    setActiveCampaign(null)
+    setMessages([])
+    setInput('')
+  }, [school.id])
 
   const selectCampaign = (campaign) => {
     setActiveCampaign(campaign)
@@ -113,91 +135,177 @@ export default function SalesAgent() {
     setMessages(history)
     setInput('')
     setIsTyping(true)
+
     try {
       const res = await fetch(N8N_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          chatInput: `[SCHOOL:${school.name}|CAMPAIGN:${activeCampaign.id}|CONTEXT:${buildSystemPrompt(school, activeCampaign.id).slice(0,400)}]
-
-${input}`,
-          sessionId: `${school.id}-${activeCampaign.id}`,
+          chatInput: input,
+          sessionId: `${school.id}-${activeCampaign.id}-${sessionId}`,
+          // Pass school + campaign context as separate fields n8n can use
+          school_id:   school.id,
+          school_name: school.name,
+          campaign:    activeCampaign.id,
+          systemPrompt: buildSystemPrompt(school, activeCampaign.id),
         }),
       })
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+
       const data = await res.json()
-      const reply = data.output || data.text || (data.content && data.content[0]?.text) || data.message || "I'm having trouble connecting. Try again in a moment."
+
+      // Try all known response field names n8n might return
+      const reply =
+        data?.output ||
+        data?.text ||
+        data?.message ||
+        data?.response ||
+        data?.answer ||
+        (Array.isArray(data?.content) ? data.content[0]?.text : null) ||
+        (typeof data === 'string' ? data : null) ||
+        "I'm having trouble connecting right now. Try again in a moment."
+
       setMessages(prev => [...prev, { role: 'assistant', content: reply, ts: Date.now() }])
-    } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: "Connection issue — try again in a moment.", ts: Date.now() }])
+    } catch (err) {
+      console.error('SalesAgent webhook error:', err)
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: "Connection issue — try again in a moment.",
+        ts: Date.now()
+      }])
     } finally {
       setIsTyping(false)
     }
   }
 
-  // ── CAMPAIGN SELECTOR ────────────────────────────────────────
+  // ── Top contact for this school ───────────────────────────────────────────
+  const topContact = (() => {
+    const contacts = getContacts(school.id, 'TICKETS')
+    if (!contacts.length) return null
+    return contacts
+      .map(ct => ({ ...ct, _score: computeScore(ct) }))
+      .sort((a, b) => b._score - a._score)[0]
+  })()
+
+  const fanInitials = topContact?.name
+    ? topContact.name.split(' ').map(n => n[0]).slice(0, 2).join('')
+    : school.short.slice(0, 2)
+
+  const fanScore = topContact ? computeScore(topContact) : 0
+
+  // ── CAMPAIGN SELECTOR ────────────────────────────────────────────────────
   if (!activeCampaign) {
-    // Get top-scored contact for this school as the active fan
-    const topContacts = getContacts(school.id, 'TICKETS')
-    const activeFan = topContacts.sort((a,b) => b.score - a.score)[0] || { name: school.agent?.name, title: school.agent?.title, score: 90 }
-    const fanInitials = activeFan.name.split(' ').map(n=>n[0]).slice(0,2).join('')
-
     return (
-      <div style={{ maxWidth: 600, margin: '0 auto', padding: '32px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+      <div style={{
+        height: '100%',
+        overflowY: 'auto',
+        background: c.bg,
+        padding: '24px 20px 40px',
+        boxSizing: 'border-box',
+      }}>
+        <div style={{ maxWidth: 560, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
 
-        {/* Header */}
-        <div style={{ width: '100%', textAlign: 'center' }}>
-          <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: c.accent, marginBottom: 6 }}>Sales Agent · {school.short}</p>
-          <h2 style={{ fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 'clamp(28px,5vw,40px)', color: c.primary, margin: '0 0 4px' }}>Choose a Campaign</h2>
-          <p style={{ color: c.accent, fontSize: 13, opacity: 0.75, margin: 0 }}>Tap a campaign to start a live conversation with {school.mascotName}</p>
-        </div>
-
-        {/* Campaign badges — horizontal scroll */}
-        <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none', paddingBottom: 4 }}>
-          <div style={{ display: 'flex', gap: 8, paddingBottom: 4, width: 'max-content' }}>
-            {CAMPAIGNS.map(cam => {
-              const Icon = cam.icon
-              return (
-                <button key={cam.id} onClick={() => selectCampaign(cam)}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 18px', borderRadius: 28, border: `1.5px solid ${c.accent}`, background: 'white', cursor: 'pointer', transition: 'all 0.18s ease', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', whiteSpace: 'nowrap', flexShrink: 0 }}
-                  onMouseEnter={e => { e.currentTarget.style.background = c.primary; e.currentTarget.style.color = 'white' }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.color = c.primary }}>
-                  <Icon size={15} color={c.accent} />
-                  <span style={{ fontFamily: "'Inter',sans-serif", fontWeight: 700, fontSize: 13, color: c.primary }}>{cam.label}</span>
-                </button>
-              )
-            })}
+          {/* Header */}
+          <div style={{ width: '100%', textAlign: 'center' }}>
+            <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: c.accent, marginBottom: 6, margin: '0 0 6px' }}>
+              Sales Agent · {school.short}
+            </p>
+            <h2 style={{ fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 'clamp(28px,5vw,38px)', color: c.primary, margin: '0 0 4px' }}>
+              Choose a Campaign
+            </h2>
+            <p style={{ color: c.accent, fontSize: 13, opacity: 0.75, margin: 0 }}>
+              Tap a campaign to start a live conversation with {school.mascotName}
+            </p>
           </div>
-        </div>
 
-        {/* iPhone preview */}
-        <PhoneFrame school={school} />
-
-        {/* Active fan profile — dynamic per school */}
-        <div style={{ width: '100%', padding: '14px 18px', borderRadius: 16, border: `1px solid ${c.border}`, background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ flexShrink: 0 }}>
-            <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: c.accent, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Top Contact · {school.short}</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 40, height: 40, borderRadius: '50%', background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 900, fontSize: 14 }}>{fanInitials}</div>
-              <div>
-                <p style={{ margin: 0, fontFamily: "'Inter',sans-serif", fontWeight: 700, fontSize: 14, color: c.primary }}>{activeFan.name}</p>
-                <p style={{ margin: 0, fontSize: 12, color: c.accent, opacity: 0.8 }}>{activeFan.title}</p>
-              </div>
+          {/* Campaign pills */}
+          <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none', paddingBottom: 4 }}>
+            <div style={{ display: 'flex', gap: 8, paddingBottom: 4, width: 'max-content' }}>
+              {CAMPAIGNS.map(cam => {
+                const Icon = cam.icon
+                return (
+                  <button key={cam.id} onClick={() => selectCampaign(cam)}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 7,
+                      padding: '10px 18px', borderRadius: 28,
+                      border: `1.5px solid ${c.accent}`,
+                      background: 'white', cursor: 'pointer',
+                      transition: 'all 0.18s ease',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                      whiteSpace: 'nowrap', flexShrink: 0,
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = c.primary }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'white' }}>
+                    <Icon size={15} color={c.accent} />
+                    <span style={{ fontFamily: "'Inter',sans-serif", fontWeight: 700, fontSize: 13, color: c.primary }}>{cam.label}</span>
+                  </button>
+                )
+              })}
             </div>
           </div>
-          <div style={{ marginLeft: 'auto', textAlign: 'right', flexShrink: 0 }}>
-            <p style={{ margin: '0 0 2px', fontFamily: "'Space Mono',monospace", fontSize: 9, color: c.accent, textTransform: 'uppercase' }}>Score</p>
-            <p style={{ margin: 0, fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 28, color: activeFan.score >= 80 ? '#3CDB7A' : activeFan.score >= 60 ? '#F5C842' : '#f97316' }}>{activeFan.score}</p>
-          </div>
-        </div>
 
+          {/* Phone preview — fixed size, not oversized */}
+          <PhoneFrame school={school} />
+
+          {/* Top contact card */}
+          {topContact && (
+            <div style={{
+              width: '100%',
+              padding: '14px 18px',
+              borderRadius: 16,
+              border: `1px solid ${c.border}`,
+              background: 'white',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              boxSizing: 'border-box',
+            }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: c.accent, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, margin: '0 0 8px' }}>
+                  Top Contact · {school.short}
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: '50%', background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 900, fontSize: 14, flexShrink: 0 }}>
+                    {fanInitials}
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ margin: 0, fontFamily: "'Inter',sans-serif", fontWeight: 700, fontSize: 14, color: c.primary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {topContact.name}
+                    </p>
+                    <p style={{ margin: 0, fontSize: 12, color: c.accent, opacity: 0.8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {topContact.title}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                <p style={{ margin: '0 0 2px', fontFamily: "'Space Mono',monospace", fontSize: 9, color: c.accent, textTransform: 'uppercase' }}>Score</p>
+                <p style={{ margin: 0, fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 28, color: SCORE_COLOR(fanScore) }}>
+                  {fanScore}
+                </p>
+              </div>
+            </div>
+          )}
+
+        </div>
       </div>
     )
   }
 
-  // ── CHAT VIEW ────────────────────────────────────────────────
+  // ── CHAT VIEW ─────────────────────────────────────────────────────────────
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', minHeight: '100%', padding: '12px 12px 20px', background: c.bg, boxSizing: 'border-box' }}>
-      {/* iPhone frame — responsive */}
+    <div style={{
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      padding: '16px 12px 24px',
+      background: c.bg,
+      boxSizing: 'border-box',
+      overflowY: 'auto',
+    }}>
       <div style={{
         width: '100%',
         maxWidth: 390,
@@ -207,10 +315,9 @@ ${input}`,
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        height: 'min(720px, calc(100vh - 120px))',
-        position: 'relative',
+        height: 'min(680px, calc(100vh - 140px))',
       }}>
-        {/* Phone top notch */}
+        {/* Notch */}
         <div style={{ background: '#000', padding: '8px 20px 6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700 }}>9:41</span>
           <div style={{ width: 120, height: 30, background: '#000', borderRadius: 20, border: '2px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -223,7 +330,7 @@ ${input}`,
           </div>
         </div>
 
-        {/* Chat header — school colored */}
+        {/* Chat header */}
         <div style={{ padding: '10px 20px 12px', background: c.primary, borderBottom: `1px solid ${c.accent}22`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 36, height: 36, borderRadius: 12, background: `${c.accent}22`, border: `1px solid ${c.accent}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
@@ -267,7 +374,7 @@ ${input}`,
             <div style={{ display: 'flex', gap: 8 }}>
               <div style={{ width: 28, height: 28, borderRadius: 8, background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>{school.emoji}</div>
               <div style={{ padding: '10px 14px', borderRadius: '18px 18px 18px 4px', background: 'white', display: 'flex', gap: 4, alignItems: 'center' }}>
-                {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: c.accent, animation: `bounce 1.2s ${i*0.2}s infinite` }} />)}
+                {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: c.accent, animation: `sagBounce 1.2s ${i*0.2}s infinite` }} />)}
               </div>
             </div>
           )}
@@ -277,10 +384,13 @@ ${input}`,
         {/* Input */}
         <div style={{ padding: '12px 16px 20px', background: 'white', borderTop: `1px solid ${c.border}`, flexShrink: 0 }}>
           <div style={{ display: 'flex', gap: 8 }}>
-            <input value={input} onChange={e => setInput(e.target.value)}
+            <input
+              value={input}
+              onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}
               placeholder={`Message ${school.mascotName}...`}
-              style={{ flex: 1, padding: '10px 14px', borderRadius: 24, border: `1px solid ${c.border}`, fontSize: 13, fontFamily: "'Inter',sans-serif", outline: 'none', background: c.bg, color: c.primary }} />
+              style={{ flex: 1, padding: '10px 14px', borderRadius: 24, border: `1px solid ${c.border}`, fontSize: 13, fontFamily: "'Inter',sans-serif", outline: 'none', background: c.bg, color: c.primary }}
+            />
             <button onClick={sendMessage}
               style={{ width: 40, height: 40, borderRadius: '50%', border: 'none', background: c.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Send size={16} color="white" />
@@ -297,73 +407,74 @@ ${input}`,
         </div>
       </div>
 
-      <style>{`@keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }`}</style>
+      <style>{`@keyframes sagBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }`}</style>
     </div>
   )
 }
 
-// ── PREVIEW PHONE (campaign selector screen) ──────────────────
+// ── Preview phone (campaign selector) ─────────────────────────────────────────
 function PhoneFrame({ school }) {
   const c = school.colors
   return (
     <div style={{
-      width: 300,
+      width: 260,
       background: '#000',
-      borderRadius: 44,
-      boxShadow: '0 24px 64px rgba(0,0,0,0.35), 0 0 0 10px #1a1a1a, 0 0 0 12px #333',
+      borderRadius: 40,
+      boxShadow: '0 20px 52px rgba(0,0,0,0.3), 0 0 0 8px #1a1a1a, 0 0 0 10px #333',
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      height: 560,
+      height: 480,
+      flexShrink: 0,
     }}>
       {/* Notch */}
-      <div style={{ background: '#000', padding: '12px 20px 8px', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: 100, height: 24, background: '#000', borderRadius: 16, border: '2px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'rgba(255,255,255,0.3)' }} />
+      <div style={{ background: '#000', padding: '10px 20px 6px', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: 90, height: 22, background: '#000', borderRadius: 14, border: '2px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'rgba(255,255,255,0.3)' }} />
         </div>
       </div>
-      {/* Header — school colored */}
-      <div style={{ padding: '8px 18px 10px', background: c.primary, borderBottom: `1px solid ${c.accent}22` }}>
+      {/* Header */}
+      <div style={{ padding: '8px 16px 10px', background: c.primary }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 30, height: 30, borderRadius: 9, background: `${c.accent}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>{school.emoji}</div>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: `${c.accent}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>{school.emoji}</div>
           <div>
-            <p style={{ margin: 0, fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 14, color: 'white' }}>Ticket Sales</p>
+            <p style={{ margin: 0, fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 13, color: 'white' }}>Ticket Sales</p>
             <p style={{ margin: 0, fontFamily: "'Space Mono',monospace", fontSize: 8, color: c.accent }}>{school.name} · <span style={{ color: '#3CDB7A' }}>● LIVE</span></p>
           </div>
         </div>
       </div>
-      {/* Preview message */}
-      <div style={{ flex: 1, padding: '14px', background: c.bg, display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <div style={{ width: 26, height: 26, borderRadius: 8, background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, flexShrink: 0 }}>{school.emoji}</div>
-          <div style={{ padding: '10px 12px', borderRadius: '14px 14px 14px 4px', background: 'white', fontSize: 11, lineHeight: 1.5, color: c.primary, maxWidth: '80%', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+      {/* Preview messages */}
+      <div style={{ flex: 1, padding: '12px', background: c.bg, display: 'flex', flexDirection: 'column', gap: 8, overflow: 'hidden' }}>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ width: 24, height: 24, borderRadius: 7, background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, flexShrink: 0 }}>{school.emoji}</div>
+          <div style={{ padding: '8px 10px', borderRadius: '12px 12px 12px 4px', background: 'white', fontSize: 10, lineHeight: 1.5, color: c.primary, maxWidth: '80%', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
             Hey! {school.mascotName} here — your {school.short} ticket rep. Big game coming up at {school.venue?.football?.name}. What games are you thinking about?
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <div style={{ padding: '10px 12px', borderRadius: '14px 14px 4px 14px', background: c.primary, fontSize: 11, lineHeight: 1.5, color: 'white', maxWidth: '70%' }}>
+          <div style={{ padding: '8px 10px', borderRadius: '12px 12px 4px 12px', background: c.primary, fontSize: 10, lineHeight: 1.5, color: 'white', maxWidth: '70%' }}>
             I'm interested in the football season!
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <div style={{ width: 26, height: 26, borderRadius: 8, background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, flexShrink: 0 }}>{school.emoji}</div>
-          <div style={{ padding: '10px 12px', borderRadius: '14px 14px 14px 4px', background: 'white', fontSize: 11, lineHeight: 1.5, color: c.primary, maxWidth: '80%', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            Perfect timing — the {school.rivals?.[0]} rivalry game is coming up. Want me to check what's available near the 50 yard line?
+        <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ width: 24, height: 24, borderRadius: 7, background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, flexShrink: 0 }}>{school.emoji}</div>
+          <div style={{ padding: '8px 10px', borderRadius: '12px 12px 12px 4px', background: 'white', fontSize: 10, lineHeight: 1.5, color: c.primary, maxWidth: '80%', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+            Perfect timing — the {school.rivals?.[0]} rivalry game is coming up. Want me to check availability near the 50?
           </div>
         </div>
       </div>
       {/* Input preview */}
-      <div style={{ padding: '10px 14px 18px', background: 'white', borderTop: `1px solid ${c.border}` }}>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <div style={{ flex: 1, padding: '8px 12px', borderRadius: 20, background: c.bg, fontSize: 11, color: c.accent, border: `1px solid ${c.border}` }}>Message {school.mascotName}...</div>
-          <div style={{ width: 32, height: 32, borderRadius: '50%', background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Send size={13} color="white" />
+      <div style={{ padding: '8px 12px 14px', background: 'white', borderTop: `1px solid ${c.border}` }}>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <div style={{ flex: 1, padding: '6px 10px', borderRadius: 18, background: c.bg, fontSize: 10, color: c.accent, border: `1px solid ${c.border}` }}>Message {school.mascotName}...</div>
+          <div style={{ width: 28, height: 28, borderRadius: '50%', background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Send size={11} color="white" />
           </div>
         </div>
       </div>
       {/* Home bar */}
-      <div style={{ background: '#000', paddingBottom: 6, paddingTop: 4, display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: 90, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.25)' }} />
+      <div style={{ background: '#000', paddingBottom: 6, paddingTop: 3, display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: 80, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.25)' }} />
       </div>
     </div>
   )
