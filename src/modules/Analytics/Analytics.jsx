@@ -1,153 +1,331 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSchool } from '../../context/SchoolContext'
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
-const revenueData = [
-  { month:'Aug', tickets:12400, sponsorship:8500 },
-  { month:'Sep', tickets:28600, sponsorship:12000 },
-  { month:'Oct', tickets:34200, sponsorship:18500 },
-  { month:'Nov', tickets:41800, sponsorship:22000 },
-  { month:'Dec', tickets:18200, sponsorship:8000 },
-  { month:'Jan', tickets:22400, sponsorship:14000 },
-  { month:'Feb', tickets:31600, sponsorship:19500 },
-  { month:'Mar', tickets:29200, sponsorship:16000 },
-]
+// ── Real data from Kyle's Time & Score report ─────────────────────────────────
+const DATA = {
+  // FY totals — current vs goal
+  fy: [
+    { year: 'FY23', total: 138140,  goal: null,   label: 'FY 2022-23' },
+    { year: 'FY24', total: 321648,  goal: 321500,  label: 'FY 2023-24' },
+    { year: 'FY25', total: 621880,  goal: 371500,  label: 'FY 2024-25' },
+  ],
 
-const sportData = [
-  { sport:'Football',   tickets:334, revenue:35200 },
-  { sport:'Basketball', tickets:214, revenue:23500 },
-  { sport:'Baseball',   tickets:86,  revenue:7900  },
-  { sport:'Volleyball', tickets:42,  revenue:3200  },
-  { sport:'Soccer',     tickets:38,  revenue:2800  },
-]
+  // Revenue by category FY25
+  categories: [
+    { label: 'MFB Ticket Sales',       current: 98995,  goal: 90000,  color: '#3CDB7A' },
+    { label: 'MFB Parking',            current: 32129,  goal: 20000,  color: '#3CDB7A' },
+    { label: 'MFB Premium — Porch',    current: 14633,  goal: 15000,  color: '#F5C842' },
+    { label: 'Basketball Tickets',     current: 20466,  goal: 30000,  color: '#F5C842' },
+    { label: 'Volleyball Tickets',     current: 4691,   goal: 2500,   color: '#3CDB7A' },
+    { label: 'Crowdfunding',           current: 64158,  goal: 150000, color: '#f97316' },
+    { label: 'Corporate Partners',     current: 143200, goal: null,   color: '#886E4C' },
+  ],
 
-const campaignData = [
-  { name:'Ticket Sales',  value:45 },
-  { name:'Sponsorship',   value:28 },
-  { name:'Hospitality',   value:16 },
-  { name:'Alumni',        value:11 },
-]
+  // Football ticket revenue YoY
+  footballYoY: [
+    { year: '2022', tickets: 14643, revenue: 64615 },
+    { year: '2023', tickets: 13472, revenue: 67084 },
+    { year: '2024', tickets: 33569, revenue: 91917 },
+  ],
+
+  // 2025 season ticket sales
+  seasonTickets2025: [
+    { type: 'Reserved Season',  sold: 1102, revenue: 34805 },
+    { type: 'Parking — Lot B',  sold: 173,  revenue: 17334 },
+    { type: 'Parking — Lot C',  sold: 9,    revenue: 669   },
+  ],
+
+  // Game-by-game attendance (2025 football)
+  gameAttendance: [
+    { game: 'Game 1', attendance: 4786 },
+    { game: 'Game 2', attendance: 4378 },
+    { game: 'Game 3', attendance: 4735 },
+    { game: 'Game 4', attendance: 5349 },
+    { game: 'Game 5', attendance: 4554 },
+  ],
+
+  // Basketball revenue trend
+  basketball: [
+    { season: '22-23', revenue: 13250 },
+    { season: '23-24', revenue: 19786 },
+    { season: '24-25', revenue: 20466 },
+    { season: '25-26', revenue: 8414  }, // season tickets only so far
+  ],
+
+  // Attendance totals
+  attendance: {
+    mbb:      9340,
+    wbb:      7620,
+    football: 23802,
+  },
+}
+
+const fmt = (n) => n >= 1000000 ? `$${(n/1000000).toFixed(2)}M` : n >= 1000 ? `$${(n/1000).toFixed(1)}k` : `$${n}`
+const fmtFull = (n) => `$${n.toLocaleString()}`
+
+// ── Reusable bar chart row ────────────────────────────────────────────────────
+const BarRow = ({ label, value, max, color, sublabel }) => {
+  const pct = Math.min(100, (value / max) * 100)
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+        <span style={{ fontSize: 13, fontWeight: 600, color: '#111', fontFamily: "'DM Sans',sans-serif" }}>{label}</span>
+        <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, color: '#555', flexShrink: 0, marginLeft: 8 }}>{sublabel}</span>
+      </div>
+      <div style={{ height: 8, borderRadius: 4, background: '#f1f5f9', overflow: 'hidden' }}>
+        <div style={{ height: '100%', width: `${pct}%`, borderRadius: 4, background: color, transition: 'width 0.6s ease' }} />
+      </div>
+    </div>
+  )
+}
+
+// ── Stat card ─────────────────────────────────────────────────────────────────
+const StatCard = ({ label, value, sub, accent, bg }) => (
+  <div style={{ padding: '16px', borderRadius: 14, background: bg || '#fff', border: '1px solid #e8eaed' }}>
+    <p style={{ margin: '0 0 4px', fontFamily: "'Space Mono',monospace", fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.12em', color: accent || '#886E4C' }}>{label}</p>
+    <p style={{ margin: '0 0 2px', fontFamily: "'Bebas Neue',sans-serif", fontSize: 28, color: '#111', letterSpacing: '0.02em', lineHeight: 1 }}>{value}</p>
+    {sub && <p style={{ margin: 0, fontSize: 11, color: '#94a3b8', fontFamily: "'Space Mono',monospace" }}>{sub}</p>}
+  </div>
+)
+
+// ── Section header ────────────────────────────────────────────────────────────
+const SectionHead = ({ title, sub, accent }) => (
+  <div style={{ marginBottom: 14, paddingBottom: 10, borderBottom: '2px solid #f1f5f9' }}>
+    <p style={{ margin: '0 0 2px', fontFamily: "'Space Mono',monospace", fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.14em', color: accent }}>{sub}</p>
+    <h3 style={{ margin: 0, fontFamily: "'Bebas Neue',sans-serif", fontSize: 24, color: '#111', letterSpacing: '0.03em' }}>{title}</h3>
+  </div>
+)
 
 export default function Analytics() {
   const { school } = useSchool()
-  const c = school.colors
+  const accent = school.colors.accent
+  const primary = school.colors.primary
 
-  const Tip = ({ active, payload, label }) => {
-    if (!active || !payload?.length) return null
-    return (
-      <div style={{ background: c.primary, border: `1px solid ${c.accent}44`, borderRadius: 10, padding: '10px 14px' }}>
-        <p style={{ margin: '0 0 6px', fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 14, color: 'white' }}>{label}</p>
-        {payload.map((p, i) => (
-          <p key={i} style={{ margin: 0, fontSize: 12, color: p.color || c.accent }}>
-            {p.name}: {typeof p.value === 'number' && p.value > 100 ? `$${p.value.toLocaleString()}` : p.value}
-          </p>
-        ))}
-      </div>
-    )
-  }
+  const [fyView, setFyView] = useState('revenue') // revenue | tickets
 
-  const Card = ({ children, style = {} }) => (
-    <div style={{ padding: '24px', borderRadius: 20, background: 'white', border: `1px solid ${c.border}`, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', ...style }}>
-      {children}
-    </div>
-  )
+  const maxFY = Math.max(...DATA.fy.map(f => f.total))
+  const maxAttend = Math.max(...DATA.gameAttendance.map(g => g.attendance))
+  const maxBball = Math.max(...DATA.basketball.map(b => b.revenue))
+  const maxFbRev = Math.max(...DATA.footballYoY.map(f => f.revenue))
 
-  const ChartTitle = ({ title, sub }) => (
-    <div style={{ marginBottom: 16 }}>
-      <h3 style={{ margin: '0 0 4px', fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 20, color: c.primary }}>{title}</h3>
-      <p style={{ margin: 0, fontFamily: "'Space Mono', monospace", fontSize: 10, color: c.accent }}>{sub}</p>
-    </div>
-  )
+  const fy25 = DATA.fy[2]
+  const fy24 = DATA.fy[1]
+  const yoyGrowth = (((fy25.total - fy24.total) / fy24.total) * 100).toFixed(0)
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
-      <div style={{ marginBottom: 24 }}>
-        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: c.accent, marginBottom: 6 }}>{school.name} · Analytics</p>
-        <h2 style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 'clamp(32px,5vw,52px)', color: c.primary, margin: 0 }}>Performance Dashboard</h2>
-      </div>
+    <div style={{ background: '#f8f9fa', minHeight: '100%', padding: '0 0 60px' }}>
+      <style>{`
+        .an-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .an-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .an-card { background: #fff; border-radius: 16px; border: 1px solid #e8eaed; padding: 20px; }
+        @media (max-width: 640px) {
+          .an-grid-2 { grid-template-columns: 1fr !important; }
+          .an-grid-3 { grid-template-columns: 1fr 1fr !important; }
+        }
+      `}</style>
 
-      {/* KPI cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 24 }}>
-        {[
-          { label:'Ticket Revenue',      value:'$74,700', sub:`${school.short} · YTD`,    dark:true  },
-          { label:'Sponsorship Revenue', value:'$48,500', sub:'Packages closed',           dark:true  },
-          { label:'Tickets Sold',        value:'745',     sub:'+22% vs last season',       dark:false },
-          { label:'Active Sponsors',     value:'12',      sub:'3 up for renewal',          dark:false },
-        ].map((k, i) => (
-          <div key={i} style={{ padding: '20px', borderRadius: 16, background: k.dark ? c.primary : 'white', border: `1px solid ${k.dark ? 'transparent' : c.border}`, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-            <p style={{ margin: '0 0 6px', fontFamily: "'Space Mono', monospace", fontSize: 9, textTransform: 'uppercase', color: k.dark ? 'rgba(255,255,255,0.4)' : c.accent }}>{k.label}</p>
-            <p style={{ margin: '0 0 4px', fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 28, color: k.dark ? (c.accent2 || '#C7B37F') : c.accent }}>{k.value}</p>
-            <p style={{ margin: 0, fontSize: 12, color: k.dark ? 'rgba(255,255,255,0.4)' : c.accent, opacity: 0.7 }}>{k.sub}</p>
+      {/* ── Header ── */}
+      <div style={{ background: primary, padding: '20px 20px 24px' }}>
+        <p style={{ margin: '0 0 4px', fontFamily: "'Space Mono',monospace", fontSize: 10, color: accent, textTransform: 'uppercase', letterSpacing: '0.14em' }}>
+          Analytics · {school.short}
+        </p>
+        <h2 style={{ margin: '0 0 16px', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(28px,6vw,42px)', color: 'white', letterSpacing: '0.03em' }}>
+          Revenue Performance
+        </h2>
+
+        {/* Top KPIs */}
+        <div className="an-grid-3">
+          <div style={{ padding: '12px 14px', borderRadius: 12, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <p style={{ margin: '0 0 2px', fontFamily: "'Space Mono',monospace", fontSize: 8, color: accent, textTransform: 'uppercase', letterSpacing: '0.1em' }}>FY25 Total</p>
+            <p style={{ margin: 0, fontFamily: "'Bebas Neue',sans-serif", fontSize: 26, color: 'white', lineHeight: 1 }}>{fmt(fy25.total)}</p>
+            <p style={{ margin: 0, fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#3CDB7A' }}>+{yoyGrowth}% vs FY24</p>
           </div>
-        ))}
+          <div style={{ padding: '12px 14px', borderRadius: 12, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <p style={{ margin: '0 0 2px', fontFamily: "'Space Mono',monospace", fontSize: 8, color: accent, textTransform: 'uppercase', letterSpacing: '0.1em' }}>vs Goal</p>
+            <p style={{ margin: 0, fontFamily: "'Bebas Neue',sans-serif", fontSize: 26, color: '#3CDB7A', lineHeight: 1 }}>
+              +{fmt(fy25.total - fy25.goal)}
+            </p>
+            <p style={{ margin: 0, fontFamily: "'Space Mono',monospace", fontSize: 9, color: 'rgba(255,255,255,0.5)' }}>Goal: {fmt(fy25.goal)}</p>
+          </div>
+          <div style={{ padding: '12px 14px', borderRadius: 12, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <p style={{ margin: '0 0 2px', fontFamily: "'Space Mono',monospace", fontSize: 8, color: accent, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Attd. Total</p>
+            <p style={{ margin: 0, fontFamily: "'Bebas Neue',sans-serif", fontSize: 26, color: 'white', lineHeight: 1 }}>
+              {(DATA.attendance.mbb + DATA.attendance.wbb + DATA.attendance.football).toLocaleString()}
+            </p>
+            <p style={{ margin: 0, fontFamily: "'Space Mono',monospace", fontSize: 9, color: 'rgba(255,255,255,0.5)' }}>All sports combined</p>
+          </div>
+        </div>
       </div>
 
-      {/* Charts row 1 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
-        <Card>
-          <ChartTitle title="Revenue Over Time" sub="Ticket Sales vs Sponsorship · YTD" />
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={revenueData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={c.border} vertical={false} />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: c.accent }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: c.accent }} axisLine={false} tickLine={false} tickFormatter={v => `$${Math.round(v/1000)}k`} />
-              <Tooltip content={<Tip />} />
-              <Bar dataKey="tickets" name="Tickets" fill={c.accent} radius={[4,4,0,0]} />
-              <Bar dataKey="sponsorship" name="Sponsorship" fill={c.accent2 || '#C7B37F'} radius={[4,4,0,0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
+      <div style={{ padding: '16px 16px 0' }}>
 
-        <Card>
-          <ChartTitle title="Tickets by Sport" sub={`${school.name} · Season`} />
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={sportData} layout="vertical" margin={{ top: 4, right: 8, left: 40, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={c.border} horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 11, fill: c.accent }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="sport" tick={{ fontSize: 12, fill: c.primary }} axisLine={false} tickLine={false} />
-              <Tooltip content={<Tip />} />
-              <Bar dataKey="tickets" name="Tickets" fill={c.accent} radius={[0,4,4,0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
-      </div>
-
-      {/* Campaign performance + season summary */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 20 }}>
-        <Card>
-          <ChartTitle title="Campaign Performance" sub="Revenue contribution by campaign type" />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {campaignData.map((cam, i) => (
-              <div key={i}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: c.primary }}>{cam.name}</span>
-                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: c.accent, fontWeight: 700 }}>{cam.value}%</span>
-                </div>
-                <div style={{ height: 8, borderRadius: 4, background: c.bg, overflow: 'hidden' }}>
-                  <div style={{ height: '100%', borderRadius: 4, background: `linear-gradient(90deg, ${c.accent}, ${c.accent2 || c.accent}88)`, width: `${cam.value}%`, transition: 'width 0.8s ease' }} />
+        {/* ── FY Revenue Trend ── */}
+        <div className="an-card" style={{ marginBottom: 14 }}>
+          <SectionHead title="Year-Over-Year Revenue" sub="3-Year Trend" accent={accent} />
+          {DATA.fy.map((fy, i) => (
+            <div key={fy.year} style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
+                <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, fontWeight: 700, color: '#111' }}>{fy.label}</span>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 20, color: i === 2 ? '#3CDB7A' : accent }}>{fmtFull(fy.total)}</span>
+                  {fy.goal && <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#94a3b8', marginLeft: 6 }}>/ {fmtFull(fy.goal)} goal</span>}
                 </div>
               </div>
-            ))}
-          </div>
-        </Card>
-
-        <div style={{ padding: '24px', borderRadius: 20, background: c.primary }}>
-          <h3 style={{ margin: '0 0 20px', fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 20, color: 'white' }}>Season Summary</h3>
-          {[
-            { label:'Open Rate',       value:'38%',    prev:'21%'   },
-            { label:'Response Rate',   value:'19%',    prev:'8%'    },
-            { label:'Conversion Rate', value:'5.3%',   prev:'1.8%'  },
-            { label:'Avg Deal Size',   value:'$4,200', prev:'$1,800'},
-          ].map((s, i) => (
-            <div key={i} style={{ marginBottom: 16 }}>
-              <p style={{ margin: '0 0 2px', fontFamily: "'Space Mono', monospace", fontSize: 9, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>{s.label}</p>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                <span style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 22, color: c.accent2 || '#C7B37F' }}>{s.value}</span>
-                <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', textDecoration: 'line-through' }}>{s.prev} manual</span>
+              <div style={{ position: 'relative', height: 10, borderRadius: 5, background: '#f1f5f9', overflow: 'visible' }}>
+                {fy.goal && (
+                  <div style={{ position: 'absolute', left: `${Math.min(100, (fy.goal / maxFY) * 100)}%`, top: -4, bottom: -4, width: 2, background: '#cbd5e1', borderRadius: 1, zIndex: 2 }} />
+                )}
+                <div style={{ height: '100%', width: `${(fy.total / maxFY) * 100}%`, borderRadius: 5, background: i === 2 ? '#3CDB7A' : accent, transition: 'width 0.6s ease' }} />
               </div>
+              {fy.goal && fy.total > fy.goal && (
+                <p style={{ margin: '3px 0 0', fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#3CDB7A' }}>✓ Over goal by {fmtFull(fy.total - fy.goal)}</p>
+              )}
             </div>
           ))}
         </div>
+
+        {/* ── FY25 Revenue by Category ── */}
+        <div className="an-card" style={{ marginBottom: 14 }}>
+          <SectionHead title="FY25 Revenue by Category" sub="Current vs Goal" accent={accent} />
+          {DATA.categories.map(cat => {
+            const pct = cat.goal ? Math.min(100, (cat.current / cat.goal) * 100) : 100
+            const over = cat.goal && cat.current > cat.goal
+            return (
+              <div key={cat.label} style={{ marginBottom: 14 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#111', fontFamily: "'DM Sans',sans-serif" }}>{cat.label}</span>
+                  <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 8 }}>
+                    <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, color: over ? '#3CDB7A' : '#555' }}>{fmtFull(cat.current)}</span>
+                    {cat.goal && <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#94a3b8' }}> / {fmtFull(cat.goal)}</span>}
+                  </div>
+                </div>
+                <div style={{ height: 8, borderRadius: 4, background: '#f1f5f9', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${pct}%`, borderRadius: 4, background: cat.color }} />
+                </div>
+                {cat.goal && (
+                  <p style={{ margin: '2px 0 0', fontFamily: "'Space Mono',monospace", fontSize: 8, color: '#94a3b8' }}>
+                    {pct.toFixed(0)}% of goal {over ? '✓' : ''}
+                  </p>
+                )}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* ── Football Ticket Sales YoY ── */}
+        <div className="an-card" style={{ marginBottom: 14 }}>
+          <SectionHead title="Football Ticket Sales" sub="2022 → 2024" accent={accent} />
+
+          {/* Toggle */}
+          <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+            {['revenue', 'tickets'].map(v => (
+              <button key={v} onClick={() => setFyView(v)}
+                style={{ padding: '5px 14px', borderRadius: 20, border: `1px solid ${fyView === v ? accent : '#e0e0e0'}`, background: fyView === v ? primary : 'white', color: fyView === v ? 'white' : '#555', fontFamily: "'Space Mono',monospace", fontSize: 9, textTransform: 'uppercase', cursor: 'pointer', letterSpacing: '0.08em' }}>
+                {v === 'revenue' ? 'Revenue' : 'Tickets Sold'}
+              </button>
+            ))}
+          </div>
+
+          {DATA.footballYoY.map((yr, i) => {
+            const val = fyView === 'revenue' ? yr.revenue : yr.tickets
+            const max = fyView === 'revenue' ? maxFbRev : Math.max(...DATA.footballYoY.map(f => f.tickets))
+            const pct = (val / max) * 100
+            return (
+              <div key={yr.year} style={{ marginBottom: 14 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+                  <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, fontWeight: 700, color: '#111' }}>{yr.year} Season</span>
+                  <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 20, color: i === 2 ? '#3CDB7A' : accent }}>
+                    {fyView === 'revenue' ? fmtFull(val) : val.toLocaleString()}
+                    {fyView === 'tickets' && <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, marginLeft: 4 }}>tickets</span>}
+                  </span>
+                </div>
+                <div style={{ height: 10, borderRadius: 5, background: '#f1f5f9', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${pct}%`, borderRadius: 5, background: i === 2 ? '#3CDB7A' : accent }} />
+                </div>
+              </div>
+            )
+          })}
+
+          {/* 2024 note */}
+          <div style={{ padding: '10px 12px', borderRadius: 10, background: 'rgba(60,219,122,0.08)', border: '1px solid rgba(60,219,122,0.2)', marginTop: 4 }}>
+            <p style={{ margin: 0, fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#16a34a' }}>
+              2024 saw a 2.5× increase in tickets sold vs 2023 — driven by expanded single-game sales strategy
+            </p>
+          </div>
+        </div>
+
+        {/* ── Game-by-Game Attendance ── */}
+        <div className="an-card" style={{ marginBottom: 14 }}>
+          <SectionHead title="Football Game Attendance" sub="2025 Season" accent={accent} />
+          {DATA.gameAttendance.map((g, i) => {
+            const pct = (g.attendance / maxAttend) * 100
+            const isHigh = g.attendance === maxAttend
+            return (
+              <div key={g.game} style={{ marginBottom: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#111', fontFamily: "'DM Sans',sans-serif" }}>{g.game}</span>
+                  <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, color: isHigh ? '#3CDB7A' : '#555' }}>
+                    {g.attendance.toLocaleString()} {isHigh ? '↑ Best' : ''}
+                  </span>
+                </div>
+                <div style={{ height: 8, borderRadius: 4, background: '#f1f5f9', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${pct}%`, borderRadius: 4, background: isHigh ? '#3CDB7A' : accent }} />
+                </div>
+              </div>
+            )
+          })}
+          <div className="an-grid-2" style={{ marginTop: 14 }}>
+            <StatCard label="Avg Attendance" value={Math.round(DATA.gameAttendance.reduce((s,g) => s + g.attendance, 0) / DATA.gameAttendance.length).toLocaleString()} sub="Per game" accent={accent} />
+            <StatCard label="Total Gates" value={DATA.gameAttendance.reduce((s,g) => s + g.attendance, 0).toLocaleString()} sub="5-game total" accent={accent} />
+          </div>
+        </div>
+
+        {/* ── Basketball & Volleyball ── */}
+        <div className="an-card" style={{ marginBottom: 14 }}>
+          <SectionHead title="Basketball Ticket Revenue" sub="4-Year Trend" accent={accent} />
+          {DATA.basketball.map((yr, i) => {
+            const pct = (yr.revenue / maxBball) * 100
+            const isCurrent = i === DATA.basketball.length - 1
+            return (
+              <div key={yr.season} style={{ marginBottom: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+                  <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, fontWeight: 700, color: '#111' }}>{yr.season}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {isCurrent && <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 8, color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '1px 6px', borderRadius: 4 }}>Season tix only</span>}
+                    <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 20, color: accent }}>{fmtFull(yr.revenue)}</span>
+                  </div>
+                </div>
+                <div style={{ height: 8, borderRadius: 4, background: '#f1f5f9', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${pct}%`, borderRadius: 4, background: accent }} />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* ── Attendance Summary ── */}
+        <div className="an-card" style={{ marginBottom: 14 }}>
+          <SectionHead title="Total Attendance" sub="All Sports" accent={accent} />
+          <div className="an-grid-3">
+            <StatCard label="Football" value={DATA.attendance.football.toLocaleString()} sub="5 home games" accent={accent} />
+            <StatCard label="Men's Bball" value={DATA.attendance.mbb.toLocaleString()} sub="Full season" accent={accent} />
+            <StatCard label="Women's Bball" value={DATA.attendance.wbb.toLocaleString()} sub="Full season" accent={accent} />
+          </div>
+          <div style={{ marginTop: 14, padding: '12px 14px', borderRadius: 12, background: `${primary}08`, border: `1px solid ${accent}22` }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: accent, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Grand Total</span>
+              <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 32, color: primary, letterSpacing: '0.02em' }}>
+                {(DATA.attendance.mbb + DATA.attendance.wbb + DATA.attendance.football).toLocaleString()}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Data source note ── */}
+        <p style={{ textAlign: 'center', fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#94a3b8', marginTop: 8 }}>
+          Source: Time & Score Athletics Revenue Report · Peak Sports MGMT · Updated Nov 2024
+        </p>
+
       </div>
     </div>
   )
