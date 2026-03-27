@@ -9,17 +9,36 @@ const N8N_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/sales-ag
 // Prices match actual Wofford athletics pricing as of 2025 season
 // type: season | single | group | parking
 
+// ── Gibbs Stadium real sections (matches stadium map) ────────────────────────
+// H9/H10/H11 = premium bench back boxes (elevated, 50-yd line)
+// H1-H8      = home bleacher sections
+// V1-V3      = visitor side
+// Pricing: Bench Back (H9-H11) $211 season/$40 single | Bench (H1-H8) $135/$30
+
 const FOOTBALL_SECTIONS = [
-  // Season tickets
-  { id: 'FB_SS_BB', label: 'SEASON', zone: 'season',  name: 'Bench Back — Season',   price: 211, type: 'season',  status: 'MED',  desc: 'Full season · Reserved bench back seat · Best home sideline view · Gibbs Stadium' },
-  { id: 'FB_SS_B',  label: 'SEASON', zone: 'season',  name: 'Bench — Season',        price: 135, type: 'season',  status: 'HIGH', desc: 'Full season · Reserved bench seat · Home sideline · Gibbs Stadium' },
-  // Single game
-  { id: 'FB_SG_BB', label: 'SINGLE', zone: 'single',  name: 'Bench Back — Single',   price: 40,  type: 'single',  status: 'HIGH', desc: 'Single game · Reserved bench back · Home sideline · Gibbs Stadium' },
-  { id: 'FB_SG_B',  label: 'SINGLE', zone: 'single',  name: 'Bench — Single',        price: 30,  type: 'single',  status: 'HIGH', desc: 'Single game · Reserved bench seat · Home sideline · Gibbs Stadium' },
-  // Group
-  { id: 'FB_GRP',   label: 'GROUP',  zone: 'group',   name: 'Group Tickets (10+)',   price: 15,  type: 'group',   status: 'LOW',  desc: 'Groups of 10 or more · Perfect for youth sports, churches, and businesses · Contact rep for booking' },
-  // Parking
-  { id: 'FB_PARK',  label: 'PARK',   zone: 'parking', name: 'Gameday Parking',       price: 20,  type: 'parking', status: 'MED',  desc: 'Reserved gameday parking · Lots G1 and G2 · Adjacent to Gibbs Stadium' },
+  // Premium Bench Back — H9, H10, H11 (elevated boxes, 50-yd line area)
+  { id: 'H9',      label: 'H9',     zone: 'bench_back', name: 'Section H9 — Bench Back',  price: 40,  seasonPrice: 211, type: 'single', status: 'MED',  desc: 'Premium elevated box · Home sideline · 40-50 yd line · Gibbs Stadium' },
+  { id: 'H10',     label: 'H10',    zone: 'bench_back', name: 'Section H10 — Bench Back', price: 40,  seasonPrice: 211, type: 'single', status: 'LOW',  desc: 'Premium elevated box · Home sideline · Center 50 yd line · Gibbs Stadium' },
+  { id: 'H11',     label: 'H11',    zone: 'bench_back', name: 'Section H11 — Bench Back', price: 40,  seasonPrice: 211, type: 'single', status: 'MED',  desc: 'Premium elevated box · Home sideline · 40-50 yd line · Gibbs Stadium' },
+  // Home Bleacher — H1 through H8
+  { id: 'H1',      label: 'H1',     zone: 'bleacher',   name: 'Section H1 — Bleacher',    price: 30,  seasonPrice: 135, type: 'single', status: 'HIGH', desc: 'Home bleacher · South end · Gibbs Stadium' },
+  { id: 'H2',      label: 'H2',     zone: 'bleacher',   name: 'Section H2 — Bleacher',    price: 30,  seasonPrice: 135, type: 'single', status: 'HIGH', desc: 'Home bleacher · South end · Gibbs Stadium' },
+  { id: 'H3',      label: 'H3',     zone: 'bleacher',   name: 'Section H3 — Bleacher',    price: 30,  seasonPrice: 135, type: 'single', status: 'MED',  desc: 'Home bleacher · 30-40 yd line · Gibbs Stadium' },
+  { id: 'H4',      label: 'H4',     zone: 'bleacher',   name: 'Section H4 — Bleacher',    price: 30,  seasonPrice: 135, type: 'single', status: 'MED',  desc: 'Home bleacher · 40-50 yd line · Gibbs Stadium' },
+  { id: 'H5',      label: 'H5',     zone: 'bleacher',   name: 'Section H5 — Bleacher',    price: 30,  seasonPrice: 135, type: 'single', status: 'HIGH', desc: 'Home bleacher · Center 50 yd line · Gibbs Stadium' },
+  { id: 'H6',      label: 'H6',     zone: 'bleacher',   name: 'Section H6 — Bleacher',    price: 30,  seasonPrice: 135, type: 'single', status: 'HIGH', desc: 'Home bleacher · 40-50 yd line · Gibbs Stadium' },
+  { id: 'H7',      label: 'H7',     zone: 'bleacher',   name: 'Section H7 — Bleacher',    price: 30,  seasonPrice: 135, type: 'single', status: 'MED',  desc: 'Home bleacher · 30-40 yd line · Gibbs Stadium' },
+  { id: 'H8',      label: 'H8',     zone: 'bleacher',   name: 'Section H8 — Bleacher',    price: 30,  seasonPrice: 135, type: 'single', status: 'HIGH', desc: 'Home bleacher · North end · Gibbs Stadium' },
+  // Visitor side
+  { id: 'V1',      label: 'V1',     zone: 'visitor',    name: 'Section V1 — Visitor',     price: 30,  seasonPrice: 135, type: 'single', status: 'HIGH', desc: 'Visitor side bleacher · South end · Gibbs Stadium' },
+  { id: 'V2',      label: 'V2',     zone: 'visitor',    name: 'Section V2 — Visitor',     price: 30,  seasonPrice: 135, type: 'single', status: 'HIGH', desc: 'Visitor side bleacher · Center · Gibbs Stadium' },
+  { id: 'V3',      label: 'V3',     zone: 'visitor',    name: 'Section V3 — Visitor',     price: 30,  seasonPrice: 135, type: 'single', status: 'HIGH', desc: 'Visitor side bleacher · North end · Gibbs Stadium' },
+  // Season passes (separate purchase type)
+  { id: 'FB_SS_BB', label: 'SEASON PASS', zone: 'season_pass', name: 'Bench Back Season Pass', price: 211, type: 'season', status: 'MED',  desc: 'Full 2025 season · H9/H10/H11 premium sections · Best home sideline view' },
+  { id: 'FB_SS_B',  label: 'SEASON PASS', zone: 'season_pass', name: 'Bench Season Pass',      price: 135, type: 'season', status: 'HIGH', desc: 'Full 2025 season · H1-H8 home bleacher sections' },
+  // Group & Parking
+  { id: 'FB_GRP',  label: 'GROUP',  zone: 'group',      name: 'Group Tickets (10+)',      price: 15,  type: 'group',   status: 'LOW',  desc: 'Groups of 10 or more · Youth sports, churches, businesses · Contact rep' },
+  { id: 'FB_PARK', label: 'PARK',   zone: 'parking',    name: 'Gameday Parking',          price: 20,  type: 'parking', status: 'MED',  desc: 'Reserved parking · Lots G1 and G4 · Adjacent to Gibbs Stadium' },
 ]
 
 const BASKETBALL_SECTIONS = [
@@ -46,10 +65,14 @@ const VOLLEYBALL_SECTIONS = [
 ]
 
 const ZONE_LABELS = {
-  season:  'Season Tickets',
-  single:  'Single Game',
-  group:   'Group Packages',
-  parking: 'Parking',
+  bench_back:  'Bench Back (Premium)',
+  bleacher:    'Home Bleacher',
+  visitor:     'Visitor Side',
+  season_pass: 'Season Passes',
+  group:       'Group Packages',
+  parking:     'Parking',
+  season:      'Season Tickets',
+  single:      'Single Game',
 }
 
 const TYPE_BADGE = {
@@ -61,6 +84,149 @@ const TYPE_BADGE = {
 
 const STATUS_COLOR = { HIGH: '#ef4444', MED: '#f59e0b', LOW: '#22c55e' }
 const STATUS_LABEL = { HIGH: 'Selling Fast', MED: 'Limited', LOW: 'Available' }
+
+
+// ── Gibbs Stadium Interactive Map ────────────────────────────────────────────
+function GibbsStadiumMap({ selectedSection, onSelectSection, school }) {
+  const c = school.colors
+  const primary = c.primary
+  const accent  = c.accent
+
+  // Section layout matches the actual Gibbs Stadium diagram
+  // H9/H10/H11 = premium elevated boxes (top row, center)
+  // H1-H8      = home bleacher (second row)
+  // V1-V3      = visitor side (bottom)
+  // Students   = between H1-H3 on home side
+
+  const getSectionColor = (sectionId) => {
+    const isSelected = selectedSection?.id === sectionId
+    if (isSelected) return accent
+    // Bench Back premium sections
+    if (['H9','H10','H11'].includes(sectionId)) return '#8B6914'
+    // Home bleacher
+    if (['H1','H2','H3','H4','H5','H6','H7','H8'].includes(sectionId)) return '#5a5a5a'
+    // Visitor
+    if (['V1','V2','V3'].includes(sectionId)) return '#374151'
+    return '#9ca3af'
+  }
+
+  const getTextColor = (sectionId) => {
+    return selectedSection?.id === sectionId ? '#fff' : '#fff'
+  }
+
+  const handleClick = (sectionId) => {
+    const sec = FOOTBALL_SECTIONS.find(s => s.id === sectionId)
+    if (sec) onSelectSection(selectedSection?.id === sectionId ? null : sec)
+  }
+
+  const SectionRect = ({ id, x, y, w, h, rx = 3, label }) => (
+    <g onClick={() => handleClick(id)} style={{ cursor: 'pointer' }}>
+      <rect
+        x={x} y={y} width={w} height={h} rx={rx}
+        fill={getSectionColor(id)}
+        stroke={selectedSection?.id === id ? '#fff' : 'rgba(255,255,255,0.15)'}
+        strokeWidth={selectedSection?.id === id ? 2 : 1}
+        style={{ transition: 'fill 0.15s' }}
+      />
+      <text x={x + w/2} y={y + h/2 + 4} textAnchor="middle" fill={getTextColor(id)}
+        fontSize={w < 28 ? 8 : 10} fontFamily="Space Mono, monospace" fontWeight="700">
+        {label || id}
+      </text>
+    </g>
+  )
+
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: c.accent, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
+          Gibbs Stadium · Section Map
+        </p>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <div style={{ width: 10, height: 10, borderRadius: 2, background: '#8B6914' }} />
+            <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#888' }}>Bench Back</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <div style={{ width: 10, height: 10, borderRadius: 2, background: '#5a5a5a' }} />
+            <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#888' }}>Bleacher</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <div style={{ width: 10, height: 10, borderRadius: 2, background: accent }} />
+            <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#888' }}>Selected</span>
+          </div>
+        </div>
+      </div>
+
+      <svg viewBox="0 0 520 320" style={{ width: '100%', borderRadius: 14, background: '#1a1a1a', display: 'block' }}>
+
+        {/* ── Field ── */}
+        <rect x={80} y={90} width={360} height={160} rx={6} fill="#2d6a2d" />
+        <rect x={84} y={94} width={352} height={152} rx={4} fill="#2d8a2d" opacity="0.6" />
+        {/* Yard lines */}
+        {[0,1,2,3,4,5,6,7,8,9,10].map(i => (
+          <line key={i} x1={116 + i*29} y1={94} x2={116 + i*29} y2={246} stroke="rgba(255,255,255,0.2)" strokeWidth={i===5?1.5:0.5} />
+        ))}
+        {/* WOFFORD text on field */}
+        <text x={260} y={175} textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize={28} fontFamily="Arial" fontWeight="900" letterSpacing="6">WOFFORD</text>
+
+        {/* ── End zones ── */}
+        <rect x={20} y={90} width={60} height={160} rx={4} fill="#1e4d1e" />
+        <text x={50} y={178} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize={9} fontFamily="Arial" fontWeight="700" transform="rotate(-90, 50, 170)">END ZONE</text>
+        <rect x={440} y={90} width={60} height={160} rx={4} fill="#1e4d1e" />
+        <text x={470} y={178} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize={9} fontFamily="Arial" fontWeight="700" transform="rotate(90, 470, 170)">TERRIERLAND</text>
+
+        {/* ── HOME SIDE — Top ── */}
+        {/* Label */}
+        <text x={260} y={16} textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize={8} fontFamily="Space Mono, monospace" letterSpacing="2">HOME SIDE</text>
+
+        {/* H9 H10 H11 — Premium Bench Back boxes (elevated, center) */}
+        <SectionRect id="H9"  x={160} y={22} w={52} h={28} label="H9" />
+        <SectionRect id="H10" x={218} y={22} w={52} h={28} label="H10" />
+        <SectionRect id="H11" x={276} y={22} w={52} h={28} label="H11" />
+
+        {/* H1-H8 — Home bleacher (row below boxes) */}
+        <SectionRect id="H1" x={84}  y={56} w={34} h={26} label="H1" />
+        <SectionRect id="H2" x={122} y={56} w={34} h={26} label="H2" />
+        <SectionRect id="H3" x={160} y={56} w={34} h={26} label="H3" />
+        <SectionRect id="H4" x={198} y={56} w={34} h={26} label="H4" />
+        <SectionRect id="H5" x={236} y={56} w={34} h={26} label="H5" />
+        <SectionRect id="H6" x={274} y={56} w={34} h={26} label="H6" />
+        <SectionRect id="H7" x={312} y={56} w={34} h={26} label="H7" />
+        <SectionRect id="H8" x={350} y={56} w={34} h={26} label="H8" />
+
+        {/* Students label under H1-H3 */}
+        <text x={143} y={88} textAnchor="middle" fill="rgba(255,255,255,0.25)" fontSize={7} fontFamily="Space Mono, monospace">STUDENTS</text>
+
+        {/* Gate labels */}
+        <text x={84}  y={18} textAnchor="middle" fill="rgba(255,255,255,0.2)" fontSize={7} fontFamily="Space Mono">G1</text>
+        <text x={396} y={18} textAnchor="middle" fill="rgba(255,255,255,0.2)" fontSize={7} fontFamily="Space Mono">G4</text>
+
+        {/* ── VISITOR SIDE — Bottom ── */}
+        <text x={260} y={310} textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize={8} fontFamily="Space Mono, monospace" letterSpacing="2">VISITOR SIDE</text>
+        <SectionRect id="V3" x={160} y={264} w={60} h={32} label="V3" />
+        <SectionRect id="V2" x={228} y={264} w={60} h={32} label="V2" />
+        <SectionRect id="V1" x={296} y={264} w={60} h={32} label="V1" />
+        <text x={358} y={286} textAnchor="start" fill="rgba(255,255,255,0.2)" fontSize={7} fontFamily="Space Mono">G5</text>
+
+        {/* ── VERANDAH LOT label ── */}
+        <text x={12} y={175} textAnchor="middle" fill="rgba(255,255,255,0.2)" fontSize={7} fontFamily="Space Mono" transform="rotate(-90,12,175)">VERANDAH LOT</text>
+
+        {/* Selected section highlight tooltip */}
+        {selectedSection && ['H1','H2','H3','H4','H5','H6','H7','H8','H9','H10','H11','V1','V2','V3'].includes(selectedSection.id) && (
+          <g>
+            <rect x={160} y={138} width={200} height={34} rx={6} fill="rgba(0,0,0,0.75)" />
+            <text x={260} y={152} textAnchor="middle" fill="#fff" fontSize={10} fontFamily="Space Mono, monospace" fontWeight="700">
+              {selectedSection.name}
+            </text>
+            <text x={260} y={165} textAnchor="middle" fill={accent} fontSize={10} fontFamily="Space Mono, monospace">
+              ${selectedSection.price}/ticket · Season ${selectedSection.seasonPrice}
+            </text>
+          </g>
+        )}
+      </svg>
+    </div>
+  )
+}
 
 // ── AI Chat Bubble ────────────────────────────────────────────────────────────
 function ChatBubble({ school, sport, selectedSection, qty }) {
@@ -396,6 +562,15 @@ export default function Ticketing() {
             </div>
           )}
         </div>
+      )}
+
+      {/* Gibbs Stadium interactive map — football only */}
+      {sport === 'football' && (
+        <GibbsStadiumMap
+          selectedSection={selectedSection}
+          onSelectSection={setSelectedSection}
+          school={school}
+        />
       )}
 
       {/* Zone filters */}
