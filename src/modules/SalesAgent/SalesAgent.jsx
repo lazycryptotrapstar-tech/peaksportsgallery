@@ -3,7 +3,7 @@ import { useSchool } from '../../context/SchoolContext'
 import { Send, ShoppingCart, Trophy, Star, Users } from 'lucide-react'
 import { getContacts } from '../../data/contacts'
 
-const N8N_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/2e28cfe9-961f-48fb-a548-3f0306448996/chat'
+const N8N_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/sales-agent'
 
 // ── Score ─────────────────────────────────────────────────────────────────────
 const computeScore = (ct) => {
@@ -236,13 +236,13 @@ export default function SalesAgent() {
   return (
     <div style={{
       height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      padding: '16px 12px 24px',
+      overflowY: 'auto',
       background: c.bg,
       boxSizing: 'border-box',
-      overflowY: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '16px 12px 48px',
     }}>
       <div style={{
         width: '100%',
@@ -253,7 +253,8 @@ export default function SalesAgent() {
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        height: 'min(680px, calc(100vh - 120px))',
+        height: 620,
+        flexShrink: 0,
       }}>
 
         {/* Notch */}
