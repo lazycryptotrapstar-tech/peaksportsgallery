@@ -70,15 +70,27 @@ const BASKETBALL_SECTIONS = [
   { id: 'MBB_GRP', label: 'GROUP', zone: 'group', name: 'Group Tickets (10+)', price: 10, type: 'group', status: 'LOW', desc: 'Groups of 10 or more · Great for team outings and company events' },
 ]
 
+// Volleyball uses same Benjamin Johnson Arena — section IDs match basketball map
 const VOLLEYBALL_SECTIONS = [
-  // Season tickets
-  { id: 'VB_SS_A',  label: 'SEASON', zone: 'season', name: 'Adult Season Ticket',  price: 100, type: 'season', status: 'LOW',  desc: 'Full season adult ticket · All home matches · Benjamin Johnson Arena' },
-  { id: 'VB_SS_C',  label: 'SEASON', zone: 'season', name: 'Child Season Ticket',  price: 50,  type: 'season', status: 'LOW',  desc: 'Full season child ticket (under 12) · All home matches · Benjamin Johnson Arena' },
-  // Single game
-  { id: 'VB_SG_A',  label: 'SINGLE', zone: 'single', name: 'Adult — Single Match', price: 10,  type: 'single', status: 'HIGH', desc: 'Single match adult ticket · Benjamin Johnson Arena' },
-  { id: 'VB_SG_C',  label: 'SINGLE', zone: 'single', name: 'Child — Single Match', price: 5,   type: 'single', status: 'HIGH', desc: 'Single match child ticket (under 12) · Benjamin Johnson Arena' },
+  // Sideline premium (same as MBB courtside/lower bowl zones)
+  { id: 'CS_N',   label: 'CS-N',  zone: 'premium',     name: 'Sideline North — Single',      price: 10,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'Sideline · North · Benjamin Johnson Arena' },
+  { id: 'CS_S',   label: 'CS-S',  zone: 'premium',     name: 'Sideline South — Single',      price: 10,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'Sideline · South · Benjamin Johnson Arena' },
+  { id: 'LB_N',   label: 'LB-N',  zone: 'premium',     name: 'Upper Sideline North — Single',price: 10,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'Upper sideline · North · Benjamin Johnson Arena' },
+  { id: 'LB_S',   label: 'LB-S',  zone: 'premium',     name: 'Upper Sideline South — Single',price: 10,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'Upper sideline · South · Benjamin Johnson Arena' },
+  // End zones and corners
+  { id: 'END_E',  label: 'END-E', zone: 'reserved',    name: 'East End — Single',            price: 10,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'East end · Behind net · Benjamin Johnson Arena' },
+  { id: 'END_W',  label: 'END-W', zone: 'reserved',    name: 'West End — Single',            price: 10,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'West end · Behind net · Benjamin Johnson Arena' },
+  { id: 'CRN_NE', label: 'NE',    zone: 'reserved',    name: 'Corner NE — Single',           price: 10,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'Northeast corner · Benjamin Johnson Arena' },
+  { id: 'CRN_NW', label: 'NW',    zone: 'reserved',    name: 'Corner NW — Single',           price: 10,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'Northwest corner · Benjamin Johnson Arena' },
+  { id: 'CRN_SE', label: 'SE',    zone: 'reserved',    name: 'Corner SE — Single',           price: 10,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'Southeast corner · Benjamin Johnson Arena' },
+  { id: 'CRN_SW', label: 'SW',    zone: 'reserved',    name: 'Corner SW — Single',           price: 10,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'Southwest corner · Benjamin Johnson Arena' },
+  // Child single (all sections)
+  { id: 'VB_CHILD', label: 'CHILD', zone: 'group',     name: 'Child Ticket — Single (U12)',  price: 5,   seasonPrice: 50,  type: 'single', status: 'LOW',  desc: 'Child ticket under 12 · Any section · Benjamin Johnson Arena' },
+  // Season passes
+  { id: 'VB_SS_A', label: 'SEASON', zone: 'season_pass', name: 'Adult Season Pass',          price: 100, type: 'season', status: 'LOW',  desc: 'Full season adult ticket · All home matches · Benjamin Johnson Arena' },
+  { id: 'VB_SS_C', label: 'SEASON', zone: 'season_pass', name: 'Child Season Pass (U12)',    price: 50,  type: 'season', status: 'LOW',  desc: 'Full season child ticket under 12 · All home matches · Benjamin Johnson Arena' },
   // Group
-  { id: 'VB_GRP',   label: 'GROUP',  zone: 'group',  name: 'Group Tickets (10+)',  price: 5,   type: 'group',  status: 'LOW',  desc: 'Groups of 10 or more · Great for school groups and family outings' },
+  { id: 'VB_GRP',  label: 'GROUP',  zone: 'group',      name: 'Group Tickets (10+)',         price: 5,   type: 'group',  status: 'LOW',  desc: 'Groups of 10 or more · Great for school groups and family outings' },
 ]
 
 const ZONE_LABELS = {
@@ -247,7 +259,7 @@ function GibbsStadiumMap({ selectedSection, onSelectSection, school }) {
 
 
 // ── Jerry Richardson Indoor Stadium Map ──────────────────────────────────────
-function BasketballArenaMap({ selectedSection, onSelectSection, school }) {
+function BasketballArenaMap({ selectedSection, onSelectSection, school, sport = 'basketball' }) {
   const c = school.colors
   const accent = c.accent
 
@@ -300,7 +312,7 @@ function BasketballArenaMap({ selectedSection, onSelectSection, school }) {
     <div style={{ marginBottom: 20 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
         <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: c.accent, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
-          Jerry Richardson Indoor Stadium
+          {sport === 'volleyball' ? 'Jerry Richardson Indoor Stadium — Volleyball' : 'Jerry Richardson Indoor Stadium — Basketball'}
         </p>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           {[
@@ -732,6 +744,15 @@ export default function Ticketing() {
           selectedSection={selectedSection}
           onSelectSection={setSelectedSection}
           school={school}
+          sport="basketball"
+        />
+      )}
+      {sport === 'volleyball' && (
+        <BasketballArenaMap
+          selectedSection={selectedSection}
+          onSelectSection={setSelectedSection}
+          school={school}
+          sport="volleyball"
         />
       )}
 
