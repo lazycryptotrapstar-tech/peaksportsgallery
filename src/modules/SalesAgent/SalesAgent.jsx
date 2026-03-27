@@ -20,7 +20,38 @@ const SCORE_COLOR = (s) => s >= 80 ? '#3CDB7A' : s >= 60 ? '#F5C842' : '#f97316'
 
 // ── Build school context block injected into chatInput ───────────────────────
 // n8n system prompt reads this block and becomes that school's agent
+// ── Wofford pricing (add other schools as their data arrives) ────────────────
+const SCHOOL_PRICING = {
+  wofford: {
+    tickets: [
+      'Football Season: $211 Bench Back / $135 Bench',
+      'Football Single Game: $40 Bench Back / $30 Bench',
+      'Football Groups: $15/ticket (min 10) — youth sports, churches, businesses',
+      'Gameday Parking: $20 in lots G1 and G2',
+      'MBB Season: $340 Premium / $240 Scholarship / $190 Reserved',
+      'MBB Single Game: $22 Premium / $18 Reserved',
+      'MBB Groups: $10/ticket',
+      'Volleyball Season: $100 adult / $50 child',
+      'Volleyball Single Game: $10 adult / $5 child',
+      'Volleyball Groups: $5/ticket',
+    ],
+    sponsorship: [
+      'Terrier Bronze · Football · $2,500/yr · 3 spots available',
+      'Terrier Silver · Multi-Sport · $6,000/yr · 2 spots available',
+      'Terrier Gold · Multi-Sport · $15,000/yr · 1 spot available',
+      'Terrier Presenting · Multi-Sport · $42,000/yr · 1 spot (renewal due)',
+    ],
+  },
+}
+
 const buildSchoolContext = (school, campaignId) => {
+  const pricing = SCHOOL_PRICING[school.id]
+  let pricingBlock = 'PRICING: Contact rep for current pricing details'
+  if (pricing) {
+    const lines = campaignId === 'SPONSORSHIP' ? pricing.sponsorship : pricing.tickets
+    pricingBlock = 'PRICING (use exact numbers — never estimate or guess):\n' + lines.join('\n')
+  }
+
   return `[SCHOOL_CONTEXT]
 SCHOOL: ${school.name}
 SHORT: ${school.short}
@@ -33,6 +64,7 @@ BASKETBALL_VENUE: ${school.venue?.basketball?.name || 'home arena'}
 RIVALS: ${(school.rivals || []).join(', ')}
 VIP_ASSETS: ${(school.vip || []).join(', ')}
 CAMPAIGN: ${campaignId}
+${pricingBlock}
 [/SCHOOL_CONTEXT]`
 }
 
