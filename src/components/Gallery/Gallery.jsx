@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 import { SCHOOL_LIST } from '../../data/schools'
 import { useSchool } from '../../context/SchoolContext'
-import { useUser } from '../../context/UserContext'
 
 export default function Gallery() {
-  const { school, activeSchoolId, switchSchool, canSwitchSchool } = useSchool()
-  const { user, logout } = useUser()
+  const { school, activeSchoolId, switchSchool } = useSchool()
   const [expanded, setExpanded] = useState(false)
-  const [search, setSearch]     = useState('')
+  const [search, setSearch] = useState('')
 
   const filtered = search
     ? SCHOOL_LIST.filter(s =>
@@ -26,10 +24,9 @@ export default function Gallery() {
       top: 0,
       zIndex: 50,
     }}>
-      {/* Top row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, height: 36 }}>
-
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+
           {/* Peak Sports logo */}
           <img
             src="/peak_logo.png"
@@ -40,70 +37,49 @@ export default function Gallery() {
 
           {/* Active school pill */}
           <div style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            padding: '3px 10px', borderRadius: 20,
+            display: 'flex', alignItems: 'center', gap: 6,
+            padding: school.mascotImg ? '2px 10px 2px 4px' : '3px 10px',
+            borderRadius: 20,
             background: school.colors.primary,
             border: `1px solid ${school.colors.accent}`,
             flexShrink: 0,
           }}>
-            <span style={{ fontSize: 12 }}>{school.emoji}</span>
+            {school.mascotImg ? (
+              <img
+                src={school.mascotImg}
+                alt={school.mascot}
+                style={{
+                  width: 24, height: 24, borderRadius: '50%',
+                  objectFit: 'cover', objectPosition: 'center top',
+                  background: school.colors.accent,
+                  border: `1px solid ${school.colors.accent}`,
+                }}
+              />
+            ) : (
+              <span style={{ fontSize: 12 }}>{school.emoji}</span>
+            )}
             <span style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 12, color: 'white', whiteSpace: 'nowrap' }}>
               {school.short}
             </span>
           </div>
         </div>
 
-        {/* Right side — Switch button (admins/staff only) + user info + logout */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-
-          {/* User name — small */}
-          {user && (
-            <span style={{
-              fontFamily: "'Space Mono', monospace",
-              fontSize: 9,
-              color: '#999',
-              letterSpacing: '0.08em',
-              whiteSpace: 'nowrap',
-            }}>
-              {user.name.split(' ')[0].toUpperCase()}
-            </span>
-          )}
-
-          {/* Switch School — only for admin / peak_staff */}
-          {canSwitchSchool && (
-            <button
-              onClick={() => setExpanded(e => !e)}
-              style={{
-                height: 30, padding: '0 12px',
-                borderRadius: 8, border: '1px solid #e0e0e0',
-                background: '#f9f9f9', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: 4,
-                fontFamily: "'Space Mono', monospace", fontSize: 10, color: '#666',
-                transition: 'all 0.15s ease',
-              }}
-            >
-              Switch {expanded ? '▲' : '▼'}
-            </button>
-          )}
-
-          {/* Logout */}
-          <button
-            onClick={logout}
-            style={{
-              height: 30, padding: '0 10px',
-              borderRadius: 8, border: '1px solid #e0e0e0',
-              background: '#f9f9f9', cursor: 'pointer',
-              fontFamily: "'Space Mono', monospace", fontSize: 10, color: '#999',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            Sign out
-          </button>
-        </div>
+        <button
+          onClick={() => setExpanded(e => !e)}
+          style={{
+            height: 30, padding: '0 12px',
+            borderRadius: 8, border: '1px solid #e0e0e0',
+            background: '#f9f9f9', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 4,
+            fontFamily: "'Space Mono', monospace", fontSize: 10, color: '#666',
+            transition: 'all 0.15s ease', flexShrink: 0,
+          }}
+        >
+          Switch {expanded ? '▲' : '▼'}
+        </button>
       </div>
 
-      {/* Expanded school picker — admins/staff only */}
-      {expanded && canSwitchSchool && (
+      {expanded && (
         <div style={{ marginTop: 8 }}>
           <div style={{ position: 'relative', marginBottom: 8 }}>
             <input
@@ -134,14 +110,26 @@ export default function Gallery() {
                   onClick={() => { switchSchool(s.id); setExpanded(false); setSearch('') }}
                   style={{
                     flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6,
-                    padding: '7px 12px', minHeight: 40, borderRadius: 10,
+                    padding: s.mascotImg ? '6px 12px 6px 6px' : '7px 12px',
+                    minHeight: 44, borderRadius: 10,
                     border: `2px solid ${active ? s.colors.accent : '#e0e0e0'}`,
                     background: active ? s.colors.primary : 'white',
                     cursor: 'pointer', transition: 'all 0.2s ease',
                     boxShadow: active ? '0 2px 10px rgba(0,0,0,0.12)' : 'none',
                   }}
                 >
-                  <span style={{ fontSize: 14 }}>{s.emoji}</span>
+                  {s.mascotImg ? (
+                    <div style={{
+                      width: 28, height: 28, borderRadius: '50%',
+                      overflow: 'hidden', flexShrink: 0,
+                      border: `1px solid ${active ? s.colors.accent : '#e0e0e0'}`,
+                    }}>
+                      <img src={s.mascotImg} alt={s.mascot}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />
+                    </div>
+                  ) : (
+                    <span style={{ fontSize: 14 }}>{s.emoji}</span>
+                  )}
                   <div style={{ textAlign: 'left' }}>
                     <p style={{ margin: 0, fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 13, color: active ? 'white' : '#111', lineHeight: 1.2 }}>
                       {s.short}
