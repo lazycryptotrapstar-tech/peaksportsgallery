@@ -512,12 +512,20 @@ MBB Single Game: $22 Premium / $18 Reserved
         @keyframes thBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-4px)} }
         @keyframes thPulse { 0%,100%{box-shadow:0 0 0 0 ${c.accent}66} 50%{box-shadow:0 0 0 10px transparent} }
         @keyframes thSlideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @media (max-width: 768px) {
+          .ticket-main-grid { grid-template-columns: 1fr !important; }
+          .ticket-order-panel { display: none !important; }
+          .ticket-mobile-bar { display: flex !important; }
+        }
+        @media (min-width: 769px) {
+          .ticket-mobile-bar { display: none !important; }
+        }
       `}</style>
 
       {/* Chat window */}
       {open && (
         <div style={{
-          position: 'fixed', bottom: 88, right: 24, zIndex: 1000,
+          position: 'fixed', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 160px)', right: 16, zIndex: 1000,
           width: 320, height: 460,
           background: '#fff', borderRadius: 20,
           boxShadow: '0 8px 40px rgba(0,0,0,0.18)',
@@ -596,7 +604,7 @@ MBB Single Game: $22 Premium / $18 Reserved
       <button
         onClick={() => setOpen(o => !o)}
         style={{
-          position: 'fixed', bottom: 24, right: 24, zIndex: 1000,
+          position: 'fixed', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 90px)', right: 16, zIndex: 1000,
           width: 56, height: 56, borderRadius: '50%',
           background: c.primary, border: 'none', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -683,7 +691,7 @@ export default function Ticketing() {
   )
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px 100px' }}>
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
         <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: school.colors.accent, marginBottom: 6 }}>{school.name} · Ticket Marketplace</p>
@@ -770,7 +778,7 @@ export default function Ticketing() {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 320px', gap: 24, alignItems: 'start' }}>
+      <div className="ticket-main-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 320px', gap: 24, alignItems: 'start' }}>
         {/* Section cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
           {filtered.map(sec => {
@@ -817,7 +825,7 @@ export default function Ticketing() {
         </div>
 
         {/* Order panel */}
-        <div style={{ borderRadius: 24, overflow: 'hidden', border: '1px solid #e8eaed', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', position: 'sticky', top: 80 }}>
+        <div className="ticket-order-panel" style={{ borderRadius: 24, overflow: 'hidden', border: '1px solid #e8eaed', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', position: 'sticky', top: 80 }}>
           <div style={{ padding: '20px 24px', background: `linear-gradient(135deg, ${school.colors.primary}, ${school.colors.accent}bb)` }}>
             <p style={{ margin: 0, fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 20, color: 'white' }}>Order Summary</p>
             <p style={{ margin: '2px 0 0', fontFamily: "'Space Mono', monospace", fontSize: 9, color: 'rgba(255,255,255,0.5)' }}>{school.name.toUpperCase()} · {sport.toUpperCase()}</p>
@@ -893,6 +901,49 @@ export default function Ticketing() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Mobile sticky order bar — visible only on small screens */}
+      <div className="ticket-mobile-bar" style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 90,
+        background: 'white', borderTop: '1px solid #e8eaed',
+        padding: '12px 16px calc(env(safe-area-inset-bottom, 0px) + 12px)',
+        display: 'none', flexDirection: 'column', gap: 0,
+        boxShadow: '0 -4px 20px rgba(0,0,0,0.08)',
+      }}>
+        {!selectedSection ? (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <p style={{ margin: 0, fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 18, color: '#111' }}>
+              Select a section above
+            </p>
+            <p style={{ margin: 0, fontSize: 13, color: '#94a3b8' }}>Tap any section card</p>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: '#111', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {selectedSection.name}
+              </p>
+              <p style={{ margin: 0, fontSize: 12, color: '#64748b' }}>
+                {qty} ticket{qty > 1 ? 's' : ''} · <span style={{ fontWeight: 700, color: school.colors.accent }}>${total.toFixed(2)}</span>
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
+              {/* Qty stepper */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <button onClick={() => setQty(q => Math.max(1, q - 1))}
+                  style={{ width: 28, height: 28, borderRadius: 8, border: '1px solid #e0e0e0', background: '#f9f9f9', cursor: 'pointer', fontWeight: 700, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+                <span style={{ fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 18, minWidth: 20, textAlign: 'center' }}>{qty}</span>
+                <button onClick={() => setQty(q => Math.min(6, q + 1))}
+                  style={{ width: 28, height: 28, borderRadius: 8, border: '1px solid #e0e0e0', background: '#f9f9f9', cursor: 'pointer', fontWeight: 700, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+              </div>
+              <button onClick={() => setStage('success')}
+                style={{ padding: '10px 20px', borderRadius: 10, border: 'none', background: school.colors.primary, color: 'white', fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 16, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                Buy Tickets →
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* AI Chat Bubble — appears after 4 seconds, context-aware */}

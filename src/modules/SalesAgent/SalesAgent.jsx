@@ -129,32 +129,49 @@ export default function SalesAgent() {
     setMessages(prev => [...prev, { role: 'user', content: text, ts: Date.now() }])
     setInput('')
     setIsTyping(true)
-    try {
-      // Inject school context as prefix on first message (sessionId is new each campaign)
-      // n8n reads [SCHOOL_CONTEXT] block and adapts the agent persona
+    const attemptFetch = async (attempt = 1) => {
       const contextBlock = buildSchoolContext(school, activeCampaign.id)
       const payload = {
         chatInput: `${contextBlock}\n\nUSER MESSAGE: ${text}`,
         sessionId: sessionRef.current,
       }
-      const res = await fetch(N8N_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const data = await res.json()
-      const reply =
-        data?.output ||
-        data?.text ||
-        data?.message ||
-        data?.response ||
-        (Array.isArray(data?.content) ? data.content[0]?.text : null) ||
-        "I'm having trouble connecting right now. Try again in a moment."
-      setMessages(prev => [...prev, { role: 'assistant', content: reply, ts: Date.now() }])
-    } catch (err) {
-      console.error('SalesAgent error:', err)
-      setMessages(prev => [...prev, { role: 'assistant', content: "Connection issue — try again in a moment.", ts: Date.now() }])
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 45000) // 45s timeout
+      try {
+        const res = await fetch(N8N_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        })
+        clearTimeout(timeout)
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const data = await res.json()
+        const reply =
+          data?.output ||
+          data?.text ||
+          data?.message ||
+          data?.response ||
+          (Array.isArray(data?.content) ? data.content[0]?.text : null) ||
+          null
+        if (!reply && attempt < 2) {
+          // Empty response — retry once
+          return attemptFetch(2)
+        }
+        setMessages(prev => [...prev, { role: 'assistant', content: reply || "I'm having trouble right now. Try again in a moment.", ts: Date.now() }])
+      } catch (err) {
+        clearTimeout(timeout)
+        if (attempt < 2) {
+          // First failure — wait 1.5s and retry once
+          await new Promise(r => setTimeout(r, 1500))
+          return attemptFetch(2)
+        }
+        console.error('SalesAgent error:', err)
+        setMessages(prev => [...prev, { role: 'assistant', content: "Connection issue — try again in a moment.", ts: Date.now() }])
+      }
+    }
+    try {
+      await attemptFetch()
     } finally {
       setIsTyping(false)
     }
@@ -175,7 +192,7 @@ export default function SalesAgent() {
   // ── CAMPAIGN SELECTOR ─────────────────────────────────────────────────────
   if (!activeCampaign) {
     return (
-      <div style={{ height: '100%', overflowY: 'auto', background: c.bg, padding: '28px 20px 48px', boxSizing: 'border-box' }}>
+      <div style={{ height: '100%', overflowY: 'auto', background: c.bg, padding: 'clamp(16px,4vw,28px) clamp(12px,4vw,20px) 48px', boxSizing: 'border-box' }}>
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
 
           {/* Header */}
@@ -285,7 +302,7 @@ export default function SalesAgent() {
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        height: 620,
+        height: 'min(620px, calc(100dvh - 80px))',
         flexShrink: 0,
       }}>
 
@@ -405,7 +422,7 @@ function PhonePreview({ school }) {
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      height: 460,
+      height: 'min(460px, calc(100dvh - 280px))',
       flexShrink: 0,
     }}>
       <div style={{ background: '#000', padding: '10px 20px 6px', display: 'flex', justifyContent: 'center' }}>

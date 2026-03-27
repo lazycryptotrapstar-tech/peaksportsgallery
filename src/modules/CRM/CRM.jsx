@@ -92,6 +92,13 @@ const CSS = (primary) => `
   .crm-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; }
   .crm-modal { background:var(--pb-surface); border-radius:20px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
   @keyframes crm-bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-7px)} }
+  @media (max-width: 640px) {
+    .crm-stats-grid { grid-template-columns: 1fr 1fr !important; }
+    .crm-pipeline-grid { grid-template-columns: 1fr !important; }
+    .crm-modal { padding: 20px !important; }
+    .crm-modal-fields { grid-template-columns: 1fr !important; }
+    .crm-contact-panel { position:fixed !important; inset:auto 0 0 0 !important; border-radius:20px 20px 0 0 !important; max-height:80vh !important; overflow-y:auto !important; z-index:100; }
+  }
 `
 
 // ── Touch badges ──────────────────────────────────────────────────────────────
@@ -179,7 +186,7 @@ function AddProspectModal({ school, onClose, onAdd }) {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <div className="crm-modal-fields" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             <div>
               <p className="crm-label" style={{ marginBottom: 5 }}>Name *</p>
               <input className="crm-input" placeholder="Full name" value={form.name} onChange={e => set('name', e.target.value)} />
@@ -514,7 +521,7 @@ export default function CRM() {
         </div>
 
         {/* ── Stats bar ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 20 }}>
+        <div className="crm-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 20 }}>
           {[
             { label: 'Total Contacts', value: stats.total },
             { label: 'Hot Leads',      value: stats.hot },
@@ -554,7 +561,7 @@ export default function CRM() {
         </div>
 
         {/* ── Two-column layout: pipeline list + contact panel ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: selectedContact ? '1fr 340px' : '1fr', gap: 20, alignItems: 'start' }}>
+        <div className="crm-pipeline-grid" style={{ display: 'grid', gridTemplateColumns: selectedContact ? '1fr 340px' : '1fr', gap: 20, alignItems: 'start' }}>
 
           {/* ── Pipeline stages ── */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -617,7 +624,7 @@ export default function CRM() {
 
           {/* ── Contact detail panel ── */}
           {selectedContact && (
-            <div style={{ position: 'sticky', top: 16 }}>
+            <div className="crm-contact-panel" style={{ position: 'sticky', top: 16 }}>
               <div style={{ background: '#fff', border: '1px solid var(--pb-border)', borderRadius: 18, overflow: 'hidden' }}>
                 {/* Panel header */}
                 <div style={{ padding: '16px 18px', background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
