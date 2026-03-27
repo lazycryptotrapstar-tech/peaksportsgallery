@@ -41,16 +41,33 @@ const FOOTBALL_SECTIONS = [
   { id: 'FB_PARK', label: 'PARK',   zone: 'parking',    name: 'Gameday Parking',          price: 20,  type: 'parking', status: 'MED',  desc: 'Reserved parking · Lots G1 and G4 · Adjacent to Gibbs Stadium' },
 ]
 
+// ── Jerry Richardson Indoor Stadium sections ──────────────────────────────────
+// Premium  = courtside + lower bowl sideline (closest to court)
+// Scholar  = scholarship seating (upper sideline)
+// Reserved = all other sections (corners, ends, upper)
+
 const BASKETBALL_SECTIONS = [
-  // Season tickets
-  { id: 'MBB_SS_P',  label: 'SEASON', zone: 'season',     name: 'Premium — Season',           price: 340, type: 'season', status: 'LOW',  desc: 'Full season · Premium courtside or lower bowl seat · Best view in Jerry Richardson Indoor Stadium' },
-  { id: 'MBB_SS_SS', label: 'SEASON', zone: 'season',     name: 'Scholarship Seating — Season', price: 240, type: 'season', status: 'MED',  desc: 'Full season · Scholarship seating section · Includes priority donor recognition · Jerry Richardson Indoor Stadium' },
-  { id: 'MBB_SS_R',  label: 'SEASON', zone: 'season',     name: 'Reserved — Season',          price: 190, type: 'season', status: 'HIGH', desc: 'Full season · Reserved general seating · Jerry Richardson Indoor Stadium' },
-  // Single game
-  { id: 'MBB_SG_P',  label: 'SINGLE', zone: 'single',     name: 'Premium — Single',           price: 22,  type: 'single', status: 'HIGH', desc: 'Single game · Premium seat · Jerry Richardson Indoor Stadium' },
-  { id: 'MBB_SG_R',  label: 'SINGLE', zone: 'single',     name: 'Reserved — Single',          price: 18,  type: 'single', status: 'HIGH', desc: 'Single game · Reserved seat · Jerry Richardson Indoor Stadium' },
+  // Courtside / Premium lower bowl
+  { id: 'CS_N',  label: 'CS-N',  zone: 'premium',    name: 'Courtside North',          price: 22,  seasonPrice: 340, type: 'single', status: 'LOW',  desc: 'Courtside · North sideline · Best seats in Jerry Richardson Indoor Stadium' },
+  { id: 'CS_S',  label: 'CS-S',  zone: 'premium',    name: 'Courtside South',          price: 22,  seasonPrice: 340, type: 'single', status: 'LOW',  desc: 'Courtside · South sideline · Jerry Richardson Indoor Stadium' },
+  { id: 'LB_N',  label: 'LB-N',  zone: 'premium',    name: 'Lower Bowl North',         price: 22,  seasonPrice: 340, type: 'single', status: 'MED',  desc: 'Lower bowl · North sideline · Premium view · Jerry Richardson Indoor Stadium' },
+  { id: 'LB_S',  label: 'LB-S',  zone: 'premium',    name: 'Lower Bowl South',         price: 22,  seasonPrice: 340, type: 'single', status: 'MED',  desc: 'Lower bowl · South sideline · Premium view · Jerry Richardson Indoor Stadium' },
+  // Scholarship seating
+  { id: 'SCH_N', label: 'SCH-N', zone: 'scholarship', name: 'Scholarship North',        price: 18,  seasonPrice: 240, type: 'single', status: 'MED',  desc: 'Scholarship seating · North upper sideline · Jerry Richardson Indoor Stadium' },
+  { id: 'SCH_S', label: 'SCH-S', zone: 'scholarship', name: 'Scholarship South',        price: 18,  seasonPrice: 240, type: 'single', status: 'MED',  desc: 'Scholarship seating · South upper sideline · Jerry Richardson Indoor Stadium' },
+  // Reserved — ends and corners
+  { id: 'END_E', label: 'END-E', zone: 'reserved',   name: 'East End',                 price: 18,  seasonPrice: 190, type: 'single', status: 'HIGH', desc: 'Reserved · East end · Behind basket · Jerry Richardson Indoor Stadium' },
+  { id: 'END_W', label: 'END-W', zone: 'reserved',   name: 'West End',                 price: 18,  seasonPrice: 190, type: 'single', status: 'HIGH', desc: 'Reserved · West end · Behind basket · Jerry Richardson Indoor Stadium' },
+  { id: 'CRN_NE',label: 'NE',    zone: 'reserved',   name: 'Corner NE',                price: 18,  seasonPrice: 190, type: 'single', status: 'HIGH', desc: 'Reserved · Northeast corner · Jerry Richardson Indoor Stadium' },
+  { id: 'CRN_NW',label: 'NW',    zone: 'reserved',   name: 'Corner NW',                price: 18,  seasonPrice: 190, type: 'single', status: 'HIGH', desc: 'Reserved · Northwest corner · Jerry Richardson Indoor Stadium' },
+  { id: 'CRN_SE',label: 'SE',    zone: 'reserved',   name: 'Corner SE',                price: 18,  seasonPrice: 190, type: 'single', status: 'HIGH', desc: 'Reserved · Southeast corner · Jerry Richardson Indoor Stadium' },
+  { id: 'CRN_SW',label: 'SW',    zone: 'reserved',   name: 'Corner SW',                price: 18,  seasonPrice: 190, type: 'single', status: 'HIGH', desc: 'Reserved · Southwest corner · Jerry Richardson Indoor Stadium' },
+  // Season passes
+  { id: 'MBB_SS_P',  label: 'SEASON', zone: 'season_pass', name: 'Premium Season Pass',     price: 340, type: 'season', status: 'LOW',  desc: 'Full 2025-26 season · Courtside and lower bowl · Best seats in arena' },
+  { id: 'MBB_SS_SS', label: 'SEASON', zone: 'season_pass', name: 'Scholarship Season Pass',  price: 240, type: 'season', status: 'MED',  desc: 'Full 2025-26 season · Scholarship seating · Priority donor recognition' },
+  { id: 'MBB_SS_R',  label: 'SEASON', zone: 'season_pass', name: 'Reserved Season Pass',     price: 190, type: 'season', status: 'HIGH', desc: 'Full 2025-26 season · Reserved general seating · All home games' },
   // Group
-  { id: 'MBB_GRP',   label: 'GROUP',  zone: 'group',      name: 'Group Tickets (10+)',        price: 10,  type: 'group',  status: 'LOW',  desc: 'Groups of 10 or more · Great for team outings and company events' },
+  { id: 'MBB_GRP', label: 'GROUP', zone: 'group', name: 'Group Tickets (10+)', price: 10, type: 'group', status: 'LOW', desc: 'Groups of 10 or more · Great for team outings and company events' },
 ]
 
 const VOLLEYBALL_SECTIONS = [
@@ -223,6 +240,144 @@ function GibbsStadiumMap({ selectedSection, onSelectSection, school }) {
             </text>
           </g>
         )}
+      </svg>
+    </div>
+  )
+}
+
+
+// ── Jerry Richardson Indoor Stadium Map ──────────────────────────────────────
+function BasketballArenaMap({ selectedSection, onSelectSection, school }) {
+  const c = school.colors
+  const accent = c.accent
+
+  const getSectionFill = (id) => {
+    if (selectedSection?.id === id) return accent
+    const sec = BASKETBALL_SECTIONS.find(s => s.id === id)
+    if (!sec) return '#333'
+    if (sec.zone === 'premium')     return '#6B5B2E'
+    if (sec.zone === 'scholarship') return '#4a4a4a'
+    return '#333'
+  }
+
+  const handleClick = (id) => {
+    const sec = BASKETBALL_SECTIONS.find(s => s.id === id)
+    if (sec) onSelectSection(selectedSection?.id === id ? null : sec)
+  }
+
+  const Sec = ({ id, points, label, cx, cy }) => (
+    <g onClick={() => handleClick(id)} style={{ cursor: 'pointer' }}>
+      <polygon
+        points={points}
+        fill={getSectionFill(id)}
+        stroke={selectedSection?.id === id ? '#fff' : 'rgba(255,255,255,0.12)'}
+        strokeWidth={selectedSection?.id === id ? 2 : 0.8}
+        style={{ transition: 'fill 0.15s' }}
+      />
+      <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
+        fill="#fff" fontSize={8} fontFamily="Space Mono, monospace" fontWeight="700">
+        {label}
+      </text>
+    </g>
+  )
+
+  const SecRect = ({ id, x, y, w, h, label }) => (
+    <g onClick={() => handleClick(id)} style={{ cursor: 'pointer' }}>
+      <rect x={x} y={y} width={w} height={h} rx={2}
+        fill={getSectionFill(id)}
+        stroke={selectedSection?.id === id ? '#fff' : 'rgba(255,255,255,0.12)'}
+        strokeWidth={selectedSection?.id === id ? 2 : 0.8}
+        style={{ transition: 'fill 0.15s' }}
+      />
+      <text x={x+w/2} y={y+h/2} textAnchor="middle" dominantBaseline="middle"
+        fill="#fff" fontSize={7.5} fontFamily="Space Mono, monospace" fontWeight="700">
+        {label}
+      </text>
+    </g>
+  )
+
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: c.accent, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
+          Jerry Richardson Indoor Stadium
+        </p>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          {[
+            { color: '#6B5B2E', label: 'Premium' },
+            { color: '#4a4a4a', label: 'Scholarship' },
+            { color: '#333',    label: 'Reserved' },
+            { color: accent,    label: 'Selected' },
+          ].map(l => (
+            <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: l.color }} />
+              <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#888' }}>{l.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <svg viewBox="0 0 520 380" style={{ width: '100%', borderRadius: 14, background: '#1a1a1a', display: 'block' }}>
+
+        {/* ── Court ── */}
+        <rect x={150} y={110} width={220} height={160} rx={4} fill="#C8A96E" />
+        {/* Court lines */}
+        <rect x={150} y={110} width={220} height={160} rx={4} fill="none" stroke="rgba(0,0,0,0.4)" strokeWidth={1.5} />
+        <line x1={260} y1={110} x2={260} y2={270} stroke="rgba(0,0,0,0.3)" strokeWidth={1} />
+        <circle cx={260} cy={190} r={20} fill="none" stroke="rgba(0,0,0,0.3)" strokeWidth={1} />
+        <circle cx={260} cy={190} r={3} fill="rgba(0,0,0,0.3)" />
+        {/* Free throw circles */}
+        <ellipse cx={195} cy={190} rx={16} ry={16} fill="none" stroke="rgba(0,0,0,0.25)" strokeWidth={1} />
+        <ellipse cx={325} cy={190} rx={16} ry={16} fill="none" stroke="rgba(0,0,0,0.25)" strokeWidth={1} />
+        {/* Paint */}
+        <rect x={150} y={162} width={36} height={56} fill="rgba(0,0,0,0.1)" stroke="rgba(0,0,0,0.25)" strokeWidth={1} />
+        <rect x={334} y={162} width={36} height={56} fill="rgba(0,0,0,0.1)" stroke="rgba(0,0,0,0.25)" strokeWidth={1} />
+        {/* Logo */}
+        <text x={260} y={186} textAnchor="middle" fill="rgba(0,0,0,0.25)" fontSize={18} fontFamily="Arial" fontWeight="900">W</text>
+        <text x={260} y={202} textAnchor="middle" fill="rgba(0,0,0,0.2)" fontSize={7} fontFamily="Arial" fontWeight="700" letterSpacing="3">WOFFORD</text>
+
+        {/* ── NORTH SIDE (top) — Premium + Scholarship ── */}
+        {/* Courtside North — tight row along court */}
+        <SecRect id="CS_N"  x={150} y={90}  w={220} h={16} label="CS-N  COURTSIDE NORTH  $22/game · $340 season" />
+        {/* Lower Bowl North */}
+        <SecRect id="LB_N"  x={140} y={71}  w={240} h={16} label="LB-N  LOWER BOWL NORTH  $22/game · $340 season" />
+        {/* Scholarship North */}
+        <SecRect id="SCH_N" x={128} y={52}  w={264} h={16} label="SCH-N  SCHOLARSHIP NORTH  $18/game · $240 season" />
+        {/* Upper North */}
+        <SecRect id="CRN_NE" x={340} y={28} w={76}  h={20} label="NE" />
+        <SecRect id="CRN_NW" x={104} y={28} w={76}  h={20} label="NW" />
+
+        {/* ── SOUTH SIDE (bottom) ── */}
+        <SecRect id="CS_S"  x={150} y={274} w={220} h={16} label="CS-S  COURTSIDE SOUTH  $22/game · $340 season" />
+        <SecRect id="LB_S"  x={140} y={293} w={240} h={16} label="LB-S  LOWER BOWL SOUTH  $22/game · $340 season" />
+        <SecRect id="SCH_S" x={128} y={312} w={264} h={16} label="SCH-S  SCHOLARSHIP SOUTH  $18/game · $240 season" />
+        <SecRect id="CRN_SE" x={340} y={332} w={76} h={20} label="SE" />
+        <SecRect id="CRN_SW" x={104} y={332} w={76} h={20} label="SW" />
+
+        {/* ── EAST END (right) ── */}
+        <SecRect id="END_E"  x={374} y={130} w={72} h={120} label="END-E" />
+
+        {/* ── WEST END (left) ── */}
+        <SecRect id="END_W"  x={74}  y={130} w={72} h={120} label="END-W" />
+
+        {/* ── Selected tooltip ── */}
+        {selectedSection && (
+          <g>
+            <rect x={130} y={168} width={260} height={44} rx={6} fill="rgba(0,0,0,0.82)" />
+            <text x={260} y={185} textAnchor="middle" fill="#fff" fontSize={10} fontFamily="Space Mono, monospace" fontWeight="700">
+              {selectedSection.name}
+            </text>
+            <text x={260} y={200} textAnchor="middle" fill={accent} fontSize={10} fontFamily="Space Mono, monospace">
+              ${selectedSection.price}/game · Season ${selectedSection.seasonPrice}
+            </text>
+          </g>
+        )}
+
+        {/* Labels */}
+        <text x={260} y={14} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize={8} fontFamily="Space Mono" letterSpacing="2">NORTH</text>
+        <text x={260} y={370} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize={8} fontFamily="Space Mono" letterSpacing="2">SOUTH</text>
+        <text x={460} y={192} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize={8} fontFamily="Space Mono" letterSpacing="2">EAST</text>
+        <text x={60}  y={192} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize={8} fontFamily="Space Mono" letterSpacing="2">WEST</text>
       </svg>
     </div>
   )
@@ -564,9 +719,16 @@ export default function Ticketing() {
         </div>
       )}
 
-      {/* Gibbs Stadium interactive map — football only */}
+      {/* Interactive venue maps */}
       {sport === 'football' && (
         <GibbsStadiumMap
+          selectedSection={selectedSection}
+          onSelectSection={setSelectedSection}
+          school={school}
+        />
+      )}
+      {sport === 'basketball' && (
+        <BasketballArenaMap
           selectedSection={selectedSection}
           onSelectSection={setSelectedSection}
           school={school}
