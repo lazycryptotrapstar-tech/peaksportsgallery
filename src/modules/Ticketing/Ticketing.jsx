@@ -961,7 +961,7 @@ export default function Ticketing() {
 
       {/* Mobile sticky order bar — visible only on small screens */}
       <div className="ticket-mobile-bar" style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 90,
+        position: 'fixed', bottom: 72, left: 0, right: 0, zIndex: 90,
         background: 'white', borderTop: '1px solid #e8eaed',
         padding: '12px 16px calc(env(safe-area-inset-bottom, 0px) + 12px)',
         display: 'none', flexDirection: 'column', gap: 0,
