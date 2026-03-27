@@ -31,6 +31,8 @@ export const SCHOOLS = {
     rivals: ['Furman', 'The Citadel'],
     sponsors: ['Hub City Tap House', 'Beacon Drive-In', 'Spartanburg Regional Medical', 'R.J. Rockers Brewing'],
     emoji: '🐾',
+    mascotImg: '/wofford_mascot.png',
+
   },
 
   eku: {
