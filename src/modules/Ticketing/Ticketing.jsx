@@ -632,6 +632,7 @@ MBB Single Game: $22 Premium / $18 Reserved
 export default function Ticketing() {
   const { school, memberTier } = useSchool()
   const [sport, setSport] = useState('football')
+  const [bannerDismissed, setBannerDismissed] = useState(false)
   const [filterZone, setFilterZone] = useState('all')
   const [selectedSection, setSelectedSection] = useState(null)
   const [qty, setQty] = useState(2)
@@ -692,12 +693,118 @@ export default function Ticketing() {
 
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px 100px' }}>
+      {/* ── Sale Announcement Banner ── */}
+      <div style={{
+        background: school.colors.bg,
+        border: `1px solid ${school.colors.border}`,
+        borderRadius: 16,
+        padding: '20px 20px 16px',
+        marginBottom: 24,
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        {/* Decorative stud strip top */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 6, background: `repeating-linear-gradient(90deg, ${school.colors.accent} 0px, ${school.colors.accent} 6px, transparent 6px, transparent 14px)` }} />
+
+        {/* Logo row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 20, marginBottom: 10, marginTop: 8 }}>
+          <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, fontWeight: 700, color: school.colors.accent, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+            {school.conference}
+          </span>
+          <div style={{ width: 1, height: 16, background: school.colors.border }} />
+          <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, fontWeight: 700, color: school.colors.accent, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+            {school.short} Athletics
+          </span>
+          <div style={{ width: 1, height: 16, background: school.colors.border }} />
+          <span style={{ fontSize: 18 }}>{school.emoji}</span>
+        </div>
+
+        {/* Main headline */}
+        <p style={{ margin: '0 0 2px', fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 'clamp(15px,3vw,20px)', color: school.colors.primary, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+          {school.short} {sport.charAt(0).toUpperCase() + sport.slice(1)}
+        </p>
+        <p style={{ margin: '0 0 4px', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(32px,8vw,56px)', color: school.colors.primary, letterSpacing: '0.02em', lineHeight: 0.95 }}>
+          Season Tickets
+        </p>
+        <p style={{ margin: '0 0 12px', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(28px,7vw,48px)', color: school.colors.accent, letterSpacing: '0.02em', lineHeight: 1 }}>
+          On Sale Now!
+        </p>
+
+        {/* Price callout */}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, padding: '8px 20px', borderRadius: 24, background: school.colors.primary, marginBottom: 8 }}>
+          <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Starting at</span>
+          <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 26, color: school.colors.accent, letterSpacing: '0.04em', lineHeight: 1 }}>
+            {sport === 'football' ? '$135' : sport === 'basketball' ? '$190' : '$50'}
+          </span>
+          <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: 'rgba(255,255,255,0.5)' }}>/ season</span>
+        </div>
+
+        {/* Decorative stud strip bottom */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 6, background: `repeating-linear-gradient(90deg, ${school.colors.accent} 0px, ${school.colors.accent} 6px, transparent 6px, transparent 14px)` }} />
+      </div>
+
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
         <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: school.colors.accent, marginBottom: 6 }}>{school.name} · Ticket Marketplace</p>
         <h2 style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 'clamp(32px,5vw,52px)', color: '#111', margin: 0 }}>Ticket Hub</h2>
         <p style={{ fontSize: 14, color: '#64748b', marginTop: 4 }}>{venueInfo?.name} · {venueInfo?.capacity?.toLocaleString()} capacity</p>
       </div>
+
+      {/* ── Sale announcement banner — dismisses on tap or scroll ── */}
+      {!bannerDismissed && (
+        <div style={{
+          borderRadius: 16,
+          overflow: 'hidden',
+          marginBottom: 20,
+          position: 'relative',
+          background: school.colors.bg,
+          border: `1px solid ${school.colors.border}`,
+        }}>
+          {/* Gold stud strip top */}
+          <div style={{ height: 6, background: `repeating-linear-gradient(90deg, ${school.colors.accent} 0px, ${school.colors.accent} 6px, transparent 6px, transparent 14px)` }} />
+
+          <div style={{ padding: '18px 20px 16px', textAlign: 'center', position: 'relative' }}>
+            {/* Dismiss X */}
+            <button onClick={() => setBannerDismissed(true)}
+              style={{ position: 'absolute', top: 10, right: 12, background: 'none', border: 'none', cursor: 'pointer', color: school.colors.accent, fontSize: 18, lineHeight: 1, opacity: 0.6 }}>
+              ✕
+            </button>
+
+            {/* Logo row */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, marginBottom: 10 }}>
+              <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, fontWeight: 700, color: school.colors.accent, letterSpacing: '0.16em', textTransform: 'uppercase' }}>{school.conference}</span>
+              <div style={{ width: 1, height: 14, background: school.colors.border }} />
+              <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, fontWeight: 700, color: school.colors.accent, letterSpacing: '0.16em', textTransform: 'uppercase' }}>{school.short} Athletics</span>
+              <div style={{ width: 1, height: 14, background: school.colors.border }} />
+              <span style={{ fontSize: 16 }}>{school.emoji}</span>
+            </div>
+
+            {/* Headline */}
+            <p style={{ margin: '0 0 0px', fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 'clamp(13px,2.5vw,17px)', color: school.colors.primary, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              {school.short} {sport.charAt(0).toUpperCase() + sport.slice(1)}
+            </p>
+            <p style={{ margin: '0 0 2px', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(30px,7vw,52px)', color: school.colors.primary, letterSpacing: '0.02em', lineHeight: 0.95 }}>
+              Season Tickets
+            </p>
+            <p style={{ margin: '0 0 14px', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(26px,6vw,44px)', color: school.colors.accent, letterSpacing: '0.02em', lineHeight: 1 }}>
+              On Sale Now!
+            </p>
+
+            {/* Price pill */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '7px 18px', borderRadius: 24, background: school.colors.primary }}>
+              <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Starting at</span>
+              <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 24, color: school.colors.accent, letterSpacing: '0.04em', lineHeight: 1 }}>
+                {sport === 'football' ? '$135' : sport === 'basketball' ? '$190' : '$50'}
+              </span>
+              <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: 'rgba(255,255,255,0.4)' }}>/ season</span>
+            </div>
+          </div>
+
+          {/* Gold stud strip bottom */}
+          <div style={{ height: 6, background: `repeating-linear-gradient(90deg, ${school.colors.accent} 0px, ${school.colors.accent} 6px, transparent 6px, transparent 14px)` }} />
+        </div>
+      )}
 
       {/* Sport selector */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
@@ -929,7 +1036,6 @@ export default function Ticketing() {
               </p>
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
-              {/* Qty stepper */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <button onClick={() => setQty(q => Math.max(1, q - 1))}
                   style={{ width: 28, height: 28, borderRadius: 8, border: '1px solid #e0e0e0', background: '#f9f9f9', cursor: 'pointer', fontWeight: 700, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
