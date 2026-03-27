@@ -5,35 +5,58 @@ import { ShieldCheck, CheckCircle2, QrCode, MessageCircle, X, Send } from 'lucid
 
 const N8N_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/sales-agent'
 
-// ── Venue section data ────────────────────────────────────────────────────────
+// ── Wofford real ticket inventory ────────────────────────────────────────────
+// Prices match actual Wofford athletics pricing as of 2025 season
+// type: season | single | group | parking
+
 const FOOTBALL_SECTIONS = [
-  { id: 'HC1', label: 'HC1', zone: 'home_chairback', name: 'Home Chairback A', price: 27, status: 'HIGH', desc: 'Home sideline · Chairback · 40-50 yd line' },
-  { id: 'HC2', label: 'HC2', zone: 'home_chairback', name: 'Home Chairback B', price: 27, status: 'MED',  desc: 'Home sideline · Chairback · 50 yd center' },
-  { id: 'HC3', label: 'HC3', zone: 'home_chairback', name: 'Home Chairback C', price: 27, status: 'HIGH', desc: 'Home sideline · Chairback · 30-40 yd' },
-  { id: 'HB1', label: 'HB1', zone: 'home_bleacher',  name: 'Home Bleacher A',  price: 15, status: 'HIGH', desc: 'Home sideline · Bleacher · 20-40 yd' },
-  { id: 'HB2', label: 'HB2', zone: 'home_bleacher',  name: 'Home Bleacher B',  price: 15, status: 'MED',  desc: 'Home sideline · Bleacher · 5-20 yd' },
-  { id: 'VIP', label: 'VIP', zone: 'vip',            name: 'VIP / Hospitality', price: 85, status: 'LOW', desc: 'Premium hospitality suite · 50 yd line view' },
-  { id: 'EZ1', label: 'EZ1', zone: 'end_zone',       name: 'End Zone A',       price: 10, status: 'HIGH', desc: 'North end zone · Video board end' },
-  { id: 'EZ2', label: 'EZ2', zone: 'end_zone',       name: 'End Zone B',       price: 10, status: 'MED',  desc: 'South end zone · Donor tailgate area' },
-  { id: 'VIS', label: 'VIS', zone: 'visitor',        name: 'Visitor Side',     price: 12, status: 'HIGH', desc: 'Visitor sideline bleacher' },
+  // Season tickets
+  { id: 'FB_SS_BB', label: 'SEASON', zone: 'season',  name: 'Bench Back — Season',   price: 211, type: 'season',  status: 'MED',  desc: 'Full season · Reserved bench back seat · Best home sideline view · Gibbs Stadium' },
+  { id: 'FB_SS_B',  label: 'SEASON', zone: 'season',  name: 'Bench — Season',        price: 135, type: 'season',  status: 'HIGH', desc: 'Full season · Reserved bench seat · Home sideline · Gibbs Stadium' },
+  // Single game
+  { id: 'FB_SG_BB', label: 'SINGLE', zone: 'single',  name: 'Bench Back — Single',   price: 40,  type: 'single',  status: 'HIGH', desc: 'Single game · Reserved bench back · Home sideline · Gibbs Stadium' },
+  { id: 'FB_SG_B',  label: 'SINGLE', zone: 'single',  name: 'Bench — Single',        price: 30,  type: 'single',  status: 'HIGH', desc: 'Single game · Reserved bench seat · Home sideline · Gibbs Stadium' },
+  // Group
+  { id: 'FB_GRP',   label: 'GROUP',  zone: 'group',   name: 'Group Tickets (10+)',   price: 15,  type: 'group',   status: 'LOW',  desc: 'Groups of 10 or more · Perfect for youth sports, churches, and businesses · Contact rep for booking' },
+  // Parking
+  { id: 'FB_PARK',  label: 'PARK',   zone: 'parking', name: 'Gameday Parking',       price: 20,  type: 'parking', status: 'MED',  desc: 'Reserved gameday parking · Lots G1 and G2 · Adjacent to Gibbs Stadium' },
 ]
 
 const BASKETBALL_SECTIONS = [
-  { id: 'CS',  label: 'CS',   zone: 'courtside',  name: 'Courtside',       price: 65,  status: 'LOW',  desc: 'Courtside chairback · Best seats in the house' },
-  { id: 'CL1', label: 'CL-A', zone: 'club',       name: 'Club Level A',    price: 45,  status: 'MED',  desc: 'Premium lower bowl · Full kitchen access' },
-  { id: 'CL2', label: 'CL-B', zone: 'club',       name: 'Club Level B',    price: 45,  status: 'HIGH', desc: 'Premium lower bowl · Center court' },
-  { id: 'SUI', label: 'SUITE',zone: 'suite',       name: 'Corner Suite',    price: 120, status: 'LOW',  desc: 'Open-air corner suite · Theater box seating' },
-  { id: 'LB1', label: 'LB1',  zone: 'lower_bowl', name: 'Lower Bowl A',    price: 25,  status: 'HIGH', desc: 'Lower bowl general · Home sideline' },
-  { id: 'LB2', label: 'LB2',  zone: 'lower_bowl', name: 'Lower Bowl B',    price: 25,  status: 'MED',  desc: 'Lower bowl general · Behind basket' },
-  { id: 'UL',  label: 'UL',   zone: 'upper',      name: 'Upper Level',     price: 18,  status: 'HIGH', desc: 'Upper level sideline · Wide angle view' },
-  { id: 'STU', label: 'STU',  zone: 'student',    name: 'Student Section', price: 0,   status: 'MED',  desc: 'Student section · Free with ID' },
+  // Season tickets
+  { id: 'MBB_SS_P',  label: 'SEASON', zone: 'season',     name: 'Premium — Season',           price: 340, type: 'season', status: 'LOW',  desc: 'Full season · Premium courtside or lower bowl seat · Best view in Jerry Richardson Indoor Stadium' },
+  { id: 'MBB_SS_SS', label: 'SEASON', zone: 'season',     name: 'Scholarship Seating — Season', price: 240, type: 'season', status: 'MED',  desc: 'Full season · Scholarship seating section · Includes priority donor recognition · Jerry Richardson Indoor Stadium' },
+  { id: 'MBB_SS_R',  label: 'SEASON', zone: 'season',     name: 'Reserved — Season',          price: 190, type: 'season', status: 'HIGH', desc: 'Full season · Reserved general seating · Jerry Richardson Indoor Stadium' },
+  // Single game
+  { id: 'MBB_SG_P',  label: 'SINGLE', zone: 'single',     name: 'Premium — Single',           price: 22,  type: 'single', status: 'HIGH', desc: 'Single game · Premium seat · Jerry Richardson Indoor Stadium' },
+  { id: 'MBB_SG_R',  label: 'SINGLE', zone: 'single',     name: 'Reserved — Single',          price: 18,  type: 'single', status: 'HIGH', desc: 'Single game · Reserved seat · Jerry Richardson Indoor Stadium' },
+  // Group
+  { id: 'MBB_GRP',   label: 'GROUP',  zone: 'group',      name: 'Group Tickets (10+)',        price: 10,  type: 'group',  status: 'LOW',  desc: 'Groups of 10 or more · Great for team outings and company events' },
+]
+
+const VOLLEYBALL_SECTIONS = [
+  // Season tickets
+  { id: 'VB_SS_A',  label: 'SEASON', zone: 'season', name: 'Adult Season Ticket',  price: 100, type: 'season', status: 'LOW',  desc: 'Full season adult ticket · All home matches · Benjamin Johnson Arena' },
+  { id: 'VB_SS_C',  label: 'SEASON', zone: 'season', name: 'Child Season Ticket',  price: 50,  type: 'season', status: 'LOW',  desc: 'Full season child ticket (under 12) · All home matches · Benjamin Johnson Arena' },
+  // Single game
+  { id: 'VB_SG_A',  label: 'SINGLE', zone: 'single', name: 'Adult — Single Match', price: 10,  type: 'single', status: 'HIGH', desc: 'Single match adult ticket · Benjamin Johnson Arena' },
+  { id: 'VB_SG_C',  label: 'SINGLE', zone: 'single', name: 'Child — Single Match', price: 5,   type: 'single', status: 'HIGH', desc: 'Single match child ticket (under 12) · Benjamin Johnson Arena' },
+  // Group
+  { id: 'VB_GRP',   label: 'GROUP',  zone: 'group',  name: 'Group Tickets (10+)',  price: 5,   type: 'group',  status: 'LOW',  desc: 'Groups of 10 or more · Great for school groups and family outings' },
 ]
 
 const ZONE_LABELS = {
-  home_chairback: 'Home Chairback', home_bleacher: 'Home Bleacher',
-  vip: 'VIP / Hospitality', end_zone: 'End Zone', visitor: 'Visitor Side',
-  courtside: 'Courtside', club: 'Club Level', suite: 'Corner Suites',
-  lower_bowl: 'Lower Bowl', upper: 'Upper Level', student: 'Student Section',
+  season:  'Season Tickets',
+  single:  'Single Game',
+  group:   'Group Packages',
+  parking: 'Parking',
+}
+
+const TYPE_BADGE = {
+  season:  { label: 'SEASON PASS', color: '#7B3FF2' },
+  single:  { label: 'SINGLE GAME', color: '#0ea5e9' },
+  group:   { label: 'GROUP 10+',   color: '#16a34a' },
+  parking: { label: 'PARKING',     color: '#f59e0b' },
 }
 
 const STATUS_COLOR = { HIGH: '#ef4444', MED: '#f59e0b', LOW: '#22c55e' }
@@ -273,8 +296,10 @@ export default function Ticketing() {
   const [qty, setQty] = useState(2)
   const [stage, setStage] = useState('browse')
 
-  const sections = sport === 'football' ? FOOTBALL_SECTIONS : BASKETBALL_SECTIONS
-  const venueInfo = school.venue?.[sport]
+  const SPORT_SECTIONS = { football: FOOTBALL_SECTIONS, basketball: BASKETBALL_SECTIONS, volleyball: VOLLEYBALL_SECTIONS }
+  const sections = SPORT_SECTIONS[sport] || FOOTBALL_SECTIONS
+  const VOLLEYBALL_VENUE = { name: 'Benjamin Johnson Arena', capacity: 3500 }
+  const venueInfo = sport === 'volleyball' ? VOLLEYBALL_VENUE : school.venue?.[sport]
   const tier = MEMBERSHIP_TIERS[memberTier]
   const bundle = getBundleDeal(qty)
   const totalDiscount = Math.max(tier.discount, bundle.discount || 0)
@@ -334,15 +359,19 @@ export default function Ticketing() {
       </div>
 
       {/* Sport selector */}
-      <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-        {['football', 'basketball'].map(s => (
-          <button key={s} onClick={() => { setSport(s); setSelectedSection(null); setFilterZone('all') }}
+      <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
+        {[
+          { id: 'football',   emoji: '🏈', label: 'Football'   },
+          { id: 'basketball', emoji: '🏀', label: 'Basketball' },
+          { id: 'volleyball', emoji: '🏐', label: 'Volleyball' },
+        ].map(s => (
+          <button key={s.id} onClick={() => { setSport(s.id); setSelectedSection(null); setFilterZone('all') }}
             style={{
-              padding: '10px 20px', borderRadius: 12, border: `2px solid ${sport === s ? school.colors.accent : '#e0e0e0'}`,
-              background: sport === s ? school.colors.primary : 'white', color: sport === s ? 'white' : '#111',
+              padding: '10px 20px', borderRadius: 12, border: `2px solid ${sport === s.id ? school.colors.accent : '#e0e0e0'}`,
+              background: sport === s.id ? school.colors.primary : 'white', color: sport === s.id ? 'white' : '#111',
               fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: 14, cursor: 'pointer', transition: 'all 0.2s ease',
             }}>
-            {s === 'football' ? '🏈' : '🏀'} {s.charAt(0).toUpperCase() + s.slice(1)}
+            {s.emoji} {s.label}
           </button>
         ))}
       </div>
@@ -410,10 +439,17 @@ export default function Ticketing() {
                     </div>
                   </div>
                   <p style={{ margin: '0 0 10px', fontSize: 12, color: active ? 'rgba(255,255,255,0.6)' : '#64748b', lineHeight: 1.5 }}>{sec.desc}</p>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 6, background: `${STATUS_COLOR[sec.status]}15`, color: STATUS_COLOR[sec.status] }}>
-                      {STATUS_LABEL[sec.status]}
-                    </span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 4 }}>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      {TYPE_BADGE[sec.type] && (
+                        <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 6, background: `${TYPE_BADGE[sec.type].color}18`, color: TYPE_BADGE[sec.type].color }}>
+                          {TYPE_BADGE[sec.type].label}
+                        </span>
+                      )}
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 6, background: `${STATUS_COLOR[sec.status]}15`, color: STATUS_COLOR[sec.status] }}>
+                        {STATUS_LABEL[sec.status]}
+                      </span>
+                    </div>
                     {active && <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: 'rgba(255,255,255,0.5)' }}>✓ SELECTED</span>}
                   </div>
                 </div>
