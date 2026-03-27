@@ -693,57 +693,6 @@ export default function Ticketing() {
 
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px 100px' }}>
-      {/* ── Sale Announcement Banner ── */}
-      <div style={{
-        background: school.colors.bg,
-        border: `1px solid ${school.colors.border}`,
-        borderRadius: 16,
-        padding: '20px 20px 16px',
-        marginBottom: 24,
-        textAlign: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        {/* Decorative stud strip top */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 6, background: `repeating-linear-gradient(90deg, ${school.colors.accent} 0px, ${school.colors.accent} 6px, transparent 6px, transparent 14px)` }} />
-
-        {/* Logo row */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 20, marginBottom: 10, marginTop: 8 }}>
-          <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, fontWeight: 700, color: school.colors.accent, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
-            {school.conference}
-          </span>
-          <div style={{ width: 1, height: 16, background: school.colors.border }} />
-          <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, fontWeight: 700, color: school.colors.accent, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
-            {school.short} Athletics
-          </span>
-          <div style={{ width: 1, height: 16, background: school.colors.border }} />
-          <span style={{ fontSize: 18 }}>{school.emoji}</span>
-        </div>
-
-        {/* Main headline */}
-        <p style={{ margin: '0 0 2px', fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 'clamp(15px,3vw,20px)', color: school.colors.primary, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-          {school.short} {sport.charAt(0).toUpperCase() + sport.slice(1)}
-        </p>
-        <p style={{ margin: '0 0 4px', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(32px,8vw,56px)', color: school.colors.primary, letterSpacing: '0.02em', lineHeight: 0.95 }}>
-          Season Tickets
-        </p>
-        <p style={{ margin: '0 0 12px', fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(28px,7vw,48px)', color: school.colors.accent, letterSpacing: '0.02em', lineHeight: 1 }}>
-          On Sale Now!
-        </p>
-
-        {/* Price callout */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, padding: '8px 20px', borderRadius: 24, background: school.colors.primary, marginBottom: 8 }}>
-          <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Starting at</span>
-          <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 26, color: school.colors.accent, letterSpacing: '0.04em', lineHeight: 1 }}>
-            {sport === 'football' ? '$135' : sport === 'basketball' ? '$190' : '$50'}
-          </span>
-          <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: 'rgba(255,255,255,0.5)' }}>/ season</span>
-        </div>
-
-        {/* Decorative stud strip bottom */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 6, background: `repeating-linear-gradient(90deg, ${school.colors.accent} 0px, ${school.colors.accent} 6px, transparent 6px, transparent 14px)` }} />
-      </div>
-
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
         <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: school.colors.accent, marginBottom: 6 }}>{school.name} · Ticket Marketplace</p>
