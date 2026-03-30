@@ -115,6 +115,121 @@ const STATUS_COLOR = { HIGH: '#ef4444', MED: '#f59e0b', LOW: '#22c55e' }
 const STATUS_LABEL = { HIGH: 'Selling Fast', MED: 'Limited', LOW: 'Available' }
 
 
+
+// ── Generic Interactive Stadium Map (used for all non-Wofford schools) ────────
+function GenericStadiumMap({ selectedSection, onSelectSection, school }) {
+  const c = school.colors
+
+  const GENERIC_SECTIONS = [
+    { id: 'GEN_VIP',   label: 'VIP',    zone: 'vip',      name: 'VIP / Premium',      price: 65,  seasonPrice: 340, type: 'single', status: 'LOW',  desc: 'Premium seating · Best view in the venue' },
+    { id: 'GEN_SID_N', label: 'SID-N',  zone: 'sideline', name: 'Sideline North',     price: 35,  seasonPrice: 175, type: 'single', status: 'MED',  desc: 'Home sideline · Reserved seating' },
+    { id: 'GEN_SID_S', label: 'SID-S',  zone: 'sideline', name: 'Sideline South',     price: 35,  seasonPrice: 175, type: 'single', status: 'MED',  desc: 'Home sideline · Reserved seating' },
+    { id: 'GEN_END_E', label: 'END-E',  zone: 'endzone',  name: 'East End Zone',      price: 20,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'End zone · General admission' },
+    { id: 'GEN_END_W', label: 'END-W',  zone: 'endzone',  name: 'West End Zone',      price: 20,  seasonPrice: 100, type: 'single', status: 'HIGH', desc: 'End zone · General admission' },
+    { id: 'GEN_VIS',   label: 'VIS',    zone: 'visitor',  name: 'Visitor Side',       price: 25,  seasonPrice: 125, type: 'single', status: 'HIGH', desc: 'Visitor sideline · General seating' },
+    { id: 'GEN_GRP',   label: 'GROUP',  zone: 'group',    name: 'Group Tickets (10+)', price: 12, seasonPrice: null, type: 'group',  status: 'LOW',  desc: 'Groups of 10 or more · Contact rep for booking' },
+  ]
+
+  const getColor = (id) => {
+    if (selectedSection?.id === id) return c.accent
+    const sec = GENERIC_SECTIONS.find(s => s.id === id)
+    if (!sec) return '#333'
+    if (sec.zone === 'vip') return '#6B5B2E'
+    if (sec.zone === 'sideline') return '#4a4a4a'
+    if (sec.zone === 'group') return '#2a5a2a'
+    return '#333'
+  }
+
+  const handleClick = (id) => {
+    const sec = GENERIC_SECTIONS.find(s => s.id === id)
+    if (sec) onSelectSection(selectedSection?.id === id ? null : sec)
+  }
+
+  const Sec = ({ id, x, y, w, h, label }) => (
+    <g onClick={() => handleClick(id)} style={{ cursor: 'pointer' }}>
+      <rect x={x} y={y} width={w} height={h} rx={4}
+        fill={getColor(id)}
+        stroke={selectedSection?.id === id ? '#fff' : 'rgba(255,255,255,0.15)'}
+        strokeWidth={selectedSection?.id === id ? 2 : 0.8}
+        style={{ transition: 'fill 0.15s' }}
+      />
+      <text x={x+w/2} y={y+h/2} textAnchor="middle" dominantBaseline="middle"
+        fill="#fff" fontSize={9} fontFamily="Space Mono, monospace" fontWeight="700">
+        {label}
+      </text>
+    </g>
+  )
+
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: c.accent, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
+          {school.venue?.football?.name || 'Stadium'} · Section Map
+        </p>
+        <div style={{ display: 'flex', gap: 10 }}>
+          {[
+            { color: '#6B5B2E', label: 'Premium' },
+            { color: '#4a4a4a', label: 'Sideline' },
+            { color: '#333',    label: 'End Zone' },
+            { color: c.accent,  label: 'Selected' },
+          ].map(l => (
+            <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: l.color }} />
+              <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#888' }}>{l.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <svg viewBox="0 0 520 280" style={{ width: '100%', borderRadius: 14, background: '#1a1a1a', display: 'block' }}>
+        {/* Field */}
+        <rect x={100} y={80} width={320} height={130} rx={4} fill="#2d8a2d" />
+        <line x1={260} y1={80} x2={260} y2={210} stroke="rgba(255,255,255,0.2)" strokeWidth={1} />
+        {[0,1,2,3,4,5,6,7,8].map(i => (
+          <line key={i} x1={116+i*36} y1={80} x2={116+i*36} y2={210} stroke="rgba(255,255,255,0.1)" strokeWidth={0.5} />
+        ))}
+        <text x={260} y={150} textAnchor="middle" fill="rgba(255,255,255,0.12)" fontSize={22} fontFamily="Arial" fontWeight="900" letterSpacing="4">{school.short.toUpperCase()}</text>
+
+        {/* VIP top center */}
+        <Sec id="GEN_VIP"   x={200} y={20} w={120} h={30} label="VIP / PREMIUM" />
+
+        {/* Home sideline sections */}
+        <Sec id="GEN_SID_N" x={100} y={56} w={320} h={20} label="SIDELINE NORTH — HOME" />
+
+        {/* Visitor sideline */}
+        <Sec id="GEN_VIS"   x={100} y={212} w={320} h={20} label="VISITOR SIDE" />
+
+        {/* End zones */}
+        <Sec id="GEN_END_W" x={20}  y={80} w={76}  h={130} label="END ZONE W" />
+        <Sec id="GEN_END_E" x={424} y={80} w={76}  h={130} label="END ZONE E" />
+
+        {/* Sideline South (home) */}
+        <Sec id="GEN_SID_S" x={100} y={236} w={320} h={20} label="SIDELINE SOUTH — HOME" />
+
+        {/* Tooltip */}
+        {selectedSection && (
+          <g>
+            <rect x={140} y={118} width={240} height={34} rx={6} fill="rgba(0,0,0,0.82)" />
+            <text x={260} y={132} textAnchor="middle" fill="#fff" fontSize={10} fontFamily="Space Mono, monospace" fontWeight="700">
+              {selectedSection.name}
+            </text>
+            <text x={260} y={146} textAnchor="middle" fill={c.accent} fontSize={10} fontFamily="Space Mono, monospace">
+              ${selectedSection.price}/ticket · {selectedSection.seasonPrice ? `Season $${selectedSection.seasonPrice}` : 'Group pricing available'}
+            </text>
+          </g>
+        )}
+
+        <text x={260} y={14} textAnchor="middle" fill="rgba(255,255,255,0.25)" fontSize={8} fontFamily="Space Mono" letterSpacing="2">HOME SIDE</text>
+        <text x={260} y={272} textAnchor="middle" fill="rgba(255,255,255,0.25)" fontSize={8} fontFamily="Space Mono" letterSpacing="2">VISITOR SIDE</text>
+      </svg>
+
+      <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#94a3b8', margin: '6px 0 0', textAlign: 'center' }}>
+        Exact section map coming soon · Pricing is representative
+      </p>
+    </div>
+  )
+}
+
 // ── Gibbs Stadium Interactive Map ────────────────────────────────────────────
 function GibbsStadiumMap({ selectedSection, onSelectSection, school }) {
   const c = school.colors
@@ -795,15 +910,22 @@ export default function Ticketing() {
         </div>
       )}
 
-      {/* Interactive venue maps */}
-      {sport === 'football' && (
+      {/* Interactive venue maps — school-specific where available, generic fallback otherwise */}
+      {sport === 'football' && school.id === 'wofford' && (
         <GibbsStadiumMap
           selectedSection={selectedSection}
           onSelectSection={setSelectedSection}
           school={school}
         />
       )}
-      {sport === 'basketball' && (
+      {sport === 'football' && school.id !== 'wofford' && (
+        <GenericStadiumMap
+          selectedSection={selectedSection}
+          onSelectSection={setSelectedSection}
+          school={school}
+        />
+      )}
+      {sport === 'basketball' && school.id === 'wofford' && (
         <BasketballArenaMap
           selectedSection={selectedSection}
           onSelectSection={setSelectedSection}
@@ -811,12 +933,26 @@ export default function Ticketing() {
           sport="basketball"
         />
       )}
-      {sport === 'volleyball' && (
+      {sport === 'basketball' && school.id !== 'wofford' && (
+        <GenericStadiumMap
+          selectedSection={selectedSection}
+          onSelectSection={setSelectedSection}
+          school={school}
+        />
+      )}
+      {sport === 'volleyball' && school.id === 'wofford' && (
         <BasketballArenaMap
           selectedSection={selectedSection}
           onSelectSection={setSelectedSection}
           school={school}
           sport="volleyball"
+        />
+      )}
+      {sport === 'volleyball' && school.id !== 'wofford' && (
+        <GenericStadiumMap
+          selectedSection={selectedSection}
+          onSelectSection={setSelectedSection}
+          school={school}
         />
       )}
 
