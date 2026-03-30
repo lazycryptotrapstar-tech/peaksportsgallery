@@ -428,7 +428,7 @@ holycross: {
     vip: ['VIP Box (Fitton Field)', 'Premier Baseball Lot', 'Reserved Cushion'],
     rivals: ['Lehigh', 'Fordham', 'Georgetown'],
     sponsors: ['Hanover Insurance', 'UMass Memorial Health', 'Commerce Bank', 'Polar Beverages'],
-    emoji: '⚔️',
+    emoji: '🏅',
   },
 
 export const SCHOOL_LIST = Object.values(SCHOOLS)
