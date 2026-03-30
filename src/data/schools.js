@@ -431,4 +431,6 @@ holycross: {
     emoji: '🏅',
   },
 
+}
+
 export const SCHOOL_LIST = Object.values(SCHOOLS)
