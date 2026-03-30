@@ -397,6 +397,38 @@ export const SCHOOLS = {
     sponsors: ['Sunroc Corporation', 'Red Cliffs Mall', 'Dixie Regional Medical', 'Zions Bank'],
     emoji: '🔥',
   },
-}
+
+holycross: {
+    id: 'holycross',
+    name: 'College of the Holy Cross',
+    short: 'Holy Cross',
+    mascot: 'Crusaders',
+    mascotName: 'Cruz',
+    conference: 'Patriot League',
+    location: 'Worcester, MA',
+    tier: 'Small',
+    enrollment: 3100,
+    colors: {
+      primary: '#582C83',
+      accent: '#C8A96E',
+      accent2: '#ffffff',
+      bg: '#F8F5FF',
+      border: '#e0d0f0',
+    },
+    agent: {
+      name: 'Chris Kaberry',
+      email: 'ckaberry@holycross.edu',
+      title: 'Director of Ticket Sales',
+      phone: '1-844-462-7677',
+    },
+    venue: {
+      football: { name: 'Fitton Field', field: 'Fitton Field', capacity: 11000, opened: 1924, surface: 'FieldTurf' },
+      basketball: { name: 'Hart Center', capacity: 3600, opened: 1975 },
+    },
+    vip: ['VIP Box (Fitton Field)', 'Premier Baseball Lot', 'Reserved Cushion'],
+    rivals: ['Lehigh', 'Fordham', 'Georgetown'],
+    sponsors: ['Hanover Insurance', 'UMass Memorial Health', 'Commerce Bank', 'Polar Beverages'],
+    emoji: '⚔️',
+  },
 
 export const SCHOOL_LIST = Object.values(SCHOOLS)
