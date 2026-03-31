@@ -68,7 +68,7 @@ const parseDraft = (raw) => {
 
 // ── CSS ───────────────────────────────────────────────────────────────────────
 const CSS = (primary) => `
-  .crm-shell { background:var(--pb-bg); min-height:100%; font-family:'DM Sans',Inter,sans-serif; color:var(--pb-text); }
+  .crm-shell { background:var(--pb-bg); min-height:100%; font-family:'DM Sans',Inter,sans-serif; color:var(--pb-text); max-width:100%; overflow-x:hidden; }
   .crm-btn { display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:10px; border:1px solid var(--pb-border); background:var(--pb-surface); color:var(--pb-text); cursor:pointer; font-size:13px; font-family:'DM Sans',sans-serif; font-weight:600; transition:all 0.15s; }
   .crm-btn:hover { border-color:${primary}; color:${primary}; }
   .crm-btn-primary { background:${primary}; border-color:${primary}; color:#fff !important; }
@@ -84,10 +84,10 @@ const CSS = (primary) => `
   .crm-row:hover { border-color:${primary}44; background:var(--pb-surface2); transform:translateX(2px); }
   .crm-row.active { border-color:${primary}; background:var(--pb-surface2); }
   .crm-score { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:#fff; }
-  .crm-touch-btn { width:38px; height:38px; border-radius:9px; border:1px solid var(--pb-border); background:var(--pb-surface2); color:var(--pb-muted); cursor:pointer; font-weight:700; font-size:14px; transition:all 0.15s; }
+  .crm-touch-btn { width:38px; height:38px; border-radius:9px; border:1px solid var(--pb-border); background:var(--pb-surface2); color:#555; cursor:pointer; font-weight:700; font-size:14px; transition:all 0.15s; }
   .crm-touch-btn.active { background:${primary}; border-color:${primary}; color:#fff; }
   .crm-stage-pill { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-family:'Space Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
-  .crm-cam-pill { display:inline-flex; align-items:center; gap:5px; padding:6px 14px; border-radius:20px; border:1px solid var(--pb-border); background:var(--pb-surface2); color:var(--pb-muted); cursor:pointer; font-family:'Space Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; transition:all 0.15s; }
+  .crm-cam-pill { display:inline-flex; align-items:center; gap:5px; padding:6px 14px; border-radius:20px; border:1px solid var(--pb-border); background:var(--pb-surface2); color:#555; cursor:pointer; font-family:'Space Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; transition:all 0.15s; }
   .crm-cam-pill.active { background:${primary}; border-color:${primary}; color:#fff; }
   .crm-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; }
   .crm-modal { background:var(--pb-surface); border-radius:20px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
@@ -95,9 +95,11 @@ const CSS = (primary) => `
   @media (max-width: 640px) {
     .crm-stats-grid { grid-template-columns: 1fr 1fr !important; }
     .crm-pipeline-grid { grid-template-columns: 1fr !important; }
-    .crm-modal { padding: 20px !important; }
+    .crm-modal { padding: 20px !important; border-radius: 0 !important; max-height: 100vh !important; }
     .crm-modal-fields { grid-template-columns: 1fr !important; }
-    .crm-contact-panel { position:fixed !important; inset:auto 0 0 0 !important; border-radius:20px 20px 0 0 !important; max-height:80vh !important; overflow-y:auto !important; z-index:100; }
+    .crm-contact-panel { position:fixed !important; inset:auto 0 72px 0 !important; border-radius:20px 20px 0 0 !important; max-height:75vh !important; overflow-y:auto !important; z-index:100; box-shadow: 0 -8px 30px rgba(0,0,0,0.15); }
+    .crm-shell { max-width: 100vw !important; overflow-x: hidden !important; }
+    .crm-row { min-width: 0 !important; }
   }
 `
 
@@ -182,7 +184,7 @@ function AddProspectModal({ school, onClose, onAdd }) {
             <p className="crm-label" style={{ marginBottom: 4 }}>New Prospect</p>
             <h3 style={{ margin: 0, fontFamily: "'Bebas Neue',sans-serif", fontSize: 28, color: 'var(--pb-text)', letterSpacing: '0.04em' }}>Add Contact</h3>
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--pb-muted)' }}><X size={20} /></button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#444' }}><X size={20} /></button>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -431,7 +433,7 @@ export default function CRM() {
                 <Zap size={16} color={primary} style={{ marginTop: 2, flexShrink: 0 }} />
                 <div>
                   <p className="crm-label" style={{ marginBottom: 3 }}>{parsed.angle}</p>
-                  <p style={{ margin: 0, fontSize: 13, color: 'var(--pb-muted)', lineHeight: 1.5 }}>{parsed.reason}</p>
+                  <p style={{ margin: 0, fontSize: 13, color: '#444', lineHeight: 1.5 }}>{parsed.reason}</p>
                 </div>
               </div>
 
@@ -439,10 +441,10 @@ export default function CRM() {
               <div style={{ background: '#fff', border: '1px solid var(--pb-border)', borderRadius: 16, overflow: 'hidden', marginBottom: 16 }}>
                 <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--pb-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
                   <div>
-                    <p style={{ margin: 0, fontSize: 13, color: 'var(--pb-muted)' }}>
+                    <p style={{ margin: 0, fontSize: 13, color: '#444' }}>
                       <span style={{ color: 'var(--pb-text)', fontWeight: 600 }}>To:</span> {selectedContact.name} · <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11 }}>{selectedContact.email}</span>
                     </p>
-                    <p style={{ margin: '3px 0 0', fontSize: 11, color: 'var(--pb-muted)', fontFamily: "'Space Mono',monospace" }}>
+                    <p style={{ margin: '3px 0 0', fontSize: 11, color: '#444', fontFamily: "'Space Mono',monospace" }}>
                       Touch {touch} of 3 · {campaign}
                     </p>
                   </div>
@@ -579,7 +581,7 @@ export default function CRM() {
                     <div style={{ padding: '1px 8px', borderRadius: 20, background: `${stage.color}18`, fontFamily: "'Space Mono',monospace", fontSize: 9, color: stage.color, fontWeight: 700 }}>
                       {stageContacts.length}
                     </div>
-                    <p style={{ margin: 0, fontSize: 11, color: 'var(--pb-muted)', opacity: 0.7 }}>{stage.desc}</p>
+                    <p style={{ margin: 0, fontSize: 11, color: '#444', opacity: 0.7 }}>{stage.desc}</p>
                   </div>
 
                   {/* Contact rows */}
@@ -606,7 +608,7 @@ export default function CRM() {
                           {/* Info */}
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: 'var(--pb-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ct.name}</p>
-                            <p style={{ margin: 0, fontSize: 11, color: 'var(--pb-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ct.email}</p>
+                            <p style={{ margin: 0, fontSize: 11, color: '#444', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ct.email}</p>
                           </div>
                           {/* Touch badges */}
                           <TouchBadges contactId={ct.id} touchMap={touchMap} />
@@ -648,7 +650,7 @@ export default function CRM() {
                     <div className="crm-score" style={{ background: SCORE_COLOR(computeScore(selectedContact)) }}>{computeScore(selectedContact)}</div>
                     <div>
                       <p className="crm-label" style={{ marginBottom: 2 }}>Score</p>
-                      <p style={{ margin: 0, fontSize: 12, color: 'var(--pb-muted)' }}>{selectedContact.title}</p>
+                      <p style={{ margin: 0, fontSize: 12, color: '#444' }}>{selectedContact.title}</p>
                     </div>
                     <div style={{ marginLeft: 'auto' }}>
                       <TouchBadges contactId={selectedContact.id} touchMap={touchMap} />
@@ -677,7 +679,7 @@ export default function CRM() {
                       {[1, 2, 3].map(t => (
                         <button key={t} className={`crm-touch-btn${touch === t ? ' active' : ''}`} onClick={() => setTouch(t)}>{t}</button>
                       ))}
-                      <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: 'var(--pb-muted)', alignSelf: 'center', marginLeft: 4 }}>
+                      <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: '#444', alignSelf: 'center', marginLeft: 4 }}>
                         {touch === 1 ? 'The Moment' : touch === 2 ? 'The Identity' : 'The Door'}
                       </span>
                     </div>
