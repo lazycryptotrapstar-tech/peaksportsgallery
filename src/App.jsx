@@ -33,7 +33,7 @@ function AppShell() {
         <div className="desktop-sidebar">
           <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
-        <main style={{ flex: 1, overflowY: 'auto', background: 'var(--color-bg)' }} className="fade-in">
+        <main style={{ flex: 1, overflowY: 'auto', background: 'var(--color-bg)', paddingBottom: 72 }} className="fade-in">
           {renderTab()}
         </main>
       </div>
@@ -62,7 +62,7 @@ function MobileNav({ activeTab, onTabChange }) {
     <nav className="mobile-nav" style={{
       position: 'fixed', bottom: 0, left: 0, right: 0,
       background: 'white', borderTop: '1px solid #e8eaed',
-      padding: '8px 0 12px', zIndex: 40,
+      padding: '4px 0 8px', zIndex: 40,
       justifyContent: 'space-around', alignItems: 'center',
     }}>
       {tabs.map(tab => (
