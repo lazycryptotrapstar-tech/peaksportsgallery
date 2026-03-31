@@ -223,7 +223,7 @@ function GenericStadiumMap({ selectedSection, onSelectSection, school }) {
         <text x={260} y={272} textAnchor="middle" fill="rgba(255,255,255,0.25)" fontSize={8} fontFamily="Space Mono" letterSpacing="2">VISITOR SIDE</text>
       </svg>
 
-      <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#666', margin: '6px 0 0', textAlign: 'center' }}>
+      <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#94a3b8', margin: '6px 0 0', textAlign: 'center' }}>
         Exact section map coming soon · Pricing is representative
       </p>
     </div>
@@ -640,7 +640,7 @@ MBB Single Game: $22 Premium / $18 Reserved
       {/* Chat window */}
       {open && (
         <div style={{
-          position: 'fixed', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 220px)', right: 16, zIndex: 1000,
+          position: 'fixed', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 160px)', right: 16, zIndex: 1000,
           width: 320, height: 460,
           background: '#fff', borderRadius: 20,
           boxShadow: '0 8px 40px rgba(0,0,0,0.18)',
@@ -719,7 +719,7 @@ MBB Single Game: $22 Premium / $18 Reserved
       <button
         onClick={() => setOpen(o => !o)}
         style={{
-          position: 'fixed', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 148px)', right: 16, zIndex: 1000,
+          position: 'fixed', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 90px)', right: 16, zIndex: 1000,
           width: 56, height: 56, borderRadius: '50%',
           background: c.primary, border: 'none', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -796,7 +796,7 @@ export default function Ticketing() {
             ))}
           </div>
           <QrCode size={72} style={{ display: 'block', margin: '0 auto 16px', color: '#e0e0e0' }} />
-          <p style={{ textAlign: 'center', fontSize: 12, color: '#666', marginBottom: 20 }}>Confirmation sent · Tickets delivered to your email</p>
+          <p style={{ textAlign: 'center', fontSize: 12, color: '#94a3b8', marginBottom: 20 }}>Confirmation sent · Tickets delivered to your email</p>
           <button onClick={() => { setStage('browse'); setSelectedSection(null); setQty(2) }}
             style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: school.colors.primary, color: 'white', fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 16, cursor: 'pointer' }}>
             ← Back to Tickets
@@ -812,7 +812,7 @@ export default function Ticketing() {
       <div style={{ marginBottom: 24 }}>
         <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: school.colors.accent, marginBottom: 6 }}>{school.name} · Ticket Marketplace</p>
         <h2 style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 'clamp(32px,5vw,52px)', color: '#111', margin: 0 }}>Ticket Hub</h2>
-        <p style={{ fontSize: 14, color: '#444', marginTop: 4 }}>{venueInfo?.name} · {venueInfo?.capacity?.toLocaleString()} capacity</p>
+        <p style={{ fontSize: 14, color: '#64748b', marginTop: 4 }}>{venueInfo?.name} · {venueInfo?.capacity?.toLocaleString()} capacity</p>
       </div>
 
       {/* ── Sale announcement banner — dismisses on tap or scroll ── */}
@@ -1027,7 +1027,7 @@ export default function Ticketing() {
               <div style={{ padding: '32px 0', textAlign: 'center' }}>
                 <div style={{ width: 56, height: 56, borderRadius: '50%', background: school.colors.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', fontSize: 24 }}>{school.emoji}</div>
                 <p style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 18, color: '#111', margin: '0 0 4px' }}>Select a Section</p>
-                <p style={{ fontSize: 13, color: '#666', margin: 0 }}>Choose from the sections on the left</p>
+                <p style={{ fontSize: 13, color: '#94a3b8', margin: 0 }}>Choose from the sections on the left</p>
               </div>
             ) : (
               <div>
@@ -1036,7 +1036,7 @@ export default function Ticketing() {
                     <div style={{ width: 8, height: 8, borderRadius: '50%', background: school.colors.accent }} />
                     <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: '#111' }}>{selectedSection.name}</p>
                   </div>
-                  <p style={{ margin: 0, fontSize: 12, color: '#444', paddingLeft: 14 }}>{selectedSection.desc}</p>
+                  <p style={{ margin: 0, fontSize: 12, color: '#64748b', paddingLeft: 14 }}>{selectedSection.desc}</p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', borderRadius: 10, background: tier.bg, border: `1px solid ${tier.color}40`, marginBottom: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -1058,7 +1058,7 @@ export default function Ticketing() {
                 </div>
                 <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: 14, marginBottom: 16 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 14 }}>
-                    <span style={{ color: '#444' }}>{qty}x {selectedSection.label}</span>
+                    <span style={{ color: '#64748b' }}>{qty}x {selectedSection.label}</span>
                     <span style={{ fontWeight: 700, color: '#111' }}>${subtotal.toFixed(2)}</span>
                   </div>
                   {discountAmt > 0 && (
@@ -1067,16 +1067,16 @@ export default function Ticketing() {
                       <span>-${discountAmt.toFixed(2)}</span>
                     </div>
                   )}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 12, color: '#666' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 12, color: '#94a3b8' }}>
                     <span>Facility fee ({qty}x)</span><span>${(2.50 * qty).toFixed(2)}</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#666' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#94a3b8' }}>
                     <span>Processing ({qty}x)</span><span>${(1.50 * qty).toFixed(2)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: `3px solid ${school.colors.primary}`, paddingTop: 12, marginTop: 12 }}>
                     <span style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 18, color: '#111' }}>Total</span>
                     <div style={{ textAlign: 'right' }}>
-                      {discountAmt > 0 && <p style={{ margin: 0, fontSize: 11, color: '#666', textDecoration: 'line-through' }}>${(subtotal + fees).toFixed(2)}</p>}
+                      {discountAmt > 0 && <p style={{ margin: 0, fontSize: 11, color: '#94a3b8', textDecoration: 'line-through' }}>${(subtotal + fees).toFixed(2)}</p>}
                       <span style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 32, color: school.colors.accent }}>${total.toFixed(2)}</span>
                     </div>
                   </div>
@@ -1087,7 +1087,7 @@ export default function Ticketing() {
                 </button>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderRadius: 10, background: '#f8fafc' }}>
                   <ShieldCheck size={16} color={school.colors.accent} />
-                  <p style={{ margin: 0, fontSize: 12, color: '#444', fontWeight: 500 }}>Secure checkout · Official {school.short} tickets</p>
+                  <p style={{ margin: 0, fontSize: 12, color: '#64748b', fontWeight: 500 }}>Secure checkout · Official {school.short} tickets</p>
                 </div>
               </div>
             )}
@@ -1108,7 +1108,7 @@ export default function Ticketing() {
             <p style={{ margin: 0, fontFamily: "'Rajdhani',sans-serif", fontWeight: 700, fontSize: 18, color: '#111' }}>
               Select a section above
             </p>
-            <p style={{ margin: 0, fontSize: 13, color: '#666' }}>Tap any section card</p>
+            <p style={{ margin: 0, fontSize: 13, color: '#94a3b8' }}>Tap any section card</p>
           </div>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
@@ -1116,7 +1116,7 @@ export default function Ticketing() {
               <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: '#111', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {selectedSection.name}
               </p>
-              <p style={{ margin: 0, fontSize: 12, color: '#444' }}>
+              <p style={{ margin: 0, fontSize: 12, color: '#64748b' }}>
                 {qty} ticket{qty > 1 ? 's' : ''} · <span style={{ fontWeight: 700, color: school.colors.accent }}>${total.toFixed(2)}</span>
               </p>
             </div>

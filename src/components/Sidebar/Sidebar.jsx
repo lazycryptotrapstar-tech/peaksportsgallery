@@ -1,134 +1,94 @@
 import React from 'react'
 import { useSchool } from '../../context/SchoolContext'
-import { supabase } from '../../lib/supabase'
+import { MEMBERSHIP_TIERS } from '../../data/tiers'
+import { Sparkles, ShoppingCart, Mail, TrendingUp, Network, BarChart2 } from 'lucide-react'
 
-const TABS = [
-  { id: 'agent',     label: 'Sales Agent',    sub: 'AI Chat',         icon: '🤖' },
-  { id: 'crm',       label: 'CRM Outreach',   sub: 'AI Emails · Leads', icon: '📧' },
-  { id: 'ticketing', label: 'Ticket Hub',      sub: 'Marketplace',     icon: '🎟️' },
-  { id: 'analytics', label: 'Analytics',       sub: 'Performance',     icon: '📊' },
-  { id: 'insights',  label: 'AI Productivity', sub: 'AI vs Manual',    icon: '⚡' },
-  { id: 'stack',     label: 'Tech Stack',      sub: 'Infrastructure',  icon: '🔧' },
+const NAV_ITEMS = [
+  { id: 'agent',     label: 'Sales Agent',     sub: 'AI Chat',          icon: Sparkles },
+  { id: 'crm',       label: 'CRM Outreach',    sub: 'AI Emails · Leads', icon: Mail },
+  { id: 'ticketing', label: 'Ticket Hub',      sub: 'Marketplace',       icon: ShoppingCart },
+  { id: 'analytics', label: 'Analytics',       sub: 'Performance',       icon: TrendingUp },
+  { id: 'insights',  label: 'AI Productivity', sub: 'AI vs Manual',      icon: BarChart2 },
+  { id: 'stack',     label: 'Tech Stack',      sub: 'Infrastructure',    icon: Network },
 ]
 
 export default function Sidebar({ activeTab, onTabChange }) {
-  const { school } = useSchool()
-  const c = school.colors
-
-  const handleSignOut = async () => {
-    try {
-      await supabase.auth.signOut()
-    } catch (e) {
-      // fallback — reload to clear session
-      window.location.href = '/'
-    }
-  }
-
-  // Top contact display name
-  const repName = school.agent?.name || 'Rep'
-  const initials = repName.split(' ').map(n => n[0]).slice(0, 2).join('')
+  const { school, memberTier } = useSchool()
+  const tier = MEMBERSHIP_TIERS[memberTier]
 
   return (
     <div style={{
-      width: 220,
-      height: '100%',
-      background: c.primary,
+      width: 256,
+      minWidth: 256,
+      height: '100vh',
+      background: school.colors.primary,
       display: 'flex',
       flexDirection: 'column',
-      borderRight: `1px solid rgba(255,255,255,0.06)`,
-      flexShrink: 0,
+      position: 'sticky',
+      top: 0,
+      overflowY: 'auto',
+      borderRight: `1px solid ${school.colors.accent}33`,
     }}>
-
-      {/* Rep profile */}
-      <div style={{
-        padding: '18px 16px 14px',
-        borderBottom: `1px solid rgba(255,255,255,0.08)`,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      {/* Logo area */}
+      <div style={{ padding: '24px 20px 16px', borderBottom: `1px solid ${school.colors.accent}22` }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
           <div style={{
-            width: 38, height: 38, borderRadius: 12,
-            background: `${c.accent}22`,
-            border: `1px solid ${c.accent}44`,
+            width: 36, height: 36, borderRadius: 10,
+            background: `${school.colors.accent}22`,
+            border: `1px solid ${school.colors.accent}44`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 15, flexShrink: 0,
+            fontSize: 20,
           }}>
             {school.emoji}
           </div>
-          <div style={{ minWidth: 0 }}>
-            <p style={{
-              margin: 0,
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 700,
-              fontSize: 13,
-              color: '#ffffff',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}>
-              {repName}
+          <div>
+            <p style={{ margin: 0, fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 20, color: 'white', lineHeight: 1.1 }}>
+              {school.mascotName}<span style={{ color: school.colors.accent2 }}>.</span><span style={{ color: school.colors.accent }}>ai</span>
             </p>
-            <p style={{
-              margin: 0,
-              fontFamily: "'Space Mono', monospace",
-              fontSize: 9,
-              color: c.accent,
-              letterSpacing: '0.08em',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}>
-              {school.short} · {school.conference}
+            <p style={{ margin: 0, fontFamily: "'Space Mono', monospace", fontSize: 9, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>
+              {school.name} · {school.conference}
             </p>
           </div>
         </div>
+
+        {/* Status + tier */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
+          <div style={{
+            width: 7, height: 7, borderRadius: '50%',
+            background: school.colors.accent,
+            boxShadow: `0 0 6px ${school.colors.accent}`,
+          }} />
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: tier.color, fontWeight: 700 }}>
+            {tier.label.toUpperCase()}
+          </span>
+        </div>
       </div>
 
-      {/* Nav tabs */}
-      <nav style={{ flex: 1, padding: '10px 8px', overflowY: 'auto' }}>
-        {TABS.map(tab => {
-          const active = activeTab === tab.id
+      {/* Nav items */}
+      <nav style={{ flex: 1, padding: '12px 10px' }}>
+        {NAV_ITEMS.map(item => {
+          const Icon = item.icon
+          const active = activeTab === item.id
           return (
             <button
-              key={tab.id}
-              onClick={() => onTabChange(tab.id)}
+              key={item.id}
+              onClick={() => onTabChange(item.id)}
               style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                padding: '9px 10px',
-                borderRadius: 10,
-                border: 'none',
-                background: active ? `${c.accent}18` : 'transparent',
-                cursor: 'pointer',
-                textAlign: 'left',
-                marginBottom: 2,
-                transition: 'all 0.15s',
-                borderLeft: active ? `3px solid ${c.accent}` : '3px solid transparent',
+                width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+                padding: '10px 12px', marginBottom: 2, borderRadius: 10,
+                border: 'none', cursor: 'pointer', textAlign: 'left',
+                background: active ? `${school.colors.accent}22` : 'transparent',
+                borderLeft: active ? `3px solid ${school.colors.accent}` : '3px solid transparent',
+                transition: 'all 0.15s ease',
               }}
             >
-              <span style={{ fontSize: 15, flexShrink: 0 }}>{tab.icon}</span>
-              <div style={{ minWidth: 0 }}>
-                <p style={{
-                  margin: 0,
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontWeight: active ? 700 : 500,
-                  fontSize: 13,
-                  color: active ? '#ffffff' : 'rgba(255,255,255,0.7)',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}>
-                  {tab.label}
+              <Icon size={18} color={active ? school.colors.accent : 'rgba(255,255,255,0.4)'} />
+              <div>
+                <p style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontWeight: active ? 700 : 500, fontSize: 13, color: active ? 'white' : 'rgba(255,255,255,0.6)', lineHeight: 1.2 }}>
+                  {item.label}
                 </p>
-                <p style={{
-                  margin: 0,
-                  fontFamily: "'Space Mono', monospace",
-                  fontSize: 9,
-                  color: active ? c.accent : 'rgba(255,255,255,0.35)',
-                  letterSpacing: '0.06em',
-                }}>
-                  {tab.sub}
+                <p style={{ margin: 0, fontFamily: "'Space Mono', monospace", fontSize: 9, color: active ? school.colors.accent : 'rgba(255,255,255,0.25)' }}>
+                  {item.sub}
                 </p>
               </div>
             </button>
@@ -136,38 +96,11 @@ export default function Sidebar({ activeTab, onTabChange }) {
         })}
       </nav>
 
-      {/* Sign Out */}
-      <div style={{
-        padding: '12px 8px',
-        borderTop: `1px solid rgba(255,255,255,0.08)`,
-      }}>
-        <button
-          onClick={handleSignOut}
-          style={{
-            width: '100%',
-            padding: '9px 12px',
-            borderRadius: 10,
-            border: '1px solid rgba(255,255,255,0.12)',
-            background: 'transparent',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            transition: 'all 0.15s',
-          }}
-          onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
-          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-        >
-          <span style={{ fontSize: 13 }}>🚪</span>
-          <span style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: 12,
-            fontWeight: 600,
-            color: 'rgba(255,255,255,0.55)',
-          }}>
-            Sign Out
-          </span>
-        </button>
+      {/* Footer */}
+      <div style={{ padding: '12px 16px', borderTop: `1px solid ${school.colors.accent}22` }}>
+        <p style={{ margin: 0, fontFamily: "'Space Mono', monospace", fontSize: 9, color: 'rgba(255,255,255,0.2)', textAlign: 'center' }}>
+          POWERED BY PEAK SPORTS MGMT
+        </p>
       </div>
     </div>
   )
