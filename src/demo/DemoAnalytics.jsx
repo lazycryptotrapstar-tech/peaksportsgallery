@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { DS } from './DemoApp'
+import { DS } from './DemoConstants'
 
 export default function DemoAnalytics() {
   const [period, setPeriod] = useState('FY25')

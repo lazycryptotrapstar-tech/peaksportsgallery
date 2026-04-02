@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { DS, DEMO_SCHOOL } from './DemoApp'
+import { DS, DEMO_SCHOOL } from './DemoConstants'
 import { DEMO_CONTACTS } from './DemoContacts'
 
 const N8N_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/sales-agent'

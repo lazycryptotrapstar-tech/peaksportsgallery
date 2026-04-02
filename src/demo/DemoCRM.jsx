@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { DS } from './DemoApp'
+import { DS } from './DemoConstants'
 import { DEMO_CONTACTS } from './DemoContacts'
 
 const PLAYBOOK_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/playbook'

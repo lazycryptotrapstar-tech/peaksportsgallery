@@ -1,6 +1,6 @@
 // DemoInsights.jsx
 import React from 'react'
-import { DS } from './DemoApp'
+import { DS } from './DemoConstants'
 
 export default function DemoInsights() {
   const INNER = {padding:'34px 38px',maxWidth:1080}

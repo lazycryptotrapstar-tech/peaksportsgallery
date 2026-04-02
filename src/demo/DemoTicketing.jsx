@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { DS, DEMO_SCHOOL } from './DemoApp'
+import { DS, DEMO_SCHOOL } from './DemoConstants'
 
 const SECTIONS = [
   {id:'HC1',label:'Home Chairback A',zone:'Home Chairback',price:27,status:'HIGH',desc:'Home sideline · 40-50 yd line'},
