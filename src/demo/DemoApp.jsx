@@ -5,6 +5,7 @@ import DemoSalesAgent from './DemoSalesAgent'
 import DemoTicketing from './DemoTicketing'
 import DemoAnalytics from './DemoAnalytics'
 import DemoInsights from './DemoInsights'
+import DemoPriority from './DemoPriority'
 
 const NAV = [
   {id:'agent',    label:'Sales Agent',   sub:'AI Chat',          svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>},
@@ -12,11 +13,12 @@ const NAV = [
   {id:'ticketing',label:'Ticket Hub',    sub:'Marketplace',      svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9l3-3 3 3M2 15l3 3 3-3M14 9l3-3 3 3M14 15l3 3 3-3"/><rect x="5" y="8" width="4" height="8" rx="1"/><rect x="15" y="8" width="4" height="8" rx="1"/></svg>},
   {id:'analytics',label:'Analytics',    sub:'Performance',      svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>},
   {id:'insights', label:'AI Productivity',sub:'AI vs Manual',   svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>},
+  {id:'priority',label:'Priority Points', sub:'Donor Rankings',  svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>},
 ]
 
 export default function DemoApp() {
   const [tab, setTab] = useState('agent')
-  const views = {agent:<DemoSalesAgent/>,crm:<DemoCRM/>,ticketing:<DemoTicketing/>,analytics:<DemoAnalytics/>,insights:<DemoInsights/>}
+  const views = {agent:<DemoSalesAgent/>,crm:<DemoCRM/>,ticketing:<DemoTicketing/>,analytics:<DemoAnalytics/>,insights:<DemoInsights/>,priority:<DemoPriority/>}
 
   return (
     <div style={{display:'flex',height:'100vh',overflow:'hidden',background:DS.bg,fontFamily:"'DM Sans',system-ui,sans-serif"}}>
@@ -49,9 +51,7 @@ export default function DemoApp() {
         {/* Header */}
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'15px 16px 13px',borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
           <div style={{display:'flex',alignItems:'center',gap:9}}>
-            <img src="/peak_logo.png" alt="Peak Sports MGMT"
-  style={{width:28,height:28,objectFit:'contain',flexShrink:0,
-  filter:'drop-shadow(0 1px 2px rgba(0,0,0,0.4))',opacity:0.95}}/>
+            <div style={{width:26,height:26,borderRadius:6,background:DS.psGreen,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:'white',letterSpacing:'-0.03em',flexShrink:0}}>PS</div>
             <div style={{width:1,height:14,background:'rgba(255,255,255,0.12)'}}/>
             <div style={{display:'flex',alignItems:'center',gap:5}}>
               <div style={{width:20,height:20,borderRadius:'50%',background:'rgba(255,255,255,0.10)',border:'1px solid rgba(255,255,255,0.12)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:'rgba(255,255,255,0.65)',fontFamily:"'Syne',sans-serif",flexShrink:0}}>M</div>
