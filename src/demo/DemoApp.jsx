@@ -49,7 +49,9 @@ export default function DemoApp() {
         {/* Header */}
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'15px 16px 13px',borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
           <div style={{display:'flex',alignItems:'center',gap:9}}>
-            <div style={{width:26,height:26,borderRadius:6,background:DS.psGreen,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:'white',letterSpacing:'-0.03em',flexShrink:0}}>PS</div>
+            <img src="/peak_logo.png" alt="Peak Sports MGMT"
+  style={{width:28,height:28,objectFit:'contain',flexShrink:0,
+  filter:'brightness(0) invert(1)',opacity:0.85}}/>
             <div style={{width:1,height:14,background:'rgba(255,255,255,0.12)'}}/>
             <div style={{display:'flex',alignItems:'center',gap:5}}>
               <div style={{width:20,height:20,borderRadius:'50%',background:'rgba(255,255,255,0.10)',border:'1px solid rgba(255,255,255,0.12)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:'rgba(255,255,255,0.65)',fontFamily:"'Syne',sans-serif",flexShrink:0}}>M</div>
