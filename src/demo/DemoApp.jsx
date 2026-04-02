@@ -51,7 +51,7 @@ export default function DemoApp() {
           <div style={{display:'flex',alignItems:'center',gap:9}}>
             <img src="/peak_logo.png" alt="Peak Sports MGMT"
   style={{width:28,height:28,objectFit:'contain',flexShrink:0,
-  filter:'brightness(0) invert(1)',opacity:0.85}}/>
+  filter:'drop-shadow(0 1px 2px rgba(0,0,0,0.4))',opacity:0.95}}/>
             <div style={{width:1,height:14,background:'rgba(255,255,255,0.12)'}}/>
             <div style={{display:'flex',alignItems:'center',gap:5}}>
               <div style={{width:20,height:20,borderRadius:'50%',background:'rgba(255,255,255,0.10)',border:'1px solid rgba(255,255,255,0.12)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:'rgba(255,255,255,0.65)',fontFamily:"'Syne',sans-serif",flexShrink:0}}>M</div>
