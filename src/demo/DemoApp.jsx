@@ -36,10 +36,15 @@ export default function DemoApp() {
         @keyframes dspin{to{transform:rotate(360deg)}}
         @keyframes dbounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
         .dview{animation:dfu 0.28s ease both}
+        @media (max-width:768px){
+          .demo-sidebar{display:none!important}
+          .demo-mobile-nav{display:flex!important}
+          :root{--mobile-nav-h:64px}
+        }
       `}</style>
 
       {/* SIDEBAR */}
-      <aside style={{width:222,flexShrink:0,background:DS.sidebar,display:'flex',flexDirection:'column',overflow:'hidden',borderRight:'1px solid rgba(255,255,255,0.05)'}}>
+      <aside className="demo-sidebar" style={{width:222,flexShrink:0,background:DS.sidebar,display:'flex',flexDirection:'column',overflow:'hidden',borderRight:'1px solid rgba(255,255,255,0.05)'}}>
 
         {/* Header */}
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'15px 16px 13px',borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
@@ -99,10 +104,23 @@ export default function DemoApp() {
 
       {/* CONTENT */}
       <main key={tab} className="dview" style={{flex:1,overflow:'hidden',position:'relative',background:DS.bg}}>
-        <div style={{position:'absolute',inset:0,overflowY:'auto'}}>
+        <div style={{position:'absolute',inset:0,overflowY:'auto',paddingBottom:'var(--mobile-nav-h,0px)'}}>
           {views[tab]}
         </div>
       </main>
+
+      {/* MOBILE BOTTOM NAV */}
+      <nav className="demo-mobile-nav" style={{display:'none',position:'fixed',bottom:0,left:0,right:0,zIndex:50,background:DS.sidebar,borderTop:'1px solid rgba(255,255,255,0.08)',padding:'8px 0 calc(8px + env(safe-area-inset-bottom,0px))',flexDirection:'row'}}>
+        {NAV.map(item=>{
+          const active = tab===item.id
+          return (
+            <button key={item.id} onClick={()=>setTab(item.id)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:4,border:'none',background:'none',cursor:'pointer',padding:'4px 4px 0',minWidth:44}}>
+              <span style={{color:active?DS.gold:'rgba(255,255,255,0.28)',display:'flex',transition:'color 0.15s'}}>{item.svg}</span>
+              <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:9.5,fontWeight:600,color:active?DS.gold:'rgba(255,255,255,0.28)',letterSpacing:'0.02em',lineHeight:1.2,transition:'color 0.15s'}}>{item.label.split(' ')[0]}</span>
+            </button>
+          )
+        })}
+      </nav>
     </div>
   )
 }
