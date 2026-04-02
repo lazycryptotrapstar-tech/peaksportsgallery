@@ -8,17 +8,40 @@ import DemoInsights from './DemoInsights'
 import DemoPriority from './DemoPriority'
 
 const NAV = [
-  {id:'agent',    label:'Sales Agent',   sub:'AI Chat',          svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>},
-  {id:'crm',      label:'CRM Outreach',  sub:'AI Emails · Leads',svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 9h20"/><path d="M6 4v5"/><path d="M18 4v5"/></svg>},
-  {id:'ticketing',label:'Ticket Hub',    sub:'Marketplace',      svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9l3-3 3 3M2 15l3 3 3-3M14 9l3-3 3 3M14 15l3 3 3-3"/><rect x="5" y="8" width="4" height="8" rx="1"/><rect x="15" y="8" width="4" height="8" rx="1"/></svg>},
-  {id:'analytics',label:'Analytics',    sub:'Performance',      svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>},
-  {id:'insights', label:'AI Productivity',sub:'AI vs Manual',   svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>},
-  {id:'priority',label:'Priority Points', sub:'Donor Rankings',  svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>},
+  {id:'agent',    label:'Sales Agent',    sub:'AI Chat',          svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>},
+  {id:'crm',      label:'CRM Outreach',   sub:'AI Emails · Leads',svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 9h20"/><path d="M6 4v5"/><path d="M18 4v5"/></svg>},
+  {id:'priority', label:'Priority Points', sub:'Donor Rankings',  svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>},
+  {id:'ticketing',label:'Ticket Hub',     sub:'Marketplace',      svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9l3-3 3 3M2 15l3 3 3-3M14 9l3-3 3 3M14 15l3 3 3-3"/><rect x="5" y="8" width="4" height="8" rx="1"/><rect x="15" y="8" width="4" height="8" rx="1"/></svg>},
+  {id:'analytics',label:'Analytics',     sub:'Revenue · AI Data', svg:<svg style={{width:17,height:17}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>},
 ]
+
+
+function DemoAnalyticsShell() {
+  const [subTab, setSubTab] = React.useState('revenue')
+  return (
+    <div style={{display:'flex',flexDirection:'column',height:'100%'}}>
+      {/* Sub-tab bar */}
+      <div style={{display:'flex',gap:0,borderBottom:`1px solid #EBE3D0`,background:'#FFFDF6',padding:'0 20px',flexShrink:0}}>
+        {[{id:'revenue',label:'Revenue Analytics'},{id:'ai',label:'AI vs Manual'}].map(t=>(
+          <button key={t.id} onClick={()=>setSubTab(t.id)} style={{
+            padding:'12px 18px',border:'none',background:'none',cursor:'pointer',
+            fontFamily:"'DM Sans',sans-serif",fontWeight:600,fontSize:13,
+            color:subTab===t.id?'#C4882A':'#9A7E5A',
+            borderBottom:subTab===t.id?'2px solid #C4882A':'2px solid transparent',
+            marginBottom:-1,transition:'all 0.15s ease',
+          }}>{t.label}</button>
+        ))}
+      </div>
+      <div style={{flex:1,overflowY:'auto'}}>
+        {subTab==='revenue' ? <DemoAnalytics/> : <DemoInsights/>}
+      </div>
+    </div>
+  )
+}
 
 export default function DemoApp() {
   const [tab, setTab] = useState('agent')
-  const views = {agent:<DemoSalesAgent/>,crm:<DemoCRM/>,ticketing:<DemoTicketing/>,analytics:<DemoAnalytics/>,insights:<DemoInsights/>,priority:<DemoPriority/>}
+  const views = {agent:<DemoSalesAgent/>,crm:<DemoCRM/>,priority:<DemoPriority/>,ticketing:<DemoTicketing/>,analytics:<DemoAnalyticsShell/>}
 
   return (
     <div style={{display:'flex',height:'100vh',overflow:'hidden',background:DS.bg,fontFamily:"'DM Sans',system-ui,sans-serif"}}>
