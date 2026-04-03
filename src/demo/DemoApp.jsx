@@ -87,7 +87,7 @@ export default function DemoApp() {
             <div style={{width:1,height:14,background:'rgba(255,255,255,0.12)'}}/>
             <div style={{display:'flex',alignItems:'center',gap:5}}>
               <div style={{width:20,height:20,borderRadius:'50%',background:'rgba(255,255,255,0.10)',border:'1px solid rgba(255,255,255,0.12)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:'rgba(255,255,255,0.65)',fontFamily:"'Syne',sans-serif",flexShrink:0}}>M</div>
-              <span style={{fontSize:12,fontWeight:500,color:'rgba(255,255,255,0.60)'}}>Midland</span>
+              <span style={{fontSize:12,fontWeight:500,color:'rgba(255,255,255,0.60)'}}>Peak</span>
             </div>
           </div>
           <div style={{fontSize:10.5,color:'rgba(255,255,255,0.28)',padding:'3px 9px',borderRadius:20,border:'1px solid rgba(255,255,255,0.09)'}}>Demo</div>
@@ -98,8 +98,8 @@ export default function DemoApp() {
           <div style={{display:'flex',alignItems:'center',gap:10}}>
             <div style={{width:36,height:36,borderRadius:9,background:'rgba(196,136,42,0.18)',border:'1.5px solid rgba(196,136,42,0.32)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:13,color:T.gold,flexShrink:0}}>A</div>
             <div style={{minWidth:0}}>
-              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:14,color:'rgba(255,255,255,0.90)',lineHeight:1.2}}>Ace<span style={{color:T.gold}}>.ai</span></div>
-              <div style={{fontSize:11,color:'rgba(255,255,255,0.32)',marginTop:2,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>Midland University · Demo</div>
+              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:14,color:'rgba(255,255,255,0.90)',lineHeight:1.2}}>Grip<span style={{color:T.gold}}>.ai</span></div>
+              <div style={{fontSize:11,color:'rgba(255,255,255,0.32)',marginTop:2,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>Peak University · Demo</div>
             </div>
           </div>
           <div style={{marginTop:10,display:'inline-flex',alignItems:'center',gap:5,fontSize:9.5,fontWeight:600,letterSpacing:'0.10em',textTransform:'uppercase',color:T.gold,padding:'4px 9px 4px 7px',borderRadius:20,background:'rgba(196,136,42,0.11)',border:'1px solid rgba(196,136,42,0.24)'}}>

@@ -15,9 +15,9 @@ export const DS = {
 }
 
 export const DEMO_SCHOOL = {
-  id:'demo', name:'Midland University', short:'Midland',
-  mascot:'Wildcats', mascotName:'Ace',
-  conference:'PEAK Athletics Conference', location:'Demo City, USA', emoji:'🐱',
+  id:'demo', name:'Peak University', short:'Peak',
+  mascot:'Mountaineers', mascotName:'Grip',
+  conference:'World Conference', location:'Texas', emoji:'🏔️',
   rivals:['Riverside Hawks','Eastfield Bears','Northgate Lions'],
   vip:['Champions Club','Courtside Suites','The Den (Premium)'],
   venue:{

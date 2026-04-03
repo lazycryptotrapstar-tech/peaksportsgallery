@@ -40,16 +40,16 @@ const scoreColor = s => s>=80?T.green:s>=60?T.amber:T.red
 
 const CAMPAIGNS = [
   {id:'TICKETS',label:'Ticket Sales',sub:'Live inventory · Real-time pricing',
-   opener:s=>`${s.emoji} Hey! Ace here — your ${s.name} ticket rep. Big games coming up at ${s.venue?.football?.name}. What sports are you into this season?`,
+   opener:s=>`${s.emoji} Hey! Grip here — your ${s.name} ticket rep. Big games coming up at ${s.venue?.football?.name}. What sports are you into this season?`,
    svg:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>},
   {id:'SPONSORSHIP',label:'Sponsorship',sub:'Corporate partners · Package builder',
-   opener:s=>`Hey! Ace here from ${s.name} athletics. Quick question — what's your primary marketing goal this year? Brand awareness, leads, or community presence?`,
+   opener:s=>`Hey! Grip here from ${s.name} athletics. Quick question — what's your primary marketing goal this year? Brand awareness, leads, or community presence?`,
    svg:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>},
   {id:'HOSPITALITY',label:'Hospitality',sub:'VIP access · Priority booking',
    opener:s=>`You have first access to ${s.vip?.[0]} this season. Are you thinking football, basketball, or both — and how many guests?`,
    svg:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m10 0h3a2 2 0 0 0 2-2v-3"/></svg>},
   {id:'ALUMNI',label:'Alumni Outreach',sub:'Class reunion · Group seating',
-   opener:s=>`${s.emoji} Once a Wildcat, always a Wildcat. We're building alumni sections for ${s.name} home games this season. What year did you graduate?`,
+   opener:s=>`${s.emoji} Once a Mountaineer, always a Mountaineer. We're building alumni sections for ${s.name} home games this season. What year did you graduate?`,
    svg:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>},
 ]
 
@@ -117,11 +117,11 @@ export default function DemoSalesAgent() {
   if (!campaign) return (
     <div style={INNER}>
       <div style={{marginBottom:6}}>
-        <div style={{...LABEL,marginBottom:5}}>Sales Agent · Midland</div>
+        <div style={{...LABEL,marginBottom:5}}>Sales Agent · Peak</div>
         <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',textAlign:'center'}}>Choose a Campaign</div>
       </div>
       <div style={{textAlign:'center'}}>
-        <p style={{fontSize:13,color:T.text3,marginBottom:30}}>Start a live conversation with Ace</p>
+        <p style={{fontSize:13,color:T.text3,marginBottom:30}}>Start a live conversation with Grip</p>
 
         {/* Campaign tiles */}
         <div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:14,maxWidth:580,margin:'0 auto 36px'}}>
@@ -142,11 +142,11 @@ export default function DemoSalesAgent() {
             <div style={{background:T.surface,borderRadius:31,overflow:'hidden'}}>
               <div style={{height:26,background:'#1A1512',borderRadius:'0 0 16px 16px',margin:'0 auto',width:76}}/>
               <div style={{background:T.green,padding:'11px 14px',display:'flex',alignItems:'center',gap:9}}>
-                <div style={{width:28,height:28,borderRadius:7,background:'rgba(196,136,42,0.22)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:T.gold,flexShrink:0}}>A</div>
+                <div style={{width:28,height:28,borderRadius:7,background:'rgba(196,136,42,0.22)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:T.gold,flexShrink:0}}>G</div>
                 <div>
                   <div style={{fontSize:12,fontWeight:600,color:'rgba(255,255,255,0.90)'}}>Ticket Sales</div>
                   <div style={{fontSize:9,color:'rgba(255,255,255,0.60)',display:'flex',alignItems:'center',gap:4}}>
-                    Midland
+                    Peak
                     <span style={{margin:'0 2px',opacity:.4}}>·</span>
                     <div style={{width:5,height:5,borderRadius:'50%',background:'#2ECC71',animation:'tp 1.5s ease-in-out infinite'}}/>
                     <span style={{color:'#2ECC71',fontSize:8.5,fontWeight:600,letterSpacing:'0.03em'}}>LIVE</span>
@@ -156,7 +156,7 @@ export default function DemoSalesAgent() {
               <div style={{padding:'14px 12px',display:'flex',flexDirection:'column',gap:10,minHeight:180,background:T.bg}}>
                 <div style={{display:'flex',gap:7,alignItems:'flex-end'}}>
                   <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:T.gold,fontFamily:"'Syne',sans-serif"}}>A</div>
-                  <div style={{maxWidth:'78%',padding:'8px 11px',borderRadius:'13px 13px 13px 3px',background:T.card,border:`1px solid ${T.border}`,color:T.text,fontSize:11,lineHeight:1.45,boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>Hey! Ace here — your Midland Wildcats ticket rep. Big game at Peak Sports Stadium coming up. What sports are you into?</div>
+                  <div style={{maxWidth:'78%',padding:'8px 11px',borderRadius:'13px 13px 13px 3px',background:T.card,border:`1px solid ${T.border}`,color:T.text,fontSize:11,lineHeight:1.45,boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>Hey! Grip here — your Peak Mountaineers ticket rep. Big game at Peak Sports Stadium coming up. What sports are you into?</div>
                 </div>
                 <div style={{display:'flex',justifyContent:'flex-end'}}>
                   <div style={{maxWidth:'70%',padding:'8px 11px',borderRadius:'13px 13px 3px 13px',background:T.green,color:'white',fontSize:11,lineHeight:1.45}}>I'm interested in football!</div>
@@ -167,7 +167,7 @@ export default function DemoSalesAgent() {
                 </div>
               </div>
               <div style={{background:'white',margin:'0 12px 12px',borderRadius:10,padding:'8px 10px',display:'flex',alignItems:'center',gap:8}}>
-                <div style={{flex:1,fontSize:11,color:T.text3}}>Message Ace…</div>
+                <div style={{flex:1,fontSize:11,color:T.text3}}>Message Grip…</div>
                 <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 </div>
@@ -180,7 +180,7 @@ export default function DemoSalesAgent() {
         {topContact && (
           <div style={{maxWidth:580,margin:'0 auto',padding:'14px 18px',borderRadius:14,border:`1px solid ${T.border}`,background:T.card,boxShadow:T.shSm,display:'flex',alignItems:'center',gap:12}}>
             <div style={{flex:1,minWidth:0}}>
-              <div style={{...LABEL,marginBottom:8}}>Top Contact · Midland</div>
+              <div style={{...LABEL,marginBottom:8}}>Top Contact · Peak</div>
               <div style={{display:'flex',alignItems:'center',gap:10}}>
                 <div style={{width:40,height:40,borderRadius:'50%',background:T.green,display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:900,fontSize:14,flexShrink:0}}>{topInitials}</div>
                 <div style={{minWidth:0}}>
@@ -218,7 +218,7 @@ export default function DemoSalesAgent() {
         {/* Chat header */}
         <div style={{padding:'10px 20px 12px',background:T.green,borderBottom:`1px solid rgba(255,255,255,0.12)`,display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
           <div style={{display:'flex',alignItems:'center',gap:10}}>
-            <div style={{width:36,height:36,borderRadius:10,background:'rgba(196,136,42,0.22)',border:'1px solid rgba(196,136,42,0.32)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:14,color:T.gold}}>A</div>
+            <div style={{width:36,height:36,borderRadius:10,background:'rgba(196,136,42,0.22)',border:'1px solid rgba(196,136,42,0.32)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:14,color:T.gold}}>G</div>
             <div>
               <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:15,color:'white',lineHeight:1.1}}>{campaign.label}</div>
               <div style={{fontSize:9,color:'rgba(255,255,255,0.60)',display:'flex',alignItems:'center',gap:4}}>
@@ -234,14 +234,14 @@ export default function DemoSalesAgent() {
           {messages.map((msg,i)=>(
             <div key={i} style={{display:'flex',justifyContent:msg.role==='user'?'flex-end':'flex-start',gap:8}}>
               {msg.role==='assistant' && (
-                <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:T.gold,fontFamily:"'Syne',sans-serif",flexShrink:0,marginTop:2}}>A</div>
+                <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:T.gold,fontFamily:"'Syne',sans-serif",flexShrink:0,marginTop:2}}>G</div>
               )}
               <div style={{maxWidth:'78%',padding:'9px 13px',borderRadius:msg.role==='user'?'16px 16px 3px 16px':'16px 16px 16px 3px',background:msg.role==='user'?T.green:T.card,color:msg.role==='user'?'white':T.text,border:msg.role==='user'?'none':`1px solid ${T.border}`,fontSize:13,lineHeight:1.55,fontFamily:"'DM Sans',sans-serif",boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>{msg.content}</div>
             </div>
           ))}
           {isTyping && (
             <div style={{display:'flex',gap:8}}>
-              <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:T.gold,fontFamily:"'Syne',sans-serif",flexShrink:0}}>A</div>
+              <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:T.gold,fontFamily:"'Syne',sans-serif",flexShrink:0}}>G</div>
               <div style={{padding:'9px 13px',borderRadius:'16px 16px 16px 3px',background:T.card,border:`1px solid ${T.border}`,display:'flex',gap:4,alignItems:'center'}}>
                 {[0,1,2].map(i=><div key={i} style={{width:5,height:5,borderRadius:'50%',background:T.gold,animation:`dbounce 1.2s ${i*0.2}s infinite`}}/>)}
               </div>
@@ -255,7 +255,7 @@ export default function DemoSalesAgent() {
           <div style={{display:'flex',gap:8}}>
             <input value={input} onChange={e=>setInput(e.target.value)}
               onKeyDown={e=>e.key==='Enter'&&!e.shiftKey&&sendMessage()}
-              placeholder="Message Ace…"
+              placeholder="Message Grip…"
               style={{flex:1,padding:'10px 14px',borderRadius:24,border:`1px solid ${T.border}`,fontSize:13,fontFamily:"'DM Sans',sans-serif",outline:'none',background:T.bg,color:T.text}}
               onFocus={e=>e.target.style.borderColor=T.gold} onBlur={e=>e.target.style.borderColor=T.border}
             />
@@ -263,7 +263,7 @@ export default function DemoSalesAgent() {
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
           </div>
-          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:8,color:T.text3,textAlign:'center',marginTop:7,letterSpacing:'0.05em'}}>Ace · Midland University · Simple Genius</div>
+          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:8,color:T.text3,textAlign:'center',marginTop:7,letterSpacing:'0.05em'}}>Grip · Peak University · Simple Genius</div>
         </div>
 
         {/* Home bar */}

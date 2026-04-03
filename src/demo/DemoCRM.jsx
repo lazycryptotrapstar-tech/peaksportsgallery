@@ -160,7 +160,7 @@ export default function DemoCRM() {
             id:ct.id, name:ct.name, email:ct.email, phone:ct.phone||'',
             title:ct.title||'', purchase_count:ct.purchase_count||0,
             status:ct.status||'warm', last_year:ct.last_year||0,
-            sport:ct.sport||'Football', tags:ct.tags||'',
+            sport:ct.sport||'Football', tags:Array.isArray(ct.tags)?ct.tags.join(','):ct.tags||'',
             city:ct.city||'', membership_tier:ct.membership_tier||'',
           },
         }),
@@ -218,7 +218,7 @@ export default function DemoCRM() {
       <div style={{padding:'18px 20px 0',flexShrink:0}}>
         <div className="crm-header-row" style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',marginBottom:14}}>
           <div>
-            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:T.text3,letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:3}}>CRM · Midland</div>
+            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:T.text3,letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:3}}>CRM · Peak</div>
             <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05}}>Sales Pipeline</div>
           </div>
           <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
@@ -400,8 +400,8 @@ export default function DemoCRM() {
           {/* Loading */}
           {selectedContact&&loading&&(
             <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:40,textAlign:'center'}}>
-              <div style={{width:56,height:56,borderRadius:'50%',background:T.goldBg,border:`1.5px solid ${T.goldBdr}`,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',fontSize:24}}>🐱</div>
-              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:20,color:T.text,marginBottom:6}}>Ace is drafting…</div>
+              <div style={{width:56,height:56,borderRadius:'50%',background:T.goldBg,border:`1.5px solid ${T.goldBdr}`,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',fontSize:24}}>🏔️</div>
+              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:20,color:T.text,marginBottom:6}}>Grip is drafting…</div>
               <div style={{fontSize:13,color:T.text3,marginBottom:24}}>Writing Touch {touch} for {selectedContact.name}</div>
               <div style={{display:'flex',gap:8}}>
                 {[0,1,2].map(i=><div key={i} style={{width:8,height:8,borderRadius:'50%',background:T.gold,animation:`dbounce 1.2s ${i*0.2}s infinite`}}/>)}

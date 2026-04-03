@@ -268,7 +268,7 @@ export default function DemoPriority() {
 
       {/* ══ Header ══════════════════════════════════════════════════════════ */}
       <div style={{marginBottom:18,opacity:loaded?1:0,transform:loaded?'none':'translateY(-8px)',transition:'opacity 0.4s,transform 0.4s'}}>
-        <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:T.text3,letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:4}}>Priority Points · Midland</div>
+        <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:T.text3,letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:4}}>Priority Points · Peak</div>
         <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05,marginBottom:4}}>Priority Point System</div>
         <div style={{fontSize:13,color:T.text3}}>Automated donor tier ranking · Replaces manual spreadsheets</div>
       </div>

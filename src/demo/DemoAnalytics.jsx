@@ -136,7 +136,7 @@ export default function DemoAnalytics() {
         transition:'opacity 0.4s ease,transform 0.4s ease',
       }}>
         <div>
-          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,fontWeight:600,letterSpacing:'0.09em',textTransform:'uppercase',color:T.text3,marginBottom:5}}>Performance · Midland</div>
+          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,fontWeight:600,letterSpacing:'0.09em',textTransform:'uppercase',color:T.text3,marginBottom:5}}>Performance · Peak</div>
           <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05}}>Revenue Analytics</div>
         </div>
         <div className="da-period" style={{display:'flex',gap:6}}>

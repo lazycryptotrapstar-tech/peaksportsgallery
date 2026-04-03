@@ -50,17 +50,17 @@ const SPORTS = [
   {id:'football',   label:'Football',       icon:'🏈', venue:'Peak Sports Stadium',     cap:12000},
   {id:'basketball', label:'Basketball',     icon:'🏀', venue:'Simple Genius Arena',      cap:4500},
   {id:'volleyball', label:'Volleyball',     icon:'🏐', venue:'Simple Genius Arena',      cap:2200},
-  {id:'softball',   label:'Softball',       icon:'🥎', venue:'Wildcat Softball Complex', cap:1800},
-  {id:'baseball',   label:'Baseball',       icon:'⚾', venue:'Wildcat Baseball Park',    cap:2400},
+  {id:'softball',   label:'Softball',       icon:'🥎', venue:'Peak Softball Complex', cap:1800},
+  {id:'baseball',   label:'Baseball',       icon:'⚾', venue:'Peak Baseball Park',    cap:2400},
   {id:'events',     label:'Special Events', icon:'🎤', venue:'Peak Sports Stadium',      cap:12000},
 ]
 
 const CONCESSIONS = [
   {id:'c1',name:'Hot Dog Combo',  price:12,icon:'🌭',desc:'Dog + chips + drink'},
   {id:'c2',name:'Nachos',         price:10,icon:'🧀',desc:'Loaded stadium nachos'},
-  {id:'c3',name:'Craft Beer',     price:9, icon:'🍺',desc:'Local Wildcat Brewing'},
+  {id:'c3',name:'Craft Beer',     price:9, icon:'🍺',desc:'Local Peak Brewing'},
   {id:'c4',name:'Soft Drink',     price:5, icon:'🥤',desc:'Fountain + free refill'},
-  {id:'c5',name:'Wildcat Burger', price:14,icon:'🍔',desc:'Signature game-day burger'},
+  {id:'c5',name:'Peak Burger', price:14,icon:'🍔',desc:'Signature game-day burger'},
   {id:'c6',name:'Popcorn',        price:7, icon:'🍿',desc:'Butter or kettle corn'},
 ]
 
@@ -80,13 +80,13 @@ const GAMES = [
     dayLabel:'Fri', dateLabel:'APR 18', time:'7:30 PM', venue:'Simple Genius Arena',
     urgency:{hot:true,pct:3},   priceFrom:18, badge:{label:'SELLOUT ALERT', color:C.error} },
   { id:'g3', sport:'softball',   opponent:'Bayshore FC',               record:'12-4',
-    dayLabel:'Thu', dateLabel:'APR 24', time:'7:00 PM', venue:'Wildcat Softball Complex',
+    dayLabel:'Thu', dateLabel:'APR 24', time:'7:00 PM', venue:'Peak Softball Complex',
     urgency:{hot:true,pct:12},  priceFrom:8,  badge:{label:'SENIOR NIGHT',  color:C.info} },
   { id:'g4', sport:'volleyball', opponent:'Clearwater Waves',          record:'22-5',
     dayLabel:'Wed', dateLabel:'APR 23', time:'7:00 PM', venue:'Simple Genius Arena',
     urgency:{hot:false,pct:55}, priceFrom:12, badge:null },
   { id:'g5', sport:'baseball',   opponent:'Pinecrest Thunder',         record:'14-11',
-    dayLabel:'Tue', dateLabel:'APR 22', time:'6:00 PM', venue:'Wildcat Baseball Park',
+    dayLabel:'Tue', dateLabel:'APR 22', time:'6:00 PM', venue:'Peak Baseball Park',
     urgency:{hot:false,pct:78}, priceFrom:10, badge:null },
   { id:'g6', sport:'football',   opponent:'Lakewood Tech Falcons',     record:'5-6',
     dayLabel:'Sat', dateLabel:'MAY 3',  time:'2:00 PM', venue:'Peak Sports Stadium',
@@ -352,7 +352,7 @@ function BaseballMap({activeSection,onSelect}){
     <MapWrap>
       <div style={{padding:'10px 14px 6px',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
         <div>
-          <div style={{fontFamily:F.mono,fontSize:7.5,color:C.gold,letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:2}}>Baseball · Wildcat Baseball Park</div>
+          <div style={{fontFamily:F.mono,fontSize:7.5,color:C.gold,letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:2}}>Baseball · Peak Baseball Park</div>
           <div style={{fontFamily:F.head,fontWeight:700,fontSize:13,color:C.text}}>Select Your Section</div>
         </div>
         <div style={{display:'flex',gap:8}}>
@@ -416,7 +416,7 @@ function SoftballMap({activeSection,onSelect}){
     <MapWrap>
       <div style={{padding:'10px 14px 6px',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
         <div>
-          <div style={{fontFamily:F.mono,fontSize:7.5,color:C.gold,letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:2}}>Softball · Wildcat Softball Complex</div>
+          <div style={{fontFamily:F.mono,fontSize:7.5,color:C.gold,letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:2}}>Softball · Peak Softball Complex</div>
           <div style={{fontFamily:F.head,fontWeight:700,fontSize:13,color:C.text}}>Select Your Section</div>
         </div>
         <div style={{display:'flex',gap:8}}>
@@ -579,7 +579,7 @@ function ListView({onSelect}){
   return(
     <div style={{minHeight:'100vh',background:C.pageBg,fontFamily:F.body}}>
       <div style={{background:C.card,borderBottom:`1px solid ${C.border}`,padding:'20px 16px 0'}}>
-        <p style={{color:C.muted,fontFamily:F.mono,fontSize:10,letterSpacing:'0.12em',textTransform:'uppercase',margin:'0 0 4px'}}>MIDLAND UNIVERSITY WILDCATS</p>
+        <p style={{color:C.muted,fontFamily:F.mono,fontSize:10,letterSpacing:'0.12em',textTransform:'uppercase',margin:'0 0 4px'}}>PEAK UNIVERSITY MOUNTAINEERS</p>
         <h1 style={{fontFamily:F.head,fontSize:32,fontWeight:800,color:C.text,margin:'0 0 16px',letterSpacing:'-0.03em'}}>Ticket Hub</h1>
         <div style={{display:'flex',gap:7,overflowX:'auto',paddingBottom:14,scrollbarWidth:'none'}}>
           {sports.map(sp=>{
@@ -667,7 +667,7 @@ function QuantityView({game,onConfirm,onBack}){
       <div style={{background:C.pageBg,borderBottom:`1px solid ${C.borderLight}`,padding:'11px 16px',display:'flex',alignItems:'center',gap:11}}>
         <span style={{fontSize:20}}>{sp?.icon}</span>
         <div>
-          <p style={{fontFamily:F.head,fontSize:14,fontWeight:700,color:C.text,margin:0}}>Wildcats vs {game.opponent}</p>
+          <p style={{fontFamily:F.head,fontSize:14,fontWeight:700,color:C.text,margin:0}}>Mountaineers vs {game.opponent}</p>
           <p style={{fontFamily:F.mono,fontSize:10,color:C.text3,margin:'2px 0 0'}}>{game.dayLabel} {game.dateLabel} · {game.time}</p>
         </div>
         {game.badge&&<span style={{marginLeft:'auto',fontFamily:F.mono,fontSize:9,color:game.badge.color,border:`1px solid ${game.badge.color}44`,background:`${game.badge.color}14`,borderRadius:8,padding:'3px 8px',flexShrink:0}}>{game.badge.label}</span>}
@@ -748,7 +748,7 @@ function SelectView({game,quantity,onConfirm,onBack}){
         <div style={{display:'flex',alignItems:'center',gap:9}}>
           <span style={{fontSize:18}}>{sp?.icon}</span>
           <div>
-            <div style={{fontFamily:F.head,fontSize:18,fontWeight:700,color:C.text}}>Wildcats vs {game.opponent}</div>
+            <div style={{fontFamily:F.head,fontSize:18,fontWeight:700,color:C.text}}>Mountaineers vs {game.opponent}</div>
             <div style={{fontFamily:F.mono,fontSize:10,color:C.text3,marginTop:1}}>{game.dayLabel} {game.dateLabel} · {game.time} · {game.venue}</div>
           </div>
           <div style={{marginLeft:'auto',background:C.goldBg,border:`1px solid ${C.goldBorder}`,borderRadius:8,padding:'4px 10px',textAlign:'center',flexShrink:0}}>
@@ -812,7 +812,7 @@ function SelectView({game,quantity,onConfirm,onBack}){
         <div className="sv-cart">
           <div style={{padding:'12px 14px',background:C.card,position:'sticky',top:0,borderBottom:`1px solid ${C.border}`}}>
             <div style={{fontFamily:F.head,fontWeight:700,fontSize:14,color:C.text}}>Order Summary</div>
-            <div style={{fontFamily:F.mono,fontSize:8,color:C.muted,marginTop:1,letterSpacing:'0.06em'}}>MIDLAND · {game.sport.toUpperCase()}</div>
+            <div style={{fontFamily:F.mono,fontSize:8,color:C.muted,marginTop:1,letterSpacing:'0.06em'}}>PEAK · {game.sport.toUpperCase()}</div>
           </div>
           <div style={{padding:'12px 14px'}}>
             {!secObj?(
@@ -860,7 +860,7 @@ function SelectView({game,quantity,onConfirm,onBack}){
                 </button>
                 <div style={{display:'flex',alignItems:'center',gap:5,padding:'7px 9px',borderRadius:7,background:C.bg}}>
                   <svg style={{width:11,height:11,color:C.gold,flexShrink:0}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                  <span style={{fontSize:10,color:C.text3}}>Secure · Official Midland tickets</span>
+                  <span style={{fontSize:10,color:C.text3}}>Secure · Official Peak tickets</span>
                 </div>
               </>
             )}
@@ -876,7 +876,7 @@ function SelectView({game,quantity,onConfirm,onBack}){
 ═══════════════════════════════════════════════════════════════════════════ */
 function ConfirmView({game,orderData,onDone}){
   const sp=SPORTS.find(s=>s.id===game.sport)
-  const orderNum=`MU-${Math.floor(Math.random()*90000+10000)}`
+  const orderNum=`PU-${Math.floor(Math.random()*90000+10000)}`
   return(
     <div style={{padding:'28px 16px',maxWidth:480,margin:'0 auto',fontFamily:F.body,background:C.pageBg}}>
       <style>{`@keyframes successPop{from{opacity:0;transform:scale(0.4)}to{opacity:1;transform:scale(1)}}`}</style>
@@ -886,7 +886,7 @@ function ConfirmView({game,orderData,onDone}){
             <svg style={{width:24,height:24}} viewBox="0 0 24 24" fill="none" stroke={C.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
           <div style={{fontFamily:F.head,fontSize:30,fontWeight:800,color:'white',marginBottom:4}}>You're In!</div>
-          <div style={{fontFamily:F.mono,fontSize:9.5,color:C.muted,letterSpacing:'0.1em'}}>{sp?.icon} GO WILDCATS!</div>
+          <div style={{fontFamily:F.mono,fontSize:9.5,color:C.muted,letterSpacing:'0.1em'}}>{sp?.icon} GO MOUNTAINEERS!</div>
         </div>
         <div style={{padding:'20px'}}>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:14}}>
