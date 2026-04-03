@@ -53,7 +53,6 @@ function AnimatedBar({ pct, color, delay=0 }) {
     <div style={{height:8,borderRadius:4,background:T.bg2,overflow:'hidden',position:'relative'}}>
       <div style={{position:'absolute',left:0,top:0,height:'100%',width:`${width}%`,background:color,borderRadius:4,transition:'width 0.8s cubic-bezier(0.4,0,0.2,1)'}}/>
     </div>
-    </div>
   )
 }
 
