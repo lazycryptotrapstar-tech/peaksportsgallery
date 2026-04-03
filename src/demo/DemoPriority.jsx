@@ -3,20 +3,20 @@ import { DS } from './DemoConstants'
 
 /* ─── Local prestige tokens — dark, high-contrast ────────────────────────── */
 const T = {
-  bg:      '#0A0806',
-  surface: '#100C08',
-  card:    '#181210',
-  border:  '#2A1E14',
-  border2: '#201610',
-  text:    '#F0E8D8',
-  text2:   '#A09080',
-  text3:   '#6A5A4A',
-  bg2:     '#201A10',   // bar track
-  green:   '#4A9828',
-  greenBg: 'rgba(74,152,40,0.12)',
-  amber:   '#D4882A',
-  amberBg: 'rgba(212,136,42,0.12)',
-  red:     '#D04848',
+  bg:      '#060C1A',
+  surface: '#0A1220',
+  card:    '#0F1829',
+  border:  '#1C2840',
+  border2: '#162035',
+  text:    '#EAF0FF',
+  text2:   '#B8C0D4',
+  text3:   '#8892AA',
+  bg2:     '#162035',   // bar track
+  green:   '#4D9828',
+  greenBg: 'rgba(77,152,40,0.12)',
+  amber:   '#EFA020',
+  amberBg: 'rgba(239,160,32,0.12)',
+  red:     '#E05252',
 }
 
 /* ─── Tier config — each tier now has distinct prestige treatment ─────────── */
@@ -25,7 +25,7 @@ const TIER_CONFIG = {
     // Bright warm gold — max contrast on dark gradient
     color:     '#EED070',
     dimColor:  '#C8A84A',
-    cardBg:    'linear-gradient(135deg,#1E1810,#2C2010)',
+    cardBg:    '#0F1829',
     border:    'rgba(210,180,80,0.45)',
     leftBar:   '#C8A84A',
     shadow:    '0 2px 16px rgba(200,168,60,0.12)',
@@ -38,7 +38,7 @@ const TIER_CONFIG = {
   Gold: {
     color:     '#D4A030',
     dimColor:  '#A87820',
-    cardBg:    'linear-gradient(135deg,#181208,#221A08)',
+    cardBg:    '#0F1829',
     border:    'rgba(180,140,40,0.35)',
     leftBar:   '#B49020',
     shadow:    '0 2px 12px rgba(180,140,40,0.08)',
@@ -51,7 +51,7 @@ const TIER_CONFIG = {
   Silver: {
     color:     '#96A8B8',
     dimColor:  '#6A8098',
-    cardBg:    '#181210',
+    cardBg:    '#0F1829',
     border:    'rgba(100,130,160,0.22)',
     leftBar:   '#6A8098',
     shadow:    'none',
@@ -64,7 +64,7 @@ const TIER_CONFIG = {
   Bronze: {
     color:     '#C07838',
     dimColor:  '#8A5020',
-    cardBg:    '#181210',
+    cardBg:    '#0F1829',
     border:    'rgba(160,100,48,0.22)',
     leftBar:   '#8A5020',
     shadow:    'none',
@@ -372,7 +372,7 @@ export default function DemoPriority() {
                   onClick={()=>setSelected(active?null:ct)}
                   style={{
                     borderRadius:12,overflow:'hidden',
-                    background: active ? cfg.cardBg : isPremium ? cfg.cardBg : T.card,
+                    background: T.card,
                     border:`1px solid ${active ? cfg.border : isPremium ? cfg.border : T.border}`,
                     borderLeft:`${isPremium?'4px':'3px'} solid ${near ? T.amber : cfg.leftBar}`,
                     boxShadow: active ? cfg.shadow : isPremium ? cfg.shadow : 'none',
@@ -451,7 +451,7 @@ export default function DemoPriority() {
               {/* Header — tier-gradient for premium */}
               <div style={{
                 padding:'18px 18px',
-                background: isPremium ? cfg.cardBg : '#100C08',
+                background: '#0A1220',
                 borderBottom:`1px solid ${isPremium ? cfg.border : T.border}`,
                 display:'flex',alignItems:'center',justifyContent:'space-between',
               }}>
@@ -479,7 +479,7 @@ export default function DemoPriority() {
                 {/* Total points hero */}
                 <div style={{
                   textAlign:'center',padding:'16px 0 18px',marginBottom:14,
-                  background: isPremium ? cfg.cardBg : T.surface,
+                  background: T.surface,
                   borderRadius:10,border:`1px solid ${isPremium ? cfg.border : T.border}`,
                 }}>
                   <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9.5,color:T.text3,textTransform:'uppercase',letterSpacing:'0.09em',marginBottom:6}}>Total Priority Points</div>
