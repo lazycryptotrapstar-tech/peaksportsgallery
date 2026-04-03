@@ -1,5 +1,14 @@
 import React, { useState } from 'react'
 import { DS, DEMO_SCHOOL } from './DemoConstants'
+
+/* ─── Local dark tokens — shell-level, matches all demo modules ─────────────── */
+const T = {
+  bg:          '#060C1A',
+  sidebar:     '#080D18',
+  sidebarActive:'rgba(239,160,32,0.12)',
+  gold:        '#EFA020',
+  psGreen:     '#2D6E1C',
+}
 import DemoCRM from './DemoCRM'
 import DemoSalesAgent from './DemoSalesAgent'
 import DemoTicketing from './DemoTicketing'
@@ -21,13 +30,13 @@ function DemoAnalyticsShell() {
   return (
     <div style={{display:'flex',flexDirection:'column',height:'100%'}}>
       {/* Sub-tab bar */}
-      <div style={{display:'flex',gap:0,borderBottom:`1px solid #EBE3D0`,background:'#FFFDF6',padding:'0 20px',flexShrink:0}}>
+      <div style={{display:'flex',gap:0,borderBottom:`1px solid rgba(255,255,255,0.06)`,background:'#080D18',padding:'0 20px',flexShrink:0}}>
         {[{id:'revenue',label:'Revenue Analytics'},{id:'ai',label:'AI vs Manual'}].map(t=>(
           <button key={t.id} onClick={()=>setSubTab(t.id)} style={{
             padding:'12px 18px',border:'none',background:'none',cursor:'pointer',
             fontFamily:"'DM Sans',sans-serif",fontWeight:600,fontSize:13,
-            color:subTab===t.id?'#C4882A':'#9A7E5A',
-            borderBottom:subTab===t.id?'2px solid #C4882A':'2px solid transparent',
+            color:subTab===t.id?T.gold:'rgba(255,255,255,0.35)',
+            borderBottom:subTab===t.id?`2px solid ${T.gold}`:'2px solid transparent',
             marginBottom:-1,transition:'all 0.15s ease',
           }}>{t.label}</button>
         ))}
@@ -44,18 +53,18 @@ export default function DemoApp() {
   const views = {agent:<DemoSalesAgent/>,crm:<DemoCRM/>,priority:<DemoPriority/>,ticketing:<DemoTicketing/>,analytics:<DemoAnalyticsShell/>}
 
   return (
-    <div style={{display:'flex',height:'100vh',overflow:'hidden',background:DS.bg,fontFamily:"'DM Sans',system-ui,sans-serif"}}>
+    <div style={{display:'flex',height:'100vh',overflow:'hidden',background:T.bg,fontFamily:"'DM Sans',system-ui,sans-serif"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@500;600&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         body{-webkit-font-smoothing:antialiased}
-        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#DDD0B8;border-radius:3px}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:3px}
         .dnb{background:transparent;border:none;cursor:pointer;width:100%;text-align:left;padding:0}
-        .dnb:hover .dnb-inner{background:rgba(196,136,42,0.07)!important}
+        .dnb:hover .dnb-inner{background:rgba(239,160,32,0.07)!important}
         .dct{transition:all 0.18s ease}
-        .dct:hover{box-shadow:0 4px 14px rgba(28,18,8,0.10)!important;transform:translateY(-1px)!important;border-color:#DDD0B8!important}
-        .dcamp:hover{box-shadow:0 4px 14px rgba(28,18,8,0.10)!important;border-color:rgba(196,136,42,0.38)!important;transform:translateY(-2px)!important}
-        .dstat:hover{box-shadow:0 4px 14px rgba(28,18,8,0.10)!important;transform:translateY(-2px)!important}
+        .dct:hover{box-shadow:0 4px 14px rgba(0,0,0,0.25)!important;transform:translateY(-1px)!important;border-color:rgba(239,160,32,0.3)!important}
+        .dcamp:hover{box-shadow:0 4px 14px rgba(0,0,0,0.25)!important;border-color:rgba(239,160,32,0.38)!important;transform:translateY(-2px)!important}
+        .dstat:hover{box-shadow:0 4px 14px rgba(0,0,0,0.25)!important;transform:translateY(-2px)!important}
         @keyframes tp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.65;transform:scale(.8)}}
         @keyframes dfu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
         @keyframes dspin{to{transform:rotate(360deg)}}
@@ -69,12 +78,12 @@ export default function DemoApp() {
       `}</style>
 
       {/* SIDEBAR */}
-      <aside className="demo-sidebar" style={{width:222,flexShrink:0,background:DS.sidebar,display:'flex',flexDirection:'column',overflow:'hidden',borderRight:'1px solid rgba(255,255,255,0.05)'}}>
+      <aside className="demo-sidebar" style={{width:222,flexShrink:0,background:T.sidebar,display:'flex',flexDirection:'column',overflow:'hidden',borderRight:'1px solid rgba(255,255,255,0.05)'}}>
 
         {/* Header */}
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'15px 16px 13px',borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
           <div style={{display:'flex',alignItems:'center',gap:9}}>
-            <div style={{width:26,height:26,borderRadius:6,background:DS.psGreen,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:'white',letterSpacing:'-0.03em',flexShrink:0}}>PS</div>
+            <div style={{width:26,height:26,borderRadius:6,background:T.psGreen,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:'white',letterSpacing:'-0.03em',flexShrink:0}}>PS</div>
             <div style={{width:1,height:14,background:'rgba(255,255,255,0.12)'}}/>
             <div style={{display:'flex',alignItems:'center',gap:5}}>
               <div style={{width:20,height:20,borderRadius:'50%',background:'rgba(255,255,255,0.10)',border:'1px solid rgba(255,255,255,0.12)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:'rgba(255,255,255,0.65)',fontFamily:"'Syne',sans-serif",flexShrink:0}}>M</div>
@@ -87,14 +96,14 @@ export default function DemoApp() {
         {/* User */}
         <div style={{padding:'14px 16px 0'}}>
           <div style={{display:'flex',alignItems:'center',gap:10}}>
-            <div style={{width:36,height:36,borderRadius:9,background:'rgba(196,136,42,0.18)',border:'1.5px solid rgba(196,136,42,0.32)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:13,color:DS.gold,flexShrink:0}}>A</div>
+            <div style={{width:36,height:36,borderRadius:9,background:'rgba(196,136,42,0.18)',border:'1.5px solid rgba(196,136,42,0.32)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:13,color:T.gold,flexShrink:0}}>A</div>
             <div style={{minWidth:0}}>
-              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:14,color:'rgba(255,255,255,0.90)',lineHeight:1.2}}>Ace<span style={{color:DS.gold}}>.ai</span></div>
+              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:14,color:'rgba(255,255,255,0.90)',lineHeight:1.2}}>Ace<span style={{color:T.gold}}>.ai</span></div>
               <div style={{fontSize:11,color:'rgba(255,255,255,0.32)',marginTop:2,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>Midland University · Demo</div>
             </div>
           </div>
-          <div style={{marginTop:10,display:'inline-flex',alignItems:'center',gap:5,fontSize:9.5,fontWeight:600,letterSpacing:'0.10em',textTransform:'uppercase',color:DS.gold,padding:'4px 9px 4px 7px',borderRadius:20,background:'rgba(196,136,42,0.11)',border:'1px solid rgba(196,136,42,0.24)'}}>
-            <div style={{width:5,height:5,borderRadius:'50%',background:DS.gold,boxShadow:'0 0 6px rgba(196,136,42,0.8)',animation:'tp 2.2s ease-in-out infinite'}}/>
+          <div style={{marginTop:10,display:'inline-flex',alignItems:'center',gap:5,fontSize:9.5,fontWeight:600,letterSpacing:'0.10em',textTransform:'uppercase',color:T.gold,padding:'4px 9px 4px 7px',borderRadius:20,background:'rgba(196,136,42,0.11)',border:'1px solid rgba(196,136,42,0.24)'}}>
+            <div style={{width:5,height:5,borderRadius:'50%',background:T.gold,boxShadow:'0 0 6px rgba(196,136,42,0.8)',animation:'tp 2.2s ease-in-out infinite'}}/>
             Platinum Member
           </div>
         </div>
@@ -107,8 +116,8 @@ export default function DemoApp() {
             const active = tab === item.id
             return (
               <button key={item.id} className="dnb" onClick={()=>setTab(item.id)}>
-                <div className="dnb-inner" style={{display:'flex',alignItems:'center',gap:11,padding:'9px 10px 9px 12px',borderRadius:9,borderLeft:`3px solid ${active?DS.gold:'transparent'}`,background:active?DS.sidebarActive:'transparent',transition:'all 0.15s ease'}}>
-                  <span style={{color:active?DS.gold:'rgba(255,255,255,0.30)',flexShrink:0,display:'flex',transition:'color 0.15s'}}>{item.svg}</span>
+                <div className="dnb-inner" style={{display:'flex',alignItems:'center',gap:11,padding:'9px 10px 9px 12px',borderRadius:9,borderLeft:`3px solid ${active?T.gold:'transparent'}`,background:active?T.sidebarActive:'transparent',transition:'all 0.15s ease'}}>
+                  <span style={{color:active?T.gold:'rgba(255,255,255,0.30)',flexShrink:0,display:'flex',transition:'color 0.15s'}}>{item.svg}</span>
                   <div style={{minWidth:0}}>
                     <div style={{fontSize:12.5,fontWeight:active?600:500,color:active?'rgba(255,255,255,0.94)':'rgba(255,255,255,0.40)',lineHeight:1.2,transition:'color 0.15s'}}>{item.label}</div>
                     <div style={{fontSize:10.5,color:active?'rgba(196,136,42,0.65)':'rgba(255,255,255,0.20)',marginTop:1,transition:'color 0.15s'}}>{item.sub}</div>
@@ -128,20 +137,20 @@ export default function DemoApp() {
       </aside>
 
       {/* CONTENT */}
-      <main key={tab} className="dview" style={{flex:1,overflow:'hidden',position:'relative',background:DS.bg}}>
+      <main key={tab} className="dview" style={{flex:1,overflow:'hidden',position:'relative',background:T.bg}}>
         <div style={{position:'absolute',inset:0,overflowY:'auto',paddingBottom:'var(--mobile-nav-h,0px)'}}>
           {views[tab]}
         </div>
       </main>
 
       {/* MOBILE BOTTOM NAV */}
-      <nav className="demo-mobile-nav" style={{display:'none',position:'fixed',bottom:0,left:0,right:0,zIndex:50,background:DS.sidebar,borderTop:'1px solid rgba(255,255,255,0.08)',padding:'8px 0 calc(8px + env(safe-area-inset-bottom,0px))',flexDirection:'row'}}>
+      <nav className="demo-mobile-nav" style={{display:'none',position:'fixed',bottom:0,left:0,right:0,zIndex:50,background:T.sidebar,borderTop:'1px solid rgba(255,255,255,0.08)',padding:'8px 0 calc(8px + env(safe-area-inset-bottom,0px))',flexDirection:'row'}}>
         {NAV.map(item=>{
           const active = tab===item.id
           return (
             <button key={item.id} onClick={()=>setTab(item.id)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:4,border:'none',background:'none',cursor:'pointer',padding:'4px 4px 0',minWidth:44}}>
-              <span style={{color:active?DS.gold:'rgba(255,255,255,0.28)',display:'flex',transition:'color 0.15s'}}>{item.svg}</span>
-              <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:9.5,fontWeight:600,color:active?DS.gold:'rgba(255,255,255,0.28)',letterSpacing:'0.02em',lineHeight:1.2,transition:'color 0.15s'}}>{item.label.split(' ')[0]}</span>
+              <span style={{color:active?T.gold:'rgba(255,255,255,0.28)',display:'flex',transition:'color 0.15s'}}>{item.svg}</span>
+              <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:9.5,fontWeight:600,color:active?T.gold:'rgba(255,255,255,0.28)',letterSpacing:'0.02em',lineHeight:1.2,transition:'color 0.15s'}}>{item.label.split(' ')[0]}</span>
             </button>
           )
         })}
