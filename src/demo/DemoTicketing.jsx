@@ -143,15 +143,16 @@ function MapInfoBar({section,activeId}){
 /* ═══════════════════════════════════════════════════════════════════════════
    1. FOOTBALL MAP — 24 lower + 30 upper arc sections
 ═══════════════════════════════════════════════════════════════════════════ */
-const FOOT_CX=255,FOOT_CY=250
-const getZoneFoot=a=>{const n=((a%360)+360)%360;if(n>250&&n<290)return 'north_ez';if(n>70&&n<110)return 'south_ez';if(n>135&&n<225)return 'home';if(n>315||n<45)return 'away';return 'corner'}
+const FOOT_CX=280,FOOT_CY=185
+// Horizontal field: 0°=right(east) 90°=bottom(home) 180°=left(end) 270°=top(away)
+const getZoneFoot=a=>{const n=((a%360)+360)%360;if(n>148&&n<212)return 'north_ez';if(n>328||n<32)return 'south_ez';if(n>58&&n<122)return 'home';if(n>238&&n<302)return 'away';return 'corner'}
 const footZoneFill=(zone,level,active,hover,sold)=>{
   if(active)return C.gold;if(sold)return 'rgba(255,255,255,0.05)';if(hover)return level==='upper'?'#2a5a8e':'#1a7040'
   if(level==='upper'){const m={home:'#1e3f6e',away:'#1a3560',north_ez:'#1a3458',south_ez:'#1a3458',corner:'#182f54'};return m[zone]||'#1a3252'}
   const m={home:'#0a5028',away:'#1a4a3a',north_ez:'#1e6b44',south_ez:'#1e7044',corner:'#226040'};return m[zone]||'#1e6040'
 }
 const buildFootSections=()=>{
-  const lb={iRx:98,iRy:132,oRx:155,oRy:192},ud={iRx:162,iRy:200,oRx:218,oRy:248},gap=1.5
+  const lb={iRx:168,iRy:85,oRx:222,oRy:120},ud={iRx:230,iRy:126,oRx:266,oRy:153},gap=1.5
   const lower=Array.from({length:24},(_,i)=>{
     const step=360/24,a1=i*step+gap/2,a2=(i+1)*step-gap/2,mid=(a1+a2)/2,zone=getZoneFoot(mid)
     return{id:`L${101+i}`,label:String(101+i),zone,level:'lower',sold:[4,11,18].includes(i),
@@ -190,8 +191,8 @@ function FootballMap({activeSection,onSelect}){
           ))}
         </div>
       </div>
-      <svg viewBox="0 0 510 500" style={{width:'100%',flex:1,minHeight:0,display:'block'}} preserveAspectRatio="xMidYMid meet">
-        <rect width="510" height="500" fill={C.bgDeep}/>
+      <svg viewBox="0 0 560 370" style={{width:'100%',flex:1,minHeight:0,display:'block'}} preserveAspectRatio="xMidYMid meet">
+        <rect width="560" height="370" fill={C.bgDeep}/>
         {upper.map(s=>(
           <g key={s.id} onClick={()=>!s.sold&&onSelect(s)} onMouseEnter={()=>!s.sold&&setHov(s.id)} onMouseLeave={()=>setHov(null)} style={{cursor:s.sold?'default':'pointer'}}>
             <path d={s.path} fill={footZoneFill(s.zone,'upper',s.id===activeSection,s.id===hov,s.sold)} stroke={C.bgDeep} strokeWidth="1" style={{transition:'fill 0.12s'}}/>
@@ -204,22 +205,28 @@ function FootballMap({activeSection,onSelect}){
             <text x={s.lx.toFixed(1)} y={(s.ly+3).toFixed(1)} fill={s.id===activeSection?C.bgDeep:'rgba(255,255,255,0.85)'} fontSize="6.5" fontWeight="bold" textAnchor="middle" style={{userSelect:'none',pointerEvents:'none'}}>{s.label}</text>
           </g>
         ))}
-        <ellipse cx={FOOT_CX} cy={FOOT_CY} rx="92" ry="126" fill="#1a5230" stroke="#226640" strokeWidth="1.5"/>
-        {[-3,-2,-1,0,1,2,3].map(i=>(<line key={i} x1={FOOT_CX+i*20} y1={FOOT_CY-114} x2={FOOT_CX+i*20} y2={FOOT_CY+114} stroke="rgba(255,255,255,0.07)" strokeWidth="0.8"/>))}
-        <line x1={FOOT_CX-80} y1={FOOT_CY} x2={FOOT_CX+80} y2={FOOT_CY} stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
-        {[{y:-122,d:-1},{y:122,d:1}].map((gp,gi)=>(
+        {/* Horizontal field — long axis left↔right */}
+        <ellipse cx={FOOT_CX} cy={FOOT_CY} rx="155" ry="75" fill="#1a5230" stroke="#226640" strokeWidth="1.5"/>
+        {/* Yard lines — vertical stripes across the field */}
+        {[-5,-4,-3,-2,-1,0,1,2,3,4,5].map(i=>(<line key={i} x1={FOOT_CX+i*14} y1={FOOT_CY-68} x2={FOOT_CX+i*14} y2={FOOT_CY+68} stroke="rgba(255,255,255,0.07)" strokeWidth="0.8"/>))}
+        {/* Midfield vertical line */}
+        <line x1={FOOT_CX} y1={FOOT_CY-68} x2={FOOT_CX} y2={FOOT_CY+68} stroke="rgba(255,255,255,0.2)" strokeWidth="1.2"/>
+        {/* Hash marks */}
+        {[-4,-2,0,2,4].map(i=>(<g key={i}><line x1={FOOT_CX+i*28} y1={FOOT_CY-24} x2={FOOT_CX+i*28} y2={FOOT_CY-18} stroke="rgba(255,255,255,0.14)" strokeWidth="0.8"/><line x1={FOOT_CX+i*28} y1={FOOT_CY+18} x2={FOOT_CX+i*28} y2={FOOT_CY+24} stroke="rgba(255,255,255,0.14)" strokeWidth="0.8"/></g>))}
+        {/* Goal posts — horizontal field: posts at left & right ends */}
+        {[{dx:-148,s:-1},{dx:148,s:1}].map((gp,gi)=>(
           <g key={gi}>
-            <line x1={FOOT_CX} y1={FOOT_CY+gp.y} x2={FOOT_CX} y2={FOOT_CY+gp.y-gp.d*18} stroke="rgba(255,215,60,0.6)" strokeWidth="1.2"/>
-            <line x1={FOOT_CX-12} y1={FOOT_CY+gp.y-gp.d*18} x2={FOOT_CX+12} y2={FOOT_CY+gp.y-gp.d*18} stroke="rgba(255,215,60,0.6)" strokeWidth="1"/>
-            <line x1={FOOT_CX-12} y1={FOOT_CY+gp.y-gp.d*18} x2={FOOT_CX-12} y2={FOOT_CY+gp.y-gp.d*32} stroke="rgba(255,215,60,0.6)" strokeWidth="1"/>
-            <line x1={FOOT_CX+12} y1={FOOT_CY+gp.y-gp.d*18} x2={FOOT_CX+12} y2={FOOT_CY+gp.y-gp.d*32} stroke="rgba(255,215,60,0.6)" strokeWidth="1"/>
+            <line x1={FOOT_CX+gp.dx} y1={FOOT_CY} x2={FOOT_CX+gp.dx+gp.s*18} y2={FOOT_CY} stroke="rgba(255,215,60,0.65)" strokeWidth="1.5"/>
+            <line x1={FOOT_CX+gp.dx+gp.s*18} y1={FOOT_CY-12} x2={FOOT_CX+gp.dx+gp.s*18} y2={FOOT_CY+12} stroke="rgba(255,215,60,0.65)" strokeWidth="1.2"/>
+            <line x1={FOOT_CX+gp.dx+gp.s*18} y1={FOOT_CY-12} x2={FOOT_CX+gp.dx+gp.s*32} y2={FOOT_CY-12} stroke="rgba(255,215,60,0.65)" strokeWidth="1.2"/>
+            <line x1={FOOT_CX+gp.dx+gp.s*18} y1={FOOT_CY+12} x2={FOOT_CX+gp.dx+gp.s*32} y2={FOOT_CY+12} stroke="rgba(255,215,60,0.65)" strokeWidth="1.2"/>
           </g>
         ))}
-        <text x={FOOT_CX} y={FOOT_CY+4} fill="rgba(255,255,255,0.08)" fontSize="9" fontWeight="900" textAnchor="middle" letterSpacing="3" style={{userSelect:'none'}}>FIELD</text>
-        <text x={FOOT_CX} y="14" fill="rgba(255,255,255,0.2)" fontSize="7" fontWeight="bold" textAnchor="middle" letterSpacing="2" style={{userSelect:'none'}}>NORTH</text>
-        <text x={FOOT_CX} y="496" fill="rgba(255,255,255,0.2)" fontSize="7" fontWeight="bold" textAnchor="middle" letterSpacing="2" style={{userSelect:'none'}}>SOUTH</text>
-        <text x="12" y={FOOT_CY+4} fill="rgba(255,255,255,0.2)" fontSize="7" fontWeight="bold" textAnchor="middle" transform={`rotate(-90 12 ${FOOT_CY})`} letterSpacing="1" style={{userSelect:'none'}}>HOME</text>
-        <text x="498" y={FOOT_CY+4} fill="rgba(255,255,255,0.2)" fontSize="7" fontWeight="bold" textAnchor="middle" transform={`rotate(90 498 ${FOOT_CY})`} letterSpacing="1" style={{userSelect:'none'}}>AWAY</text>
+        <text x={FOOT_CX} y={FOOT_CY+4} fill="rgba(255,255,255,0.07)" fontSize="8" fontWeight="900" textAnchor="middle" letterSpacing="4" style={{userSelect:'none'}}>FIELD</text>
+        <text x={FOOT_CX} y="13" fill="rgba(255,255,255,0.2)" fontSize="7" fontWeight="bold" textAnchor="middle" letterSpacing="2" style={{userSelect:'none'}}>AWAY SIDELINE</text>
+        <text x={FOOT_CX} y="363" fill="rgba(255,255,255,0.2)" fontSize="7" fontWeight="bold" textAnchor="middle" letterSpacing="2" style={{userSelect:'none'}}>HOME SIDELINE</text>
+        <text x="10" y={FOOT_CY+4} fill="rgba(255,255,255,0.18)" fontSize="6" fontWeight="bold" textAnchor="middle" transform={`rotate(-90 10 ${FOOT_CY})`} letterSpacing="1" style={{userSelect:'none'}}>END ZONE</text>
+        <text x="550" y={FOOT_CY+4} fill="rgba(255,255,255,0.18)" fontSize="6" fontWeight="bold" textAnchor="middle" transform={`rotate(90 550 ${FOOT_CY})`} letterSpacing="1" style={{userSelect:'none'}}>END ZONE</text>
       </svg>
       <MapInfoBar section={disp&&{...disp,id:disp.id}} activeId={activeSection}/>
     </MapWrap>
@@ -229,7 +236,7 @@ function FootballMap({activeSection,onSelect}){
 /* ═══════════════════════════════════════════════════════════════════════════
    2. BASKETBALL / VOLLEYBALL MAP — 22 lower + 12 club + 28 upper
 ═══════════════════════════════════════════════════════════════════════════ */
-const BB_CX=280,BB_CY=230
+const BB_CX=280,BB_CY=205
 const getZoneBB=a=>{const n=((a%360)+360)%360;if(n>330||n<30)return 'baseline_e';if(n>150&&n<210)return 'baseline_w';if(n>240&&n<300)return 'home_side';if(n>60&&n<120)return 'away_side';return 'corner'}
 const bbFill=(zone,level,active,hover,sold)=>{
   if(active)return C.gold;if(sold)return 'rgba(255,255,255,0.05)';const h=hover?0.15:0
@@ -237,7 +244,7 @@ const bbFill=(zone,level,active,hover,sold)=>{
   if(level==='club')return `rgba(139,32,32,${0.85+h})`;return `rgba(34,100,44,${0.85+h})`
 }
 const buildBBSections=()=>{
-  const lb={iRx:115,iRy:62,oRx:168,oRy:105},cl={iRx:172,iRy:108,oRx:210,oRy:140},up={iRx:214,iRy:143,oRx:262,oRy:185},gap=1.5
+  const lb={iRx:128,iRy:76,oRx:182,oRy:116},cl={iRx:186,iRy:120,oRx:222,oRy:152},up={iRx:226,iRy:156,oRx:264,oRy:192},gap=1.5
   const lower=Array.from({length:22},(_,i)=>{
     const step=360/22,a1=i*step+gap/2,a2=(i+1)*step-gap/2,mid=(a1+a2)/2,zone=getZoneBB(mid)
     return{id:`BBL${i}`,label:String(1+i),zone,level:'lower',sold:[3,10,18].includes(i),
@@ -284,8 +291,8 @@ function BasketballMap({activeSection,onSelect,sport}){
           ))}
         </div>
       </div>
-      <svg viewBox="0 0 560 460" style={{width:'100%',flex:1,minHeight:0,display:'block'}} preserveAspectRatio="xMidYMid meet">
-        <rect width="560" height="460" fill={C.bgDeep}/>
+      <svg viewBox="0 0 560 400" style={{width:'100%',flex:1,minHeight:0,display:'block'}} preserveAspectRatio="xMidYMid meet">
+        <rect width="560" height="400" fill={C.bgDeep}/>
         {upper.map(s=>(<g key={s.id} onClick={()=>!s.sold&&onSelect(s)} onMouseEnter={()=>!s.sold&&setHov(s.id)} onMouseLeave={()=>setHov(null)} style={{cursor:s.sold?'default':'pointer'}}><path d={s.path} fill={bbFill(s.zone,'upper',s.id===activeSection,s.id===hov,s.sold)} stroke={C.bgDeep} strokeWidth="1" style={{transition:'fill 0.12s'}}/><text x={s.lx.toFixed(1)} y={(s.ly+3).toFixed(1)} fill="rgba(255,255,255,0.5)" fontSize="5" fontWeight="bold" textAnchor="middle" style={{userSelect:'none',pointerEvents:'none'}}>{s.label}</text></g>))}
         {club.map(s=>(<g key={s.id} onClick={()=>!s.sold&&onSelect(s)} onMouseEnter={()=>!s.sold&&setHov(s.id)} onMouseLeave={()=>setHov(null)} style={{cursor:s.sold?'default':'pointer'}}><path d={s.path} fill={bbFill(s.zone,'club',s.id===activeSection,s.id===hov,s.sold)} stroke={C.bgDeep} strokeWidth="1" style={{transition:'fill 0.12s'}}/><text x={s.lx.toFixed(1)} y={(s.ly+3).toFixed(1)} fill="rgba(255,255,255,0.7)" fontSize="5.5" fontWeight="bold" textAnchor="middle" style={{userSelect:'none',pointerEvents:'none'}}>{s.label}</text></g>))}
         {lower.map(s=>(<g key={s.id} onClick={()=>!s.sold&&onSelect(s)} onMouseEnter={()=>!s.sold&&setHov(s.id)} onMouseLeave={()=>setHov(null)} style={{cursor:s.sold?'default':'pointer'}}><path d={s.path} fill={bbFill(s.zone,'lower',s.id===activeSection,s.id===hov,s.sold)} stroke={C.bgDeep} strokeWidth="1.2" style={{transition:'fill 0.12s'}}/><text x={s.lx.toFixed(1)} y={(s.ly+3).toFixed(1)} fill={s.id===activeSection?C.bgDeep:'rgba(255,255,255,0.9)'} fontSize="6" fontWeight="bold" textAnchor="middle" style={{userSelect:'none',pointerEvents:'none'}}>{s.label}</text></g>))}
