@@ -1,5 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { DS, DEMO_SCHOOL } from './DemoConstants'
+
+/* ─── Local dark tokens — matches Priority / CRM color system ───────────────── */
+const T = {
+  bg:      '#060C1A',
+  surface: '#0A1220',
+  card:    '#0F1829',
+  border:  '#1C2840',
+  text:    '#EAF0FF',
+  text2:   '#B8C0D4',
+  text3:   '#8892AA',
+  bg2:     '#162035',
+  green:   '#4D9828',
+  greenBg: 'rgba(77,152,40,0.12)',
+  amber:   '#EFA020',
+  amberBg: 'rgba(239,160,32,0.12)',
+  red:     '#E05252',
+  gold:    '#EFA020',
+  goldBg:  'rgba(239,160,32,0.10)',
+  goldBdr: 'rgba(239,160,32,0.30)',
+  shSm:    '0 1px 4px rgba(0,0,0,0.3)',
+}
 import { DEMO_CONTACTS } from './DemoContacts'
 
 const N8N_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/sales-agent'
@@ -15,7 +36,7 @@ const score = ct => {
   return Math.min(100,Math.max(0,s))
 }
 
-const scoreColor = s => s>=80?DS.green:s>=60?DS.amber:DS.red
+const scoreColor = s => s>=80?T.green:s>=60?T.amber:T.red
 
 const CAMPAIGNS = [
   {id:'TICKETS',label:'Ticket Sales',sub:'Live inventory · Real-time pricing',
@@ -90,27 +111,27 @@ export default function DemoSalesAgent() {
   }
 
   const INNER = {padding:'34px 38px',maxWidth:1080}
-  const LABEL = {fontSize:10,fontWeight:600,letterSpacing:'0.09em',textTransform:'uppercase',color:DS.text3,fontFamily:"'JetBrains Mono',monospace"}
+  const LABEL = {fontSize:10,fontWeight:600,letterSpacing:'0.09em',textTransform:'uppercase',color:T.text3,fontFamily:"'JetBrains Mono',monospace"}
 
   // ── Campaign selector ──────────────────────────────────────────────────────
   if (!campaign) return (
     <div style={INNER}>
       <div style={{marginBottom:6}}>
         <div style={{...LABEL,marginBottom:5}}>Sales Agent · Midland</div>
-        <div style={{fontFamily:"'Syne',sans-serif",fontSize:30,fontWeight:700,color:DS.text,letterSpacing:'-0.025em',textAlign:'center'}}>Choose a Campaign</div>
+        <div style={{fontFamily:"'Syne',sans-serif",fontSize:30,fontWeight:700,color:T.text,letterSpacing:'-0.025em',textAlign:'center'}}>Choose a Campaign</div>
       </div>
       <div style={{textAlign:'center'}}>
-        <p style={{fontSize:13,color:DS.text3,marginBottom:30}}>Start a live conversation with Ace</p>
+        <p style={{fontSize:13,color:T.text3,marginBottom:30}}>Start a live conversation with Ace</p>
 
         {/* Campaign tiles */}
         <div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:14,maxWidth:580,margin:'0 auto 36px'}}>
           {CAMPAIGNS.map(cam=>(
             <button key={cam.id} className="dcamp" onClick={()=>selectCampaign(cam)}
-              style={{background:DS.card,borderRadius:15,padding:'22px 22px 18px',border:`1.5px solid ${DS.borderLight}`,boxShadow:DS.shSm,cursor:'pointer',textAlign:'left',display:'flex',flexDirection:'column',gap:10,position:'relative',overflow:'hidden',transition:'all 0.18s ease'}}>
-              <div style={{width:42,height:42,borderRadius:11,background:DS.goldPale,display:'flex',alignItems:'center',justifyContent:'center',color:DS.gold}}>{cam.svg}</div>
-              <div style={{fontFamily:"'Syne',sans-serif",fontSize:15,fontWeight:700,color:DS.text}}>{cam.label}</div>
-              <div style={{fontSize:11.5,color:DS.text3,lineHeight:1.45}}>{cam.sub}</div>
-              <svg style={{position:'absolute',right:16,bottom:16,width:18,height:18,color:DS.text4,transition:'all 0.15s'}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              style={{background:T.card,borderRadius:15,padding:'22px 22px 18px',border:`1.5px solid ${T.border}`,boxShadow:T.shSm,cursor:'pointer',textAlign:'left',display:'flex',flexDirection:'column',gap:10,position:'relative',overflow:'hidden',transition:'all 0.18s ease'}}>
+              <div style={{width:42,height:42,borderRadius:11,background:T.goldBg,display:'flex',alignItems:'center',justifyContent:'center',color:T.gold}}>{cam.svg}</div>
+              <div style={{fontFamily:"'Syne',sans-serif",fontSize:15,fontWeight:700,color:T.text}}>{cam.label}</div>
+              <div style={{fontSize:11.5,color:T.text3,lineHeight:1.45}}>{cam.sub}</div>
+              <svg style={{position:'absolute',right:16,bottom:16,width:18,height:18,color:T.text3,transition:'all 0.15s'}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
             </button>
           ))}
         </div>
@@ -120,8 +141,8 @@ export default function DemoSalesAgent() {
           <div style={{width:290,background:'#1A1512',borderRadius:42,padding:13,boxShadow:'0 24px 64px rgba(20,16,13,0.28),0 6px 20px rgba(20,16,13,0.16),inset 0 0 0 1px rgba(255,255,255,0.07)'}}>
             <div style={{background:'#F2E8D3',borderRadius:31,overflow:'hidden'}}>
               <div style={{height:26,background:'#1A1512',borderRadius:'0 0 16px 16px',margin:'0 auto',width:76}}/>
-              <div style={{background:'#16110C',padding:'11px 14px',display:'flex',alignItems:'center',gap:9}}>
-                <div style={{width:28,height:28,borderRadius:7,background:'rgba(196,136,42,0.22)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:DS.gold,flexShrink:0}}>A</div>
+              <div style={{background:T.surface,padding:'11px 14px',display:'flex',alignItems:'center',gap:9}}>
+                <div style={{width:28,height:28,borderRadius:7,background:'rgba(196,136,42,0.22)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:T.gold,flexShrink:0}}>A</div>
                 <div>
                   <div style={{fontSize:12,fontWeight:600,color:'rgba(255,255,255,0.90)'}}>Ticket Sales</div>
                   <div style={{fontSize:9,color:'rgba(255,255,255,0.35)',display:'flex',alignItems:'center',gap:4}}>
@@ -132,22 +153,22 @@ export default function DemoSalesAgent() {
                   </div>
                 </div>
               </div>
-              <div style={{padding:'14px 12px',display:'flex',flexDirection:'column',gap:10,minHeight:180,background:DS.bg}}>
+              <div style={{padding:'14px 12px',display:'flex',flexDirection:'column',gap:10,minHeight:180,background:T.bg}}>
                 <div style={{display:'flex',gap:7,alignItems:'flex-end'}}>
-                  <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:DS.gold,fontFamily:"'Syne',sans-serif"}}>A</div>
-                  <div style={{maxWidth:'78%',padding:'8px 11px',borderRadius:'13px 13px 13px 3px',background:'white',color:DS.text,fontSize:11,lineHeight:1.45,boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>Hey! Ace here — your Midland Wildcats ticket rep. Big game at Peak Sports Stadium coming up. What sports are you into?</div>
+                  <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:T.gold,fontFamily:"'Syne',sans-serif"}}>A</div>
+                  <div style={{maxWidth:'78%',padding:'8px 11px',borderRadius:'13px 13px 13px 3px',background:'white',color:T.text,fontSize:11,lineHeight:1.45,boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>Hey! Ace here — your Midland Wildcats ticket rep. Big game at Peak Sports Stadium coming up. What sports are you into?</div>
                 </div>
                 <div style={{display:'flex',justifyContent:'flex-end'}}>
-                  <div style={{maxWidth:'70%',padding:'8px 11px',borderRadius:'13px 13px 3px 13px',background:'#16110C',color:'rgba(255,255,255,0.88)',fontSize:11,lineHeight:1.45}}>I'm interested in football!</div>
+                  <div style={{maxWidth:'70%',padding:'8px 11px',borderRadius:'13px 13px 3px 13px',background:T.surface,color:'rgba(255,255,255,0.88)',fontSize:11,lineHeight:1.45}}>I'm interested in football!</div>
                 </div>
                 <div style={{display:'flex',gap:7,alignItems:'flex-end'}}>
-                  <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:DS.gold,fontFamily:"'Syne',sans-serif"}}>A</div>
-                  <div style={{maxWidth:'78%',padding:'8px 11px',borderRadius:'13px 13px 13px 3px',background:'white',color:DS.text,fontSize:11,lineHeight:1.45,boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>Perfect — the Riverside Hawks rivalry game is coming up. Want me to check availability near the 50?</div>
+                  <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:T.gold,fontFamily:"'Syne',sans-serif"}}>A</div>
+                  <div style={{maxWidth:'78%',padding:'8px 11px',borderRadius:'13px 13px 13px 3px',background:'white',color:T.text,fontSize:11,lineHeight:1.45,boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>Perfect — the Riverside Hawks rivalry game is coming up. Want me to check availability near the 50?</div>
                 </div>
               </div>
               <div style={{background:'white',margin:'0 12px 12px',borderRadius:10,padding:'8px 10px',display:'flex',alignItems:'center',gap:8}}>
                 <div style={{flex:1,fontSize:11,color:'#9A8264'}}>Message Ace…</div>
-                <div style={{width:26,height:26,borderRadius:7,background:'#16110C',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 </div>
               </div>
@@ -157,14 +178,14 @@ export default function DemoSalesAgent() {
 
         {/* Top contact */}
         {topContact && (
-          <div style={{maxWidth:580,margin:'0 auto',padding:'14px 18px',borderRadius:14,border:`1px solid ${DS.borderLight}`,background:DS.card,boxShadow:DS.shSm,display:'flex',alignItems:'center',gap:12}}>
+          <div style={{maxWidth:580,margin:'0 auto',padding:'14px 18px',borderRadius:14,border:`1px solid ${T.border}`,background:T.card,boxShadow:T.shSm,display:'flex',alignItems:'center',gap:12}}>
             <div style={{flex:1,minWidth:0}}>
               <div style={{...LABEL,marginBottom:8}}>Top Contact · Midland</div>
               <div style={{display:'flex',alignItems:'center',gap:10}}>
-                <div style={{width:40,height:40,borderRadius:'50%',background:'#16110C',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:900,fontSize:14,flexShrink:0}}>{topInitials}</div>
+                <div style={{width:40,height:40,borderRadius:'50%',background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:900,fontSize:14,flexShrink:0}}>{topInitials}</div>
                 <div style={{minWidth:0}}>
-                  <div style={{fontWeight:700,fontSize:14,color:DS.text,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{topContact.name}</div>
-                  <div style={{fontSize:12,color:DS.text3,marginTop:2,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{topContact.title}</div>
+                  <div style={{fontWeight:700,fontSize:14,color:T.text,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{topContact.name}</div>
+                  <div style={{fontSize:12,color:T.text3,marginTop:2,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{topContact.title}</div>
                 </div>
               </div>
             </div>
@@ -180,7 +201,7 @@ export default function DemoSalesAgent() {
 
   // ── Chat view ──────────────────────────────────────────────────────────────
   return (
-    <div style={{height:'100%',display:'flex',justifyContent:'center',alignItems:'flex-start',padding:'16px 12px 24px',background:DS.bg,boxSizing:'border-box',overflowY:'auto'}}>
+    <div style={{height:'100%',display:'flex',justifyContent:'center',alignItems:'flex-start',padding:'16px 12px 24px',background:T.bg,boxSizing:'border-box',overflowY:'auto'}}>
       <div style={{width:'100%',maxWidth:390,background:'#000',borderRadius:'clamp(24px,6vw,52px)',boxShadow:'0 24px 64px rgba(0,0,0,0.45),0 0 0 8px #1a1a1a,0 0 0 10px #333',overflow:'hidden',display:'flex',flexDirection:'column',height:'min(680px,calc(100vh - 140px))'}}>
 
         {/* Notch */}
@@ -195,9 +216,9 @@ export default function DemoSalesAgent() {
         </div>
 
         {/* Chat header */}
-        <div style={{padding:'10px 20px 12px',background:'#16110C',borderBottom:`1px solid rgba(196,136,42,0.15)`,display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
+        <div style={{padding:'10px 20px 12px',background:T.surface,borderBottom:`1px solid ${T.border}`,display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
           <div style={{display:'flex',alignItems:'center',gap:10}}>
-            <div style={{width:36,height:36,borderRadius:10,background:'rgba(196,136,42,0.22)',border:'1px solid rgba(196,136,42,0.32)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:14,color:DS.gold}}>A</div>
+            <div style={{width:36,height:36,borderRadius:10,background:'rgba(196,136,42,0.22)',border:'1px solid rgba(196,136,42,0.32)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:14,color:T.gold}}>A</div>
             <div>
               <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:15,color:'white',lineHeight:1.1}}>{campaign.label}</div>
               <div style={{fontSize:9,color:'rgba(255,255,255,0.35)',display:'flex',alignItems:'center',gap:4}}>
@@ -205,24 +226,24 @@ export default function DemoSalesAgent() {
               </div>
             </div>
           </div>
-          <button onClick={()=>{setCampaign(null);setMessages([])}} style={{padding:'5px 12px',borderRadius:8,border:'1px solid rgba(196,136,42,0.3)',background:'transparent',cursor:'pointer',fontSize:11,color:DS.gold,fontFamily:"'DM Sans',sans-serif"}}>← Back</button>
+          <button onClick={()=>{setCampaign(null);setMessages([])}} style={{padding:'5px 12px',borderRadius:8,border:'1px solid rgba(196,136,42,0.3)',background:'transparent',cursor:'pointer',fontSize:11,color:T.gold,fontFamily:"'DM Sans',sans-serif"}}>← Back</button>
         </div>
 
         {/* Messages */}
-        <div style={{flex:1,overflowY:'auto',padding:16,display:'flex',flexDirection:'column',gap:12,background:DS.bg}}>
+        <div style={{flex:1,overflowY:'auto',padding:16,display:'flex',flexDirection:'column',gap:12,background:T.bg}}>
           {messages.map((msg,i)=>(
             <div key={i} style={{display:'flex',justifyContent:msg.role==='user'?'flex-end':'flex-start',gap:8}}>
               {msg.role==='assistant' && (
-                <div style={{width:26,height:26,borderRadius:7,background:'#16110C',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:DS.gold,fontFamily:"'Syne',sans-serif",flexShrink:0,marginTop:2}}>A</div>
+                <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:T.gold,fontFamily:"'Syne',sans-serif",flexShrink:0,marginTop:2}}>A</div>
               )}
-              <div style={{maxWidth:'78%',padding:'9px 13px',borderRadius:msg.role==='user'?'16px 16px 3px 16px':'16px 16px 16px 3px',background:msg.role==='user'?'#16110C':'white',color:msg.role==='user'?'rgba(255,255,255,0.88)':DS.text,fontSize:13,lineHeight:1.55,fontFamily:"'DM Sans',sans-serif",boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>{msg.content}</div>
+              <div style={{maxWidth:'78%',padding:'9px 13px',borderRadius:msg.role==='user'?'16px 16px 3px 16px':'16px 16px 16px 3px',background:msg.role==='user'?T.surface:'white',color:msg.role==='user'?'rgba(255,255,255,0.88)':T.text,fontSize:13,lineHeight:1.55,fontFamily:"'DM Sans',sans-serif",boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>{msg.content}</div>
             </div>
           ))}
           {isTyping && (
             <div style={{display:'flex',gap:8}}>
-              <div style={{width:26,height:26,borderRadius:7,background:'#16110C',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:DS.gold,fontFamily:"'Syne',sans-serif",flexShrink:0}}>A</div>
+              <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:T.gold,fontFamily:"'Syne',sans-serif",flexShrink:0}}>A</div>
               <div style={{padding:'9px 13px',borderRadius:'16px 16px 16px 3px',background:'white',display:'flex',gap:4,alignItems:'center'}}>
-                {[0,1,2].map(i=><div key={i} style={{width:5,height:5,borderRadius:'50%',background:DS.gold,animation:`dbounce 1.2s ${i*0.2}s infinite`}}/>)}
+                {[0,1,2].map(i=><div key={i} style={{width:5,height:5,borderRadius:'50%',background:T.gold,animation:`dbounce 1.2s ${i*0.2}s infinite`}}/>)}
               </div>
             </div>
           )}
@@ -230,19 +251,19 @@ export default function DemoSalesAgent() {
         </div>
 
         {/* Input */}
-        <div style={{padding:'12px 16px 20px',background:'white',borderTop:`1px solid ${DS.borderLight}`,flexShrink:0}}>
+        <div style={{padding:'12px 16px 20px',background:T.surface,borderTop:`1px solid ${T.border}`,flexShrink:0}}>
           <div style={{display:'flex',gap:8}}>
             <input value={input} onChange={e=>setInput(e.target.value)}
               onKeyDown={e=>e.key==='Enter'&&!e.shiftKey&&sendMessage()}
               placeholder="Message Ace…"
-              style={{flex:1,padding:'10px 14px',borderRadius:24,border:`1px solid ${DS.border}`,fontSize:13,fontFamily:"'DM Sans',sans-serif",outline:'none',background:DS.bg,color:DS.text}}
-              onFocus={e=>e.target.style.borderColor=DS.gold} onBlur={e=>e.target.style.borderColor=DS.border}
+              style={{flex:1,padding:'10px 14px',borderRadius:24,border:`1px solid ${T.border}`,fontSize:13,fontFamily:"'DM Sans',sans-serif",outline:'none',background:T.bg,color:T.text}}
+              onFocus={e=>e.target.style.borderColor=T.gold} onBlur={e=>e.target.style.borderColor=T.border}
             />
-            <button onClick={sendMessage} style={{width:40,height:40,borderRadius:'50%',border:'none',background:'#16110C',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+            <button onClick={sendMessage} style={{width:40,height:40,borderRadius:'50%',border:'none',background:T.surface,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
           </div>
-          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:8,color:DS.text4,textAlign:'center',marginTop:7,letterSpacing:'0.05em'}}>Ace · Midland University · Simple Genius</div>
+          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:8,color:T.text3,textAlign:'center',marginTop:7,letterSpacing:'0.05em'}}>Ace · Midland University · Simple Genius</div>
         </div>
 
         {/* Home bar */}
