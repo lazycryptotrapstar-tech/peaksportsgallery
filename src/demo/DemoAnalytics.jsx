@@ -77,7 +77,6 @@ function KPICard({ label, value, delta, accent, index }) {
       <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:20,fontWeight:600,color:T.text,lineHeight:1,letterSpacing:'-0.02em',marginBottom:5}}>{value}</div>
       <div style={{fontSize:11,color:accent,fontWeight:600}}>{delta}</div>
     </div>
-    </div>
   )
 }
 
