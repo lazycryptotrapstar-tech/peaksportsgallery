@@ -166,7 +166,9 @@ export default function DemoCRM() {
         }),
       })
       const data = await res.json()
-      const p = parseDraft(data.draft||'')
+      const raw = data.draft||data.output||data.text||data.message||data.response||''
+      if(!raw) throw new Error('Empty response from webhook')
+      const p = parseDraft(raw)
       setParsed(p)
       setEditedSubject(p.subject)
       setEditedBody(p.body)
@@ -195,9 +197,10 @@ export default function DemoCRM() {
         .crm-contact-row{transition:background 0.13s,border-color 0.13s;cursor:pointer}
         .crm-contact-row:hover .crm-card-bg{background:${T.surface} !important}
         @media(max-width:768px){
-          .crm-split{flex-direction:column !important}
-          .crm-left{width:100% !important;border-right:none !important;border-bottom:1px solid ${T.border} !important}
-          .crm-right{width:100% !important}
+          .crm-split{flex-direction:column !important;overflow-y:auto !important;overflow-x:hidden !important}
+          .crm-left{width:100% !important;border-right:none !important;border-bottom:1px solid ${T.border} !important;overflow:visible !important;height:auto !important;flex-shrink:0 !important}
+          .crm-right{width:100% !important;min-height:60vh !important}
+          .crm-contact-list{max-height:none !important;overflow-y:visible !important}
           .crm-stats{grid-template-columns:1fr 1fr !important}
           .crm-header-row{flex-direction:column !important;align-items:flex-start !important;gap:10px !important}
           .mobile-back{display:flex !important}
@@ -310,7 +313,7 @@ export default function DemoCRM() {
           </div>
 
           {/* Contact list */}
-          <div style={{flex:1,overflowY:'auto',padding:'0 14px 14px'}}>
+          <div className='crm-contact-list' style={{flex:1,overflowY:'auto',padding:'0 14px 14px'}}>
             <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:T.text3,letterSpacing:'0.08em',textTransform:'uppercase',padding:'4px 0 8px'}}>
               {contacts.length} contact{contacts.length!==1?'s':''}
             </div>
