@@ -580,7 +580,7 @@ function ListView({onSelect}){
     <div style={{minHeight:'100vh',background:C.pageBg,fontFamily:F.body}}>
       <div style={{background:C.card,borderBottom:`1px solid ${C.border}`,padding:'20px 16px 0'}}>
         <p style={{color:C.muted,fontFamily:F.mono,fontSize:10,letterSpacing:'0.12em',textTransform:'uppercase',margin:'0 0 4px'}}>MIDLAND UNIVERSITY WILDCATS</p>
-        <h1 style={{fontFamily:F.head,fontSize:24,fontWeight:800,color:C.text,margin:'0 0 14px',letterSpacing:'-0.02em'}}>Ticket Hub</h1>
+        <h1 style={{fontFamily:F.head,fontSize:32,fontWeight:800,color:C.text,margin:'0 0 16px',letterSpacing:'-0.03em'}}>Ticket Hub</h1>
         <div style={{display:'flex',gap:7,overflowX:'auto',paddingBottom:14,scrollbarWidth:'none'}}>
           {sports.map(sp=>{
             const info=SPORTS.find(s=>s.id===sp)
@@ -626,10 +626,10 @@ function GameCard({game,onSelect}){
             <span style={{fontSize:13}}>{sp?.icon}</span>
             <span style={{fontFamily:F.mono,fontSize:9.5,color:C.muted,letterSpacing:'0.08em',textTransform:'uppercase'}}>{sp?.label}</span>
           </div>
-          <p style={{fontFamily:F.head,fontSize:14,fontWeight:700,color:C.text,margin:'0 0 2px',lineHeight:1.25,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
+          <p style={{fontFamily:F.head,fontSize:15,fontWeight:700,color:C.text,margin:'0 0 2px',lineHeight:1.25,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
             {game.opponent}<span style={{fontFamily:F.body,fontWeight:400,color:C.text3,fontSize:11}}> ({game.record})</span>
           </p>
-          <p style={{fontFamily:F.body,fontSize:11,color:C.text3,margin:'0 0 6px'}}>{game.venue}</p>
+          <p style={{fontFamily:F.body,fontSize:12,color:C.text3,margin:'0 0 6px'}}>{game.venue}</p>
           <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
             {game.urgency.hot&&(
               <span style={{display:'flex',alignItems:'center',gap:4,background:`${C.error}15`,border:`1px solid ${C.error}40`,borderRadius:10,padding:'2px 7px'}}>
@@ -673,8 +673,8 @@ function QuantityView({game,onConfirm,onBack}){
         {game.badge&&<span style={{marginLeft:'auto',fontFamily:F.mono,fontSize:9,color:game.badge.color,border:`1px solid ${game.badge.color}44`,background:`${game.badge.color}14`,borderRadius:8,padding:'3px 8px',flexShrink:0}}>{game.badge.label}</span>}
       </div>
       <div style={{flex:1,padding:'28px 20px',display:'flex',flexDirection:'column',alignItems:'center'}}>
-        <h2 style={{fontFamily:F.head,fontSize:24,fontWeight:800,color:C.text,margin:'0 0 6px',textAlign:'center'}}>How many tickets?</h2>
-        <p style={{fontFamily:F.body,fontSize:13,color:C.text3,margin:'0 0 28px',textAlign:'center'}}>Seats will be together in the same section</p>
+        <h2 style={{fontFamily:F.head,fontSize:28,fontWeight:800,color:C.text,margin:'0 0 6px',textAlign:'center'}}>How many tickets?</h2>
+        <p style={{fontFamily:F.body,fontSize:14,color:C.text3,margin:'0 0 28px',textAlign:'center'}}>Seats will be together in the same section</p>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,width:'100%',maxWidth:320,marginBottom:20}}>
           {[1,2,3,4,5,6].map(n=>(
             <button key={n} onClick={()=>setQty(n)} style={{aspectRatio:'1',borderRadius:12,border:qty===n?`2px solid ${C.gold}`:`1.5px solid ${C.border}`,background:qty===n?C.goldBg:C.card,color:qty===n?C.gold:C.text2,fontFamily:F.head,fontSize:22,fontWeight:800,cursor:'pointer',transition:'all 0.13s'}}>{n}</button>
@@ -748,7 +748,7 @@ function SelectView({game,quantity,onConfirm,onBack}){
         <div style={{display:'flex',alignItems:'center',gap:9}}>
           <span style={{fontSize:18}}>{sp?.icon}</span>
           <div>
-            <div style={{fontFamily:F.head,fontSize:15,fontWeight:700,color:C.text}}>Wildcats vs {game.opponent}</div>
+            <div style={{fontFamily:F.head,fontSize:18,fontWeight:700,color:C.text}}>Wildcats vs {game.opponent}</div>
             <div style={{fontFamily:F.mono,fontSize:10,color:C.text3,marginTop:1}}>{game.dayLabel} {game.dateLabel} · {game.time} · {game.venue}</div>
           </div>
           <div style={{marginLeft:'auto',background:C.goldBg,border:`1px solid ${C.goldBorder}`,borderRadius:8,padding:'4px 10px',textAlign:'center',flexShrink:0}}>
@@ -885,7 +885,7 @@ function ConfirmView({game,orderData,onDone}){
           <div style={{width:56,height:56,borderRadius:'50%',background:'rgba(239,160,32,0.18)',border:`2px solid ${C.goldBorder}`,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 12px',animation:'successPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both'}}>
             <svg style={{width:24,height:24}} viewBox="0 0 24 24" fill="none" stroke={C.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <div style={{fontFamily:F.head,fontSize:26,fontWeight:700,color:'white',marginBottom:4}}>You're In!</div>
+          <div style={{fontFamily:F.head,fontSize:30,fontWeight:800,color:'white',marginBottom:4}}>You're In!</div>
           <div style={{fontFamily:F.mono,fontSize:9.5,color:C.muted,letterSpacing:'0.1em'}}>{sp?.icon} GO WILDCATS!</div>
         </div>
         <div style={{padding:'20px'}}>

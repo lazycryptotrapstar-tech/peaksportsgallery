@@ -219,7 +219,7 @@ export default function DemoCRM() {
         <div className="crm-header-row" style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',marginBottom:14}}>
           <div>
             <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:T.text3,letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:3}}>CRM · Midland</div>
-            <div style={{fontFamily:"'Syne',sans-serif",fontSize:24,fontWeight:800,color:T.text,letterSpacing:'-0.025em',lineHeight:1.1}}>Sales Pipeline</div>
+            <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05}}>Sales Pipeline</div>
           </div>
           <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
             {CAMPAIGNS.map(c=>(
@@ -241,7 +241,7 @@ export default function DemoCRM() {
             <div key={i} style={{...CARD,padding:'10px 14px',position:'relative',overflow:'hidden'}}>
               <div style={{position:'absolute',left:0,top:0,bottom:0,width:3,background:s.accent,borderRadius:'3px 0 0 3px'}}/>
               <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:T.text3,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:3}}>{s.label}</div>
-              <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:22,fontWeight:700,color:T.text}}>{s.num}</div>
+              <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:28,fontWeight:700,color:T.text}}>{s.num}</div>
             </div>
           ))}
         </div>
@@ -341,7 +341,7 @@ export default function DemoCRM() {
                       {/* Info */}
                       <div style={{flex:1,minWidth:0}}>
                         <div style={{display:'flex',alignItems:'center',gap:5,marginBottom:2}}>
-                          <div style={{fontSize:13,fontWeight:700,color:T.text,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{ct.name}</div>
+                          <div style={{fontSize:14,fontWeight:700,color:T.text,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{ct.name}</div>
                           {ct.status==='hot'&&<span style={{fontSize:10,animation:'pulse 2s infinite',flexShrink:0}}>🔥</span>}
                         </div>
                         <div style={{fontSize:11,color:T.text3,marginBottom:5,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
@@ -513,7 +513,7 @@ export default function DemoCRM() {
                   <div style={{...LABEL}}>Body</div>
                   {editMode
                     ?<textarea value={editedBody} onChange={e=>setEditedBody(e.target.value)} style={{width:'100%',minHeight:160,padding:'10px 12px',borderRadius:7,border:`1px solid ${T.border}`,background:T.bg,color:T.text,fontSize:13,fontFamily:"'DM Sans',sans-serif",lineHeight:1.7,resize:'vertical',outline:'none',boxSizing:'border-box'}} onFocus={e=>e.target.style.borderColor=T.gold} onBlur={e=>e.target.style.borderColor=T.border}/>
-                    :<div style={{fontSize:13,lineHeight:1.85,color:T.text,whiteSpace:'pre-wrap'}}>{parsed.body}</div>
+                    :<div style={{fontSize:14,lineHeight:1.8,color:T.text,whiteSpace:'pre-wrap'}}>{parsed.body}</div>
                   }
                 </div>
               </div>

@@ -118,7 +118,7 @@ export default function DemoSalesAgent() {
     <div style={INNER}>
       <div style={{marginBottom:6}}>
         <div style={{...LABEL,marginBottom:5}}>Sales Agent · Midland</div>
-        <div style={{fontFamily:"'Syne',sans-serif",fontSize:30,fontWeight:700,color:T.text,letterSpacing:'-0.025em',textAlign:'center'}}>Choose a Campaign</div>
+        <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',textAlign:'center'}}>Choose a Campaign</div>
       </div>
       <div style={{textAlign:'center'}}>
         <p style={{fontSize:13,color:T.text3,marginBottom:30}}>Start a live conversation with Ace</p>
@@ -129,7 +129,7 @@ export default function DemoSalesAgent() {
             <button key={cam.id} className="dcamp" onClick={()=>selectCampaign(cam)}
               style={{background:T.card,borderRadius:15,padding:'22px 22px 18px',border:`1.5px solid ${T.border}`,boxShadow:T.shSm,cursor:'pointer',textAlign:'left',display:'flex',flexDirection:'column',gap:10,position:'relative',overflow:'hidden',transition:'all 0.18s ease'}}>
               <div style={{width:42,height:42,borderRadius:11,background:T.goldBg,display:'flex',alignItems:'center',justifyContent:'center',color:T.gold}}>{cam.svg}</div>
-              <div style={{fontFamily:"'Syne',sans-serif",fontSize:15,fontWeight:700,color:T.text}}>{cam.label}</div>
+              <div style={{fontFamily:"'Syne',sans-serif",fontSize:17,fontWeight:700,color:T.text}}>{cam.label}</div>
               <div style={{fontSize:11.5,color:T.text3,lineHeight:1.45}}>{cam.sub}</div>
               <svg style={{position:'absolute',right:16,bottom:16,width:18,height:18,color:T.text3,transition:'all 0.15s'}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
             </button>

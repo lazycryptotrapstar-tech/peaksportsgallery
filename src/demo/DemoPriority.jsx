@@ -269,7 +269,7 @@ export default function DemoPriority() {
       {/* ══ Header ══════════════════════════════════════════════════════════ */}
       <div style={{marginBottom:18,opacity:loaded?1:0,transform:loaded?'none':'translateY(-8px)',transition:'opacity 0.4s,transform 0.4s'}}>
         <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:T.text3,letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:4}}>Priority Points · Midland</div>
-        <div style={{fontFamily:"'Syne',sans-serif",fontSize:26,fontWeight:800,color:T.text,letterSpacing:'-0.025em',lineHeight:1.1,marginBottom:4}}>Priority Point System</div>
+        <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05,marginBottom:4}}>Priority Point System</div>
         <div style={{fontSize:13,color:T.text3}}>Automated donor tier ranking · Replaces manual spreadsheets</div>
       </div>
 
@@ -298,7 +298,7 @@ export default function DemoPriority() {
               <span style={{fontSize:10,color:cfg.color}}>{cfg.icon}</span>
               <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:cfg.color,letterSpacing:'0.08em',textTransform:'uppercase'}}>{tier}</div>
             </div>
-            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:26,fontWeight:700,color:cfg.numColor,lineHeight:1,marginBottom:3}}>{totals[tier]}</div>
+            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:32,fontWeight:700,color:cfg.numColor,lineHeight:1,marginBottom:4}}>{totals[tier]}</div>
             <div style={{fontSize:10,color:T.text3}}>{tier==='Platinum'?'≥2,000':tier==='Gold'?'1,400–1,999':tier==='Silver'?'700–1,399':'< 700'} pts</div>
           </div>
         ))}
@@ -310,7 +310,7 @@ export default function DemoPriority() {
           <div style={{width:8,height:8,borderRadius:'50%',background:T.amber,flexShrink:0}}/>
           <div>
             <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:T.text3,textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:2}}>Near Upgrade</div>
-            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:18,fontWeight:700,color:T.amber}}>{nearCount} contacts</div>
+            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:22,fontWeight:700,color:T.amber}}>{nearCount} contacts</div>
           </div>
           <div style={{marginLeft:'auto',fontSize:11,color:T.text3}}>within {NEAR_THRESHOLD} pts</div>
         </div>
@@ -318,7 +318,7 @@ export default function DemoPriority() {
           <div style={{width:8,height:8,borderRadius:'50%',background:TIER_CONFIG.Gold.numColor,flexShrink:0}}/>
           <div>
             <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:T.text3,textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:2}}>Avg Points</div>
-            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:18,fontWeight:700,color:T.text}}>{avgPts.toLocaleString()}</div>
+            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:22,fontWeight:700,color:T.text}}>{avgPts.toLocaleString()}</div>
           </div>
           <div style={{marginLeft:'auto',fontSize:11,color:T.text3}}>{totalPts.toLocaleString()} total</div>
         </div>
