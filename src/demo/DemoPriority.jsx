@@ -3,74 +3,75 @@ import { DS } from './DemoConstants'
 
 /* ─── Local prestige tokens — dark, high-contrast ────────────────────────── */
 const T = {
-  bg:      '#060C1A',
-  surface: '#0A1220',
-  card:    '#0F1829',
-  border:  '#1C2840',
-  border2: '#162035',
-  text:    '#EAF0FF',
-  text2:   '#B8C0D4',
-  text3:   '#8892AA',
-  bg2:     '#162035',   // bar track
-  green:   '#4D9828',
-  greenBg: 'rgba(77,152,40,0.12)',
-  amber:   '#EFA020',
-  amberBg: 'rgba(239,160,32,0.12)',
-  red:     '#E05252',
+  bg:      '#F0F7EE',
+  surface: '#E4EFE1',
+  card:    '#FFFFFF',
+  border:  '#C4D8BE',
+  border2: '#C4D8BE',
+  text:    '#1A2E18',
+  text2:   '#3A5835',
+  text3:   '#6A8864',
+  bg2:     '#D5E6CF',   // bar track
+  green:   '#2D6E1C',
+  greenBg: 'rgba(45,110,28,0.10)',
+  amber:   '#B06C10',
+  amberBg: 'rgba(176,108,16,0.10)',
+  red:     '#C03020',
+  redBg:   'rgba(192,48,32,0.10)',
 }
 
 /* ─── Tier config — each tier now has distinct prestige treatment ─────────── */
 const TIER_CONFIG = {
   Platinum: {
     // Bright warm gold — max contrast on dark gradient
-    color:     '#EED070',
-    dimColor:  '#C8A84A',
-    cardBg:    '#0F1829',
-    border:    'rgba(210,180,80,0.45)',
-    leftBar:   '#C8A84A',
-    shadow:    '0 2px 16px rgba(200,168,60,0.12)',
-    numColor:  '#F0D870',    // brightest — Platinum numbers pop
-    badgeBg:   'rgba(210,180,80,0.18)',
-    badgeBdr:  'rgba(210,180,80,0.50)',
+    color:     '#9A7010',
+    dimColor:  '#7A5808',
+    cardBg:    'linear-gradient(135deg,#FFFCF0,#FFF8E0)',
+    border:    '#C4D8BE',
+    leftBar:   '#B89030',
+    shadow:    '0 2px 12px rgba(180,148,32,0.12)',
+    numColor:  '#8A6008',
+    badgeBg:   'rgba(180,148,32,0.10)',
+    badgeBdr:  'rgba(180,148,32,0.32)',
     icon:      '✦',
     min:2000, next:null,    label:'Platinum',
   },
   Gold: {
-    color:     '#D4A030',
-    dimColor:  '#A87820',
-    cardBg:    '#0F1829',
-    border:    'rgba(180,140,40,0.35)',
-    leftBar:   '#B49020',
-    shadow:    '0 2px 12px rgba(180,140,40,0.08)',
-    numColor:  '#D4AF37',
-    badgeBg:   'rgba(180,140,40,0.14)',
-    badgeBdr:  'rgba(180,140,40,0.40)',
+    color:     '#885808',
+    dimColor:  '#6A4408',
+    cardBg:    '#FEFFF8',
+    border:    '#C4D8BE',
+    leftBar:   '#A07818',
+    shadow:    '0 1px 8px rgba(150,118,24,0.08)',
+    numColor:  '#784F05',
+    badgeBg:   'rgba(150,118,24,0.10)',
+    badgeBdr:  'rgba(150,118,24,0.26)',
     icon:      '◆',
     min:1400, next:2000,    label:'Gold',
   },
   Silver: {
-    color:     '#96A8B8',
-    dimColor:  '#6A8098',
-    cardBg:    '#0F1829',
-    border:    'rgba(100,130,160,0.22)',
-    leftBar:   '#6A8098',
+    color:     '#3A5870',
+    dimColor:  '#2A4860',
+    cardBg:    '#FFFFFF',
+    border:    '#C4D8BE',
+    leftBar:   '#5A7898',
     shadow:    'none',
-    numColor:  '#A0B2C4',
-    badgeBg:   'rgba(100,130,160,0.12)',
-    badgeBdr:  'rgba(100,130,160,0.30)',
+    numColor:  '#2A4858',
+    badgeBg:   'rgba(70,110,150,0.10)',
+    badgeBdr:  'rgba(70,110,150,0.24)',
     icon:      '●',
     min:700,  next:1400,    label:'Silver',
   },
   Bronze: {
-    color:     '#C07838',
-    dimColor:  '#8A5020',
-    cardBg:    '#0F1829',
-    border:    'rgba(160,100,48,0.22)',
-    leftBar:   '#8A5020',
+    color:     '#7A4418',
+    dimColor:  '#622E0A',
+    cardBg:    '#FFFFFF',
+    border:    '#C4D8BE',
+    leftBar:   '#9A5825',
     shadow:    'none',
-    numColor:  '#B07030',
-    badgeBg:   'rgba(160,100,48,0.12)',
-    badgeBdr:  'rgba(160,100,48,0.28)',
+    numColor:  '#6A3A10',
+    badgeBg:   'rgba(140,80,35,0.10)',
+    badgeBdr:  'rgba(140,80,35,0.24)',
     icon:      '○',
     min:0,    next:700,     label:'Bronze',
   },
@@ -142,7 +143,7 @@ function CountdownBadge() {
   const d=Math.floor(secs/86400), h=Math.floor((secs%86400)/3600)
   const m=Math.floor((secs%3600)/60), s=secs%60
   return (
-    <div style={{display:'flex',alignItems:'center',gap:10,padding:'10px 16px',borderRadius:12,background:'rgba(208,72,72,0.08)',border:'1px solid rgba(208,72,72,0.22)'}}>
+    <div style={{display:'flex',alignItems:'center',gap:10,padding:'10px 16px',borderRadius:12,background:T.redBg,border:`1px solid ${T.red}38`}}>
       <div style={{width:8,height:8,borderRadius:'50%',background:T.red,boxShadow:`0 0 6px ${T.red}`,flexShrink:0,animation:'ppPulse 1s ease-in-out infinite'}}/>
       <div>
         <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9.5,color:T.red,textTransform:'uppercase',letterSpacing:'0.1em',fontWeight:600}}>Priority Renewal Window Opens</div>
@@ -451,7 +452,7 @@ export default function DemoPriority() {
               {/* Header — tier-gradient for premium */}
               <div style={{
                 padding:'18px 18px',
-                background: '#0A1220',
+                background: T.surface,
                 borderBottom:`1px solid ${isPremium ? cfg.border : T.border}`,
                 display:'flex',alignItems:'center',justifyContent:'space-between',
               }}>

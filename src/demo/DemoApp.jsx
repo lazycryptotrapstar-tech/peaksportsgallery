@@ -3,8 +3,8 @@ import { DS, DEMO_SCHOOL } from './DemoConstants'
 
 /* ─── Local dark tokens — shell-level, matches all demo modules ─────────────── */
 const T = {
-  bg:          '#060C1A',
-  sidebar:     '#080D18',
+  bg:          '#F0F7EE',
+  sidebar:     '#152E10',
   sidebarActive:'rgba(239,160,32,0.12)',
   gold:        '#EFA020',
   psGreen:     '#2D6E1C',
@@ -30,12 +30,12 @@ function DemoAnalyticsShell() {
   return (
     <div style={{display:'flex',flexDirection:'column',height:'100%'}}>
       {/* Sub-tab bar */}
-      <div style={{display:'flex',gap:0,borderBottom:`1px solid rgba(255,255,255,0.06)`,background:'#080D18',padding:'0 20px',flexShrink:0}}>
+      <div style={{display:'flex',gap:0,borderBottom:`1px solid rgba(45,110,28,0.15)`,background:'#E4EFE1',padding:'0 20px',flexShrink:0}}>
         {[{id:'revenue',label:'Revenue Analytics'},{id:'ai',label:'AI vs Manual'}].map(t=>(
           <button key={t.id} onClick={()=>setSubTab(t.id)} style={{
             padding:'12px 18px',border:'none',background:'none',cursor:'pointer',
             fontFamily:"'DM Sans',sans-serif",fontWeight:600,fontSize:13,
-            color:subTab===t.id?T.gold:'rgba(255,255,255,0.35)',
+            color:subTab===t.id?T.gold:'#6A8864',
             borderBottom:subTab===t.id?`2px solid ${T.gold}`:'2px solid transparent',
             marginBottom:-1,transition:'all 0.15s ease',
           }}>{t.label}</button>
@@ -58,11 +58,11 @@ export default function DemoApp() {
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@500;600&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         body{-webkit-font-smoothing:antialiased}
-        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:3px}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(45,110,28,0.20);border-radius:3px}
         .dnb{background:transparent;border:none;cursor:pointer;width:100%;text-align:left;padding:0}
         .dnb:hover .dnb-inner{background:rgba(239,160,32,0.07)!important}
         .dct{transition:all 0.18s ease}
-        .dct:hover{box-shadow:0 4px 14px rgba(0,0,0,0.25)!important;transform:translateY(-1px)!important;border-color:rgba(239,160,32,0.3)!important}
+        .dct:hover{box-shadow:0 4px 14px rgba(45,110,28,0.12)!important;transform:translateY(-1px)!important;border-color:rgba(45,110,28,0.3)!important}
         .dcamp:hover{box-shadow:0 4px 14px rgba(0,0,0,0.25)!important;border-color:rgba(239,160,32,0.38)!important;transform:translateY(-2px)!important}
         .dstat:hover{box-shadow:0 4px 14px rgba(0,0,0,0.25)!important;transform:translateY(-2px)!important}
         @keyframes tp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.65;transform:scale(.8)}}

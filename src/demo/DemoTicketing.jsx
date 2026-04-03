@@ -3,23 +3,26 @@ import { DS } from './DemoConstants'
 
 /* ─── Local color aliases (maps new DS tokens to component-level names) ───── */
 const C = {
-  gold:        '#EFA020',
-  goldBg:      'rgba(239,160,32,0.1)',
-  goldBorder:  'rgba(239,160,32,0.3)',
-  green:       '#4D9828',
-  bg:          '#0A1220',
-  bgDeep:      '#060C1A',
-  card:        '#0F1829',
-  cardHover:   '#162438',
-  border:      '#1C2840',
-  borderLight: '#1C2840',
-  text:        '#EAF0FF',
-  text2:       '#B8C0D4',
-  text3:       '#8892AA',
-  muted:       '#5A6480',
-  primaryBdr:  '#1F5014',
-  error:       '#E05252',
-  info:        '#00AACC',
+  gold:        '#9A6C10',
+  goldBg:      'rgba(154,108,16,0.08)',
+  goldBorder:  'rgba(154,108,16,0.25)',
+  green:       '#2D6E1C',
+  bg:          '#E4EFE1',
+  bgDeep:      '#060C1A',   // KEEP DARK — stadium maps only
+  pageBg:      '#F0F7EE',   // page-level backgrounds
+  card:        '#FFFFFF',
+  cardHover:   '#F4FAF2',
+  border:      '#C4D8BE',
+  borderLight: '#C4D8BE',
+  text:        '#1A2E18',
+  text2:       '#3A5835',
+  text3:       '#6A8864',
+  muted:       '#8AAA84',
+  primaryBdr:  '#2D6E1C',
+  primary:     '#2D6E1C',
+  primarySub:  'rgba(45,110,28,0.10)',
+  error:       '#C03020',
+  info:        '#1A6A8A',
 }
 const F = {
   head: "'Syne',sans-serif",
@@ -466,7 +469,7 @@ function SeatPicker({sectionId,selectedSeats,onSelect}){
   }
   return(
     <div style={{background:C.card,borderRadius:14,overflow:'hidden',border:`1px solid ${C.border}`,animation:'fadeIn 0.25s ease'}}>
-      <div style={{padding:'10px 14px',background:'#0D2008',display:'flex',alignItems:'center',justifyContent:'space-between',borderBottom:`1px solid ${C.primaryBdr}`}}>
+      <div style={{padding:'10px 14px',background:C.green,display:'flex',alignItems:'center',justifyContent:'space-between',borderBottom:`1px solid ${C.primaryBdr}`}}>
         <div>
           <div style={{fontFamily:F.mono,fontSize:8,color:C.gold,letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:2}}>Seat Selection</div>
           <div style={{fontFamily:F.head,fontWeight:700,fontSize:14,color:C.text}}>Section {sectionId}</div>
@@ -559,7 +562,7 @@ function SeatView({section,onClose,onConfirm}){
               <div key={i}><div style={{fontSize:9,color:C.text3,fontWeight:600,marginBottom:2,fontFamily:F.mono}}>{it.label}</div><div style={{fontFamily:F.head,fontWeight:700,fontSize:18,color:'white'}}>{it.val}</div></div>
             ))}
           </div>
-          <button onClick={onConfirm} style={{padding:'10px 20px',borderRadius:12,background:C.gold,color:C.bgDeep,fontFamily:F.head,fontWeight:700,fontSize:14,border:'none',cursor:'pointer'}}>Select These Seats →</button>
+          <button onClick={onConfirm} style={{padding:'10px 20px',borderRadius:12,background:C.green,color:'white',fontFamily:F.head,fontWeight:700,fontSize:14,border:'none',cursor:'pointer'}}>Select These Seats →</button>
         </div>
       </div>
     </div>
@@ -574,15 +577,15 @@ function ListView({onSelect}){
   const sports=['all',...Array.from(new Set(GAMES.map(g=>g.sport)))]
   const filtered=sport==='all'?GAMES:GAMES.filter(g=>g.sport===sport)
   return(
-    <div style={{minHeight:'100vh',background:C.bgDeep,fontFamily:F.body}}>
-      <div style={{background:C.bg,borderBottom:`1px solid ${C.border}`,padding:'20px 16px 0'}}>
+    <div style={{minHeight:'100vh',background:C.pageBg,fontFamily:F.body}}>
+      <div style={{background:C.card,borderBottom:`1px solid ${C.border}`,padding:'20px 16px 0'}}>
         <p style={{color:C.muted,fontFamily:F.mono,fontSize:10,letterSpacing:'0.12em',textTransform:'uppercase',margin:'0 0 4px'}}>MIDLAND UNIVERSITY WILDCATS</p>
         <h1 style={{fontFamily:F.head,fontSize:24,fontWeight:800,color:C.text,margin:'0 0 14px',letterSpacing:'-0.02em'}}>Ticket Hub</h1>
         <div style={{display:'flex',gap:7,overflowX:'auto',paddingBottom:14,scrollbarWidth:'none'}}>
           {sports.map(sp=>{
             const info=SPORTS.find(s=>s.id===sp)
             return(
-              <button key={sp} onClick={()=>setSport(sp)} style={{flexShrink:0,padding:'6px 13px',borderRadius:20,border:sport===sp?`1.5px solid ${C.gold}`:`1.5px solid ${C.border}`,background:sport===sp?C.goldBg:'transparent',color:sport===sp?C.gold:C.text3,fontFamily:F.body,fontSize:12,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap',transition:'all 0.15s'}}>
+              <button key={sp} onClick={()=>setSport(sp)} style={{flexShrink:0,padding:'6px 13px',borderRadius:20,border:sport===sp?`1.5px solid ${C.green}`:`1.5px solid ${C.border}`,background:sport===sp?C.primarySub:'transparent',color:sport===sp?C.green:C.text3,fontFamily:F.body,fontSize:12,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap',transition:'all 0.15s'}}>
                 {sp==='all'?'All Events':`${info?.icon} ${info?.label}`}
               </button>
             )
@@ -605,7 +608,7 @@ function GameCard({game,onSelect}){
   const sp=SPORTS.find(s=>s.id===game.sport)
   return(
     <div onClick={()=>onSelect(game)} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
-      style={{background:hov?C.cardHover:C.card,border:`1px solid ${C.borderLight}`,borderRadius:12,overflow:'hidden',cursor:'pointer',transition:'all 0.14s'}}>
+      style={{background:hov?C.cardHover:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:'hidden',cursor:'pointer',transition:'all 0.14s'}}>
       {game.badge&&(
         <div style={{background:`${game.badge.color}14`,borderBottom:`1px solid ${game.badge.color}3A`,padding:'4px 14px',display:'flex',alignItems:'center',gap:6}}>
           <span style={{width:6,height:6,borderRadius:'50%',background:game.badge.color,display:'inline-block',flexShrink:0}}/>
@@ -657,11 +660,11 @@ function QuantityView({game,onConfirm,onBack}){
   const [qty,setQty]=useState(2)
   const sp=SPORTS.find(s=>s.id===game.sport)
   return(
-    <div style={{minHeight:'100vh',background:C.bgDeep,fontFamily:F.body,display:'flex',flexDirection:'column'}}>
-      <div style={{background:C.bg,borderBottom:`1px solid ${C.border}`,padding:'14px 16px'}}>
+    <div style={{minHeight:'100vh',background:C.pageBg,fontFamily:F.body,display:'flex',flexDirection:'column'}}>
+      <div style={{background:C.card,borderBottom:`1px solid ${C.border}`,padding:'14px 16px'}}>
         <button onClick={onBack} style={{background:'none',border:'none',color:C.text2,fontFamily:F.body,fontSize:14,cursor:'pointer',padding:0,display:'flex',alignItems:'center',gap:5}}>‹ All Events</button>
       </div>
-      <div style={{background:C.card,borderBottom:`1px solid ${C.borderLight}`,padding:'11px 16px',display:'flex',alignItems:'center',gap:11}}>
+      <div style={{background:C.pageBg,borderBottom:`1px solid ${C.borderLight}`,padding:'11px 16px',display:'flex',alignItems:'center',gap:11}}>
         <span style={{fontSize:20}}>{sp?.icon}</span>
         <div>
           <p style={{fontFamily:F.head,fontSize:14,fontWeight:700,color:C.text,margin:0}}>Wildcats vs {game.opponent}</p>
@@ -687,7 +690,7 @@ function QuantityView({game,onConfirm,onBack}){
           </div>
         )}
         <p style={{fontFamily:F.body,fontSize:12,color:C.muted,textAlign:'center',marginBottom:32}}>Need more than 6? Contact Group Sales →</p>
-        <button onClick={()=>onConfirm(qty)} style={{width:'100%',maxWidth:320,padding:'15px 24px',borderRadius:12,border:'none',background:C.gold,color:C.bgDeep,fontFamily:F.head,fontSize:15,fontWeight:800,cursor:'pointer',boxShadow:`0 0 20px ${C.gold}44`}}>
+        <button onClick={()=>onConfirm(qty)} style={{width:'100%',maxWidth:320,padding:'15px 24px',borderRadius:12,border:'none',background:C.green,color:'white',fontFamily:F.head,fontSize:15,fontWeight:800,cursor:'pointer',boxShadow:`0 0 20px ${C.gold}44`}}>
           Find {qty} {qty===1?'Ticket':'Tickets'} →
         </button>
       </div>
@@ -728,7 +731,7 @@ function SelectView({game,quantity,onConfirm,onBack}){
   const adj=(id,d)=>setCons(prev=>{const n={...prev},cur=n[id]||0,nv=Math.max(0,cur+d);if(nv===0)delete n[id];else n[id]=nv;return n})
 
   return(
-    <div style={{fontFamily:F.body,display:'flex',flexDirection:'column',height:'100%',overflow:'hidden',background:C.bgDeep}}>
+    <div style={{fontFamily:F.body,display:'flex',flexDirection:'column',height:'100%',overflow:'hidden',background:C.pageBg}}>
       <style>{`
         @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
         .sv-layout{display:flex;flex:1;overflow:hidden;min-height:0}
@@ -740,7 +743,7 @@ function SelectView({game,quantity,onConfirm,onBack}){
       {showSeatView&&secObj&&<SeatView section={secObj} onClose={()=>setSeatView(false)} onConfirm={()=>setSeatView(false)}/>}
 
       {/* Header */}
-      <div style={{padding:'11px 14px 8px',flexShrink:0,background:C.bg,borderBottom:`1px solid ${C.border}`,opacity:loaded?1:0,transform:loaded?'none':'translateY(-4px)',transition:'opacity 0.35s,transform 0.35s'}}>
+      <div style={{padding:'11px 14px 8px',flexShrink:0,background:C.card,borderBottom:`1px solid ${C.border}`,opacity:loaded?1:0,transform:loaded?'none':'translateY(-4px)',transition:'opacity 0.35s,transform 0.35s'}}>
         <button onClick={onBack} style={{background:'none',border:'none',color:C.text2,fontFamily:F.body,fontSize:13,cursor:'pointer',padding:0,marginBottom:6,display:'flex',alignItems:'center',gap:4}}>‹ Change Quantity</button>
         <div style={{display:'flex',alignItems:'center',gap:9}}>
           <span style={{fontSize:18}}>{sp?.icon}</span>
@@ -807,7 +810,7 @@ function SelectView({game,quantity,onConfirm,onBack}){
 
         {/* ── Cart column ──────────────────────────────────────────────── */}
         <div className="sv-cart">
-          <div style={{padding:'12px 14px',background:C.bgDeep,position:'sticky',top:0,borderBottom:`1px solid ${C.border}`}}>
+          <div style={{padding:'12px 14px',background:C.card,position:'sticky',top:0,borderBottom:`1px solid ${C.border}`}}>
             <div style={{fontFamily:F.head,fontWeight:700,fontSize:14,color:C.text}}>Order Summary</div>
             <div style={{fontFamily:F.mono,fontSize:8,color:C.muted,marginTop:1,letterSpacing:'0.06em'}}>MIDLAND · {game.sport.toUpperCase()}</div>
           </div>
@@ -875,10 +878,10 @@ function ConfirmView({game,orderData,onDone}){
   const sp=SPORTS.find(s=>s.id===game.sport)
   const orderNum=`MU-${Math.floor(Math.random()*90000+10000)}`
   return(
-    <div style={{padding:'28px 16px',maxWidth:480,margin:'0 auto',fontFamily:F.body}}>
+    <div style={{padding:'28px 16px',maxWidth:480,margin:'0 auto',fontFamily:F.body,background:C.pageBg}}>
       <style>{`@keyframes successPop{from{opacity:0;transform:scale(0.4)}to{opacity:1;transform:scale(1)}}`}</style>
       <div style={{background:C.card,borderRadius:20,overflow:'hidden',boxShadow:'0 8px 32px rgba(0,0,0,0.4)'}}>
-        <div style={{padding:'32px 24px',textAlign:'center',background:C.bgDeep}}>
+        <div style={{padding:'32px 24px',textAlign:'center',background:C.pageBg}}>
           <div style={{width:56,height:56,borderRadius:'50%',background:'rgba(239,160,32,0.18)',border:`2px solid ${C.goldBorder}`,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 12px',animation:'successPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both'}}>
             <svg style={{width:24,height:24}} viewBox="0 0 24 24" fill="none" stroke={C.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
@@ -923,7 +926,7 @@ export default function DemoTicketing(){
   const handleReset      = () => { setView('list'); setGame(null); setOrderData(null); setQuantity(2) }
 
   return(
-    <div style={{fontFamily:F.body,background:C.bgDeep,minHeight:'100%'}}>
+    <div style={{fontFamily:F.body,background:C.pageBg,minHeight:'100%'}}>
       {view==='list'    &&<ListView    onSelect={handleSelectGame}/>}
       {view==='quantity'&&<QuantityView game={game} onConfirm={handleSelectQty} onBack={handleReset}/>}
       {view==='select'  &&<SelectView  game={game} quantity={quantity} onConfirm={handleConfirm} onBack={()=>setView('quantity')}/>}

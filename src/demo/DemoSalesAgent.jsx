@@ -3,23 +3,23 @@ import { DS, DEMO_SCHOOL } from './DemoConstants'
 
 /* ─── Local dark tokens — matches Priority / CRM color system ───────────────── */
 const T = {
-  bg:      '#060C1A',
-  surface: '#0A1220',
-  card:    '#0F1829',
-  border:  '#1C2840',
-  text:    '#EAF0FF',
-  text2:   '#B8C0D4',
-  text3:   '#8892AA',
-  bg2:     '#162035',
-  green:   '#4D9828',
-  greenBg: 'rgba(77,152,40,0.12)',
-  amber:   '#EFA020',
-  amberBg: 'rgba(239,160,32,0.12)',
-  red:     '#E05252',
-  gold:    '#EFA020',
-  goldBg:  'rgba(239,160,32,0.10)',
-  goldBdr: 'rgba(239,160,32,0.30)',
-  shSm:    '0 1px 4px rgba(0,0,0,0.3)',
+  bg:      '#F0F7EE',
+  surface: '#E4EFE1',
+  card:    '#FFFFFF',
+  border:  '#C4D8BE',
+  text:    '#1A2E18',
+  text2:   '#3A5835',
+  text3:   '#6A8864',
+  bg2:     '#D5E6CF',
+  green:   '#2D6E1C',
+  greenBg: 'rgba(45,110,28,0.10)',
+  amber:   '#B06C10',
+  amberBg: 'rgba(176,108,16,0.10)',
+  red:     '#C03020',
+  gold:    '#9A6C10',
+  goldBg:  'rgba(154,108,16,0.08)',
+  goldBdr: 'rgba(154,108,16,0.25)',
+  shSm:    '0 1px 6px rgba(0,0,0,0.07)',
 }
 import { DEMO_CONTACTS } from './DemoContacts'
 
@@ -139,7 +139,7 @@ export default function DemoSalesAgent() {
         {/* Phone preview */}
         <div style={{display:'flex',justifyContent:'center',marginBottom:28}}>
           <div style={{width:290,background:'#1A1512',borderRadius:42,padding:13,boxShadow:'0 24px 64px rgba(20,16,13,0.28),0 6px 20px rgba(20,16,13,0.16),inset 0 0 0 1px rgba(255,255,255,0.07)'}}>
-            <div style={{background:'#F2E8D3',borderRadius:31,overflow:'hidden'}}>
+            <div style={{background:T.surface,borderRadius:31,overflow:'hidden'}}>
               <div style={{height:26,background:'#1A1512',borderRadius:'0 0 16px 16px',margin:'0 auto',width:76}}/>
               <div style={{background:T.surface,padding:'11px 14px',display:'flex',alignItems:'center',gap:9}}>
                 <div style={{width:28,height:28,borderRadius:7,background:'rgba(196,136,42,0.22)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:T.gold,flexShrink:0}}>A</div>
@@ -159,7 +159,7 @@ export default function DemoSalesAgent() {
                   <div style={{maxWidth:'78%',padding:'8px 11px',borderRadius:'13px 13px 13px 3px',background:'white',color:T.text,fontSize:11,lineHeight:1.45,boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>Hey! Ace here — your Midland Wildcats ticket rep. Big game at Peak Sports Stadium coming up. What sports are you into?</div>
                 </div>
                 <div style={{display:'flex',justifyContent:'flex-end'}}>
-                  <div style={{maxWidth:'70%',padding:'8px 11px',borderRadius:'13px 13px 3px 13px',background:T.surface,color:'rgba(255,255,255,0.88)',fontSize:11,lineHeight:1.45}}>I'm interested in football!</div>
+                  <div style={{maxWidth:'70%',padding:'8px 11px',borderRadius:'13px 13px 3px 13px',background:T.green,color:'white',fontSize:11,lineHeight:1.45}}>I'm interested in football!</div>
                 </div>
                 <div style={{display:'flex',gap:7,alignItems:'flex-end'}}>
                   <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:T.gold,fontFamily:"'Syne',sans-serif"}}>A</div>
@@ -167,7 +167,7 @@ export default function DemoSalesAgent() {
                 </div>
               </div>
               <div style={{background:'white',margin:'0 12px 12px',borderRadius:10,padding:'8px 10px',display:'flex',alignItems:'center',gap:8}}>
-                <div style={{flex:1,fontSize:11,color:'#9A8264'}}>Message Ace…</div>
+                <div style={{flex:1,fontSize:11,color:T.text3}}>Message Ace…</div>
                 <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 </div>
@@ -236,7 +236,7 @@ export default function DemoSalesAgent() {
               {msg.role==='assistant' && (
                 <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:T.gold,fontFamily:"'Syne',sans-serif",flexShrink:0,marginTop:2}}>A</div>
               )}
-              <div style={{maxWidth:'78%',padding:'9px 13px',borderRadius:msg.role==='user'?'16px 16px 3px 16px':'16px 16px 16px 3px',background:msg.role==='user'?T.surface:'white',color:msg.role==='user'?'rgba(255,255,255,0.88)':T.text,fontSize:13,lineHeight:1.55,fontFamily:"'DM Sans',sans-serif",boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>{msg.content}</div>
+              <div style={{maxWidth:'78%',padding:'9px 13px',borderRadius:msg.role==='user'?'16px 16px 3px 16px':'16px 16px 16px 3px',background:msg.role==='user'?T.green:'white',color:msg.role==='user'?'white':T.text,fontSize:13,lineHeight:1.55,fontFamily:"'DM Sans',sans-serif",boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>{msg.content}</div>
             </div>
           ))}
           {isTyping && (
