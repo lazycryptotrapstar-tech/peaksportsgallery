@@ -477,24 +477,37 @@ function SeatPicker({sectionId,selectedSeats,onSelect}){
           ))}
         </div>
       </div>
-      <div style={{padding:'10px 12px',background:'white'}}>
-        <div style={{textAlign:'center',marginBottom:6,padding:'5px',borderRadius:6,background:'#f8f8f8',fontSize:9.5,fontWeight:700,color:'#999',letterSpacing:'0.1em'}}>↑ BACK OF SECTION ↑</div>
-        <div style={{display:'flex',flexDirection:'column',gap:3}}>
-          {rows.map(row=>(
-            <div key={row} style={{display:'flex',alignItems:'center',gap:3}}>
-              <div style={{width:22,height:24,display:'flex',alignItems:'center',justifyContent:'center',borderRadius:5,background:'#1A5C22',color:'white',fontFamily:F.mono,fontSize:9,fontWeight:700,flexShrink:0}}>{row}</div>
-              <div style={{display:'flex',gap:2,flex:1}}>
-                {Array.from({length:12},(_,i)=>{
-                  const id=`${row}${i+1}`,isTaken=taken[id],isSel=selectedSeats.includes(id)
-                  return(
-                    <button key={id} disabled={isTaken} onClick={()=>toggle(id)} style={{flex:'1 0 0',minWidth:0,height:24,borderRadius:4,border:`1.5px solid ${isSel?C.gold:isTaken?'#eee':'#e2e8f0'}`,background:isSel?C.gold:isTaken?'#f8f8f8':'white',color:isSel?'#0A3D1F':isTaken?'#ccc':'#374151',fontFamily:F.mono,fontSize:8.5,fontWeight:700,cursor:isTaken?'not-allowed':'pointer',transform:isSel?'scale(1.06)':'scale(1)',transition:'all 0.12s'}}>{i+1}</button>
-                  )
-                })}
+      {/* Scrollable grid — horizontal scroll keeps tap targets comfortable */}
+      <div style={{background:'white',overflowX:'auto',WebkitOverflowScrolling:'touch'}}>
+        <div style={{padding:'10px 12px',minWidth:'max-content'}}>
+          <div style={{textAlign:'center',marginBottom:6,padding:'5px',borderRadius:6,background:'#f8f8f8',fontSize:9.5,fontWeight:700,color:'#999',letterSpacing:'0.1em',minWidth:420}}>↑ BACK OF SECTION ↑</div>
+          <div style={{display:'flex',flexDirection:'column',gap:4}}>
+            {rows.map(row=>(
+              <div key={row} style={{display:'flex',alignItems:'center',gap:4}}>
+                {/* Row label — bigger for thumb orientation */}
+                <div style={{width:28,height:32,display:'flex',alignItems:'center',justifyContent:'center',borderRadius:6,background:'#1A5C22',color:'white',fontFamily:F.mono,fontSize:11,fontWeight:700,flexShrink:0}}>{row}</div>
+                <div style={{display:'flex',gap:3}}>
+                  {Array.from({length:12},(_,i)=>{
+                    const id=`${row}${i+1}`,isTaken=taken[id],isSel=selectedSeats.includes(id)
+                    return(
+                      <button key={id} disabled={isTaken} onClick={()=>toggle(id)} style={{
+                        width:32,height:32,flexShrink:0,borderRadius:5,
+                        border:`1.5px solid ${isSel?C.gold:isTaken?'#eee':'#e2e8f0'}`,
+                        background:isSel?C.gold:isTaken?'#f5f5f5':'white',
+                        color:isSel?'#0A3D1F':isTaken?'#ccc':'#374151',
+                        fontFamily:F.mono,fontSize:10,fontWeight:700,
+                        cursor:isTaken?'not-allowed':'pointer',
+                        transform:isSel?'scale(1.08)':'scale(1)',
+                        transition:'all 0.12s',
+                      }}>{i+1}</button>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <div style={{textAlign:'center',marginTop:6,padding:'5px',borderRadius:6,background:'#f0fdf4',fontSize:9.5,fontWeight:700,color:'#2D7A3A',letterSpacing:'0.1em',minWidth:420}}>← FIELD SIDE →</div>
         </div>
-        <div style={{textAlign:'center',marginTop:6,padding:'5px',borderRadius:6,background:'#f0fdf4',fontSize:9.5,fontWeight:700,color:'#2D7A3A',letterSpacing:'0.1em'}}>← FIELD SIDE →</div>
       </div>
     </div>
   )
