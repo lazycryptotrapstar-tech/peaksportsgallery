@@ -471,7 +471,7 @@ export default function DemoPriority() {
                     </div>
                   </div>
                 </div>
-                <button onClick={()=>setSelected(null)} style={{background:'rgba(255,255,255,0.06)',border:'none',cursor:'pointer',color:T.text3,display:'flex',alignItems:'center',justifyContent:'center',padding:7,borderRadius:7}}>
+                <button onClick={()=>setSelected(null)} style={{background:T.surface,border:'none',cursor:'pointer',color:T.text2,display:'flex',alignItems:'center',justifyContent:'center',padding:7,borderRadius:7}}>
                   <svg style={{width:13,height:13}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
               </div>
