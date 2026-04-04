@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { DS, DEMO_SCHOOL } from './DemoConstants'
+import { DEMO_SCHOOL } from './DemoConstants'
+import { DEMO_CONTACTS } from './DemoContacts'
+// ── LOCKED CORE — import functional logic only, do not duplicate here ────────
+import { score, sendChatMessage, buildSystemPrompt, CAMPAIGNS_AGENT } from './DemoCore'
 
-/* ─── Local dark tokens — matches Priority / CRM color system ───────────────── */
+/* ─── UI tokens — safe to edit ───────────────────────────────────────────── */
 const T = {
   bg:      '#F0F7EE',
   surface: '#E4EFE1',
@@ -21,39 +24,20 @@ const T = {
   goldBdr: 'rgba(154,108,16,0.25)',
   shSm:    '0 1px 6px rgba(0,0,0,0.07)',
 }
-import { DEMO_CONTACTS } from './DemoContacts'
-
-const N8N_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/sales-agent'
-
-const score = ct => {
-  let s = 30
-  s += Math.min((ct.purchase_count||0)*10,40)
-  if(ct.status==='hot') s+=20
-  if(ct.status==='warm') s+=10
-  if(ct.status==='cold') s-=10
-  if((ct.last_year||0)>=2025) s+=10
-  else if((ct.last_year||0)>=2023) s+=5
-  return Math.min(100,Math.max(0,s))
-}
 
 const scoreColor = s => s>=80?T.green:s>=60?T.amber:T.red
 
-const CAMPAIGNS = [
-  {id:'TICKETS',label:'Ticket Sales',sub:'Live inventory · Real-time pricing',
-   opener:s=>`${s.emoji} Hey! Grip here — your ${s.name} ticket rep. Big games coming up at ${s.venue?.football?.name}. What sports are you into this season?`,
-   svg:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>},
-  {id:'SPONSORSHIP',label:'Sponsorship',sub:'Corporate partners · Package builder',
-   opener:s=>`Hey! Grip here from ${s.name} athletics. Quick question — what's your primary marketing goal this year? Brand awareness, leads, or community presence?`,
-   svg:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>},
-  {id:'HOSPITALITY',label:'Hospitality',sub:'VIP access · Priority booking',
-   opener:s=>`You have first access to ${s.vip?.[0]} this season. Are you thinking football, basketball, or both — and how many guests?`,
-   svg:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m10 0h3a2 2 0 0 0 2-2v-3"/></svg>},
-  {id:'ALUMNI',label:'Alumni Outreach',sub:'Class reunion · Group seating',
-   opener:s=>`${s.emoji} Once a Mountaineer, always a Mountaineer. We're building alumni sections for ${s.name} home games this season. What year did you graduate?`,
-   svg:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>},
-]
+// Campaign SVG icons (UI only — openers and logic live in DemoCore)
+const CAMPAIGN_SVGS = {
+  TICKETS:     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
+  SPONSORSHIP: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+  HOSPITALITY: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m10 0h3a2 2 0 0 0 2-2v-3"/></svg>,
+  ALUMNI:      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:21,height:21}}><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>,
+}
+const CAMPAIGNS = CAMPAIGNS_AGENT.map(c=>({...c, svg:CAMPAIGN_SVGS[c.id]}))
 
-const buildSystemPrompt = (s, campId) => `You are ${s.mascotName}, the AI-powered revenue agent for ${s.name} ${s.mascot} athletics, operated by Peak Sports MGMT.
+// buildSystemPrompt imported from DemoCore
+const _buildSystemPrompt = (s, campId) => `You are ${s.mascotName}, the AI-powered revenue agent for ${s.name} ${s.mascot} athletics, operated by Peak Sports MGMT.
 SCHOOL: ${s.name} | ${s.conference} | ${s.location}
 FOOTBALL: ${s.venue?.football?.name} (${s.venue?.football?.capacity?.toLocaleString()} cap)
 BASKETBALL: ${s.venue?.basketball?.name} (${s.venue?.basketball?.capacity?.toLocaleString()} cap)
@@ -85,6 +69,7 @@ export default function DemoSalesAgent() {
     setMessages([{role:'assistant',content:cam.opener(s),ts:Date.now()}])
   }
 
+  // ── sendMessage — calls DemoCore.sendChatMessage (do not modify) ──────────
   const sendMessage = async () => {
     if (!input.trim()||!campaign) return
     const userMsg = {role:'user',content:input,ts:Date.now()}
@@ -92,18 +77,7 @@ export default function DemoSalesAgent() {
     setInput('')
     setIsTyping(true)
     try {
-      const res = await fetch(N8N_WEBHOOK, {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          chatInput: input,
-          sessionId: `${s.id}-${campaign.id}-${sessionId}`,
-          school_id: s.id, school_name: s.name, campaign: campaign.id,
-          systemPrompt: buildSystemPrompt(s, campaign.id),
-        }),
-      })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const data = await res.json()
-      const reply = data?.output||data?.text||data?.message||data?.response||'Try again in a moment.'
+      const reply = await sendChatMessage({input, sessionId, campaign})
       setMessages(prev=>[...prev,{role:'assistant',content:reply,ts:Date.now()}])
     } catch {
       setMessages(prev=>[...prev,{role:'assistant',content:'Connection issue — try again in a moment.',ts:Date.now()}])

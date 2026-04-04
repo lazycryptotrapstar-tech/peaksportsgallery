@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react'
-import { DS } from './DemoConstants'
 import { DEMO_CONTACTS } from './DemoContacts'
+// ── LOCKED CORE — import functional logic only, do not duplicate here ────────
+import { score, scoreLevel, parseDraft, requestDraft, CAMPAIGNS_CRM } from './DemoCore'
 
-/* ─── Local dark tokens — matches Priority color system ─────────────────────── */
+/* ─── UI tokens — safe to edit ───────────────────────────────────────────── */
 const T = {
   bg:      '#F0F7EE',
   surface: '#E4EFE1',
@@ -23,45 +24,13 @@ const T = {
   shSm:    '0 1px 6px rgba(0,0,0,0.07)',
 }
 
-const WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/playbook'
-
-/* ─── Scoring (unchanged) ─────────────────────────────────────────────────── */
-const score = ct => {
-  let s = 30
-  s += Math.min((ct.purchase_count||0)*10, 40)
-  if(ct.status==='hot')  s+=20
-  if(ct.status==='warm') s+=10
-  if(ct.status==='cold') s-=10
-  if((ct.last_year||0)>=2025) s+=10
-  else if((ct.last_year||0)>=2023) s+=5
-  return Math.min(100,Math.max(0,s))
-}
 const scoreColor = s => s>=80?T.green:s>=60?T.amber:T.red
-
-/* ─── Draft parser (unchanged) ────────────────────────────────────────────── */
-const parseDraft = raw => {
-  if(!raw) return {angle:'',reason:'',subject:'',body:'',followUp:''}
-  const lines = raw.split('\n')
-  let angle='',reason='',subject='',body='',followUp='',inBody=false
-  for(const l of lines){
-    if(l.startsWith('SELECTED ANGLE:'))     {angle=l.replace('SELECTED ANGLE:','').trim();inBody=false}
-    else if(l.startsWith('REASON:'))        {reason=l.replace('REASON:','').trim();inBody=false}
-    else if(l.startsWith('SUBJECT:'))       {subject=l.replace('SUBJECT:','').trim();inBody=false}
-    else if(l.startsWith('BODY:'))          {inBody=true}
-    else if(l.startsWith('FOLLOW-UP NOTE')) {followUp=l.replace('FOLLOW-UP NOTE FOR REP:','').trim();inBody=false}
-    else if(inBody)                         {body+=(body?'\n':'')+l}
-  }
-  return {angle,reason,subject,body:body.trim(),followUp}
-}
 
 /* ─── Shared style tokens ─────────────────────────────────────────────────── */
 const LABEL = {fontSize:10,fontWeight:600,letterSpacing:'0.09em',textTransform:'uppercase',color:T.text3,fontFamily:"'JetBrains Mono',monospace",display:'block',marginBottom:5}
 const CARD  = {background:T.card,borderRadius:13,border:`1px solid ${T.border}`,boxShadow:T.shSm}
 
-const CAMPAIGNS = [
-  {id:'TICKETS',    label:'Ticket Reactivation', short:'Tickets'},
-  {id:'SPONSORSHIP',label:'Sponsorship Outreach', short:'Sponsors'},
-]
+const CAMPAIGNS = CAMPAIGNS_CRM
 
 /* ─── Status helpers ──────────────────────────────────────────────────────── */
 const statusAccent = s => s==='hot'?T.red:s==='warm'?T.amber:T.text3
@@ -143,32 +112,15 @@ export default function DemoCRM() {
     warm:  allCounts.warm,
   }
 
-  /* ── requestDraft (unchanged) ─────────────────────────────────────────── */
-  const requestDraft = async (ct, t) => {
+  /* ── requestDraft — calls DemoCore.requestDraft (do not modify) ────────── */
+  const handleRequestDraft = async (ct, t) => {
     setContact(ct)
     setParsed(null)
     setLoading(true)
     setEditMode(false)
     setMobileView('draft')
     try {
-      const res = await fetch(WEBHOOK, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          school_id:'demo', campaign, touch:t,
-          contact:{
-            id:ct.id, name:ct.name, email:ct.email, phone:ct.phone||'',
-            title:ct.title||'', purchase_count:ct.purchase_count||0,
-            status:ct.status||'warm', last_year:ct.last_year||0,
-            sport:ct.sport||'Football', tags:Array.isArray(ct.tags)?ct.tags.join(','):ct.tags||'',
-            city:ct.city||'', membership_tier:ct.membership_tier||'',
-          },
-        }),
-      })
-      const data = await res.json()
-      const raw = data.draft||data.output||data.text||data.message||data.response||''
-      if(!raw) throw new Error('Empty response from webhook')
-      const p = parseDraft(raw)
+      const p = await requestDraft({campaign, touch:t, contact:ct})
       setParsed(p)
       setEditedSubject(p.subject)
       setEditedBody(p.body)
@@ -325,7 +277,7 @@ export default function DemoCRM() {
                 const accent=statusAccent(ct.status)
                 return(
                   <div key={ct.id} className="crm-contact-row"
-                    onClick={()=>requestDraft(ct,touch)}
+                    onClick={()=>handleRequestDraft(ct,touch)}
                     style={{borderRadius:11,overflow:'hidden',border:`1px solid ${active?T.gold:T.border}`,boxShadow:active?`0 0 0 2px ${T.gold}25`:'none',transition:'all 0.13s'}}>
                     <div className="crm-card-bg" style={{display:'flex',alignItems:'stretch',background:active?T.goldBg:T.card,padding:'11px 11px 11px 0',gap:10,transition:'background 0.13s'}}>
                       {/* Urgency bar */}
@@ -462,7 +414,7 @@ export default function DemoCRM() {
               {/* ── Touch selector ─────────────────────────────────────── */}
               <div style={{display:'flex',gap:6,marginBottom:14}}>
                 {[1,2,3].map(t=>(
-                  <button key={t} onClick={()=>{setTouch(t);requestDraft(selectedContact,t)}}
+                  <button key={t} onClick={()=>{setTouch(t);handleRequestDraft(selectedContact,t)}}
                     style={{
                       flex:1,padding:'10px 8px',borderRadius:10,
                       border:`1.5px solid ${touch===t?T.gold:T.border}`,
@@ -492,7 +444,7 @@ export default function DemoCRM() {
               <div style={{...CARD,marginBottom:12,overflow:'hidden'}}>
                 {/* Toolbar */}
                 <div style={{padding:'10px 14px',borderBottom:`1px solid ${T.border}`,display:'flex',alignItems:'center',gap:8,background:T.bg,flexWrap:'wrap'}}>
-                  <button onClick={()=>requestDraft(selectedContact,touch)} style={{display:'inline-flex',alignItems:'center',gap:5,padding:'5px 12px',borderRadius:7,border:`1px solid ${T.border}`,background:T.card,color:T.text2,fontFamily:"'DM Sans',sans-serif",fontWeight:600,fontSize:12,cursor:'pointer',transition:'opacity 0.13s'}}
+                  <button onClick={()=>handleRequestDraft(selectedContact,touch)} style={{display:'inline-flex',alignItems:'center',gap:5,padding:'5px 12px',borderRadius:7,border:`1px solid ${T.border}`,background:T.card,color:T.text2,fontFamily:"'DM Sans',sans-serif",fontWeight:600,fontSize:12,cursor:'pointer',transition:'opacity 0.13s'}}
                     onMouseEnter={e=>e.currentTarget.style.opacity='0.75'} onMouseLeave={e=>e.currentTarget.style.opacity='1'}>
                     ↺ Regenerate
                   </button>
