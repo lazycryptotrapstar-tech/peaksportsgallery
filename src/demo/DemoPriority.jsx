@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { DS } from './DemoConstants'
+// ── LOCKED CORE — email generation logic
+import { requestDraft } from './DemoCore'
 
 /* ─── Local prestige tokens — dark, high-contrast ────────────────────────── */
 const T = {
@@ -17,6 +18,7 @@ const T = {
   amber:   '#B06C10',
   amberBg: 'rgba(176,108,16,0.10)',
   red:     '#C03020',
+  redBg:   'rgba(192,48,32,0.08)',
   redBg:   'rgba(192,48,32,0.10)',
 }
 
@@ -230,6 +232,9 @@ export default function DemoPriority() {
   const [selected,   setSelected]   = useState(null)
   const [filterTier, setFilterTier] = useState('All')
   const [loaded,     setLoaded]     = useState(false)
+  const [drafting,   setDrafting]   = useState(false)
+  const [draft,      setDraft]      = useState(null)
+  const [draftErr,   setDraftErr]   = useState(false)
 
   useEffect(() => { const t = setTimeout(() => setLoaded(true), 80); return () => clearTimeout(t) }, [])
 
@@ -248,6 +253,36 @@ export default function DemoPriority() {
   const nearCount = PRIORITY_CONTACTS.filter(nearUpgrade).length
   const totalPts  = PRIORITY_CONTACTS.reduce((s,c)=>s+c.points,0)
   const avgPts    = Math.round(totalPts / PRIORITY_CONTACTS.length)
+
+  /* ── Wire priority contact → CRM email draft ─────────────────────────── */
+  const handleOutreach = async ct => {
+    setDraft(null)
+    setDraftErr(false)
+    setDrafting(true)
+    // Map priority contact fields to CRM contact shape
+    const contact = {
+      id:               ct.id,
+      name:             ct.name,
+      email:            `${ct.name.toLowerCase().replace(' ','.')}@example.com`,
+      phone:            '',
+      title:            `${ct.tier} Priority Member`,
+      purchase_count:   ct.packages,
+      status:           ct.tier==='Platinum'||ct.tier==='Gold' ? 'hot' : 'warm',
+      last_year:        2025,
+      sport:            'Football',
+      tags:             'PRIORITY,RENEWAL',
+      city:             '',
+      membership_tier:  ct.tier,
+    }
+    try {
+      const p = await requestDraft({campaign:'TICKETS', touch:1, contact})
+      setDraft(p)
+    } catch {
+      setDraftErr(true)
+    } finally {
+      setDrafting(false)
+    }
+  }
 
   return (
     <div style={{height:'100%',overflowY:'auto',WebkitOverflowScrolling:'touch',background:T.bg}}>
@@ -552,18 +587,63 @@ export default function DemoPriority() {
                 )}
 
                 {/* CTA */}
-                <button style={{
-                  width:'100%',padding:'13px',borderRadius:10,
-                  border:`1px solid ${cfg.leftBar}`,
-                  background:'transparent',color:cfg.numColor,
-                  fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:14,cursor:'pointer',
-                  transition:'all 0.15s',
-                }}
-                  onMouseEnter={e=>{e.currentTarget.style.background=cfg.cardBg;e.currentTarget.style.boxShadow=cfg.shadow}}
-                  onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.boxShadow='none'}}
+                {/* ── Generate Renewal Outreach ───────────────────── */}
+                <button
+                  onClick={()=>handleOutreach(selected)}
+                  disabled={drafting}
+                  style={{
+                    width:'100%',padding:'13px',borderRadius:10,
+                    border:`1px solid ${cfg.leftBar}`,
+                    background:drafting?T.surface:'transparent',
+                    color:drafting?T.text3:cfg.numColor,
+                    fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:14,
+                    cursor:drafting?'not-allowed':'pointer',
+                    transition:'all 0.15s',
+                  }}
+                  onMouseEnter={e=>{if(!drafting){e.currentTarget.style.background=T.surface}}}
+                  onMouseLeave={e=>{if(!drafting){e.currentTarget.style.background='transparent'}}}
                 >
-                  Generate Renewal Outreach →
+                  {drafting ? '✦ Grip is drafting…' : 'Generate Renewal Outreach →'}
                 </button>
+
+                {/* ── Draft output ─────────────────────────────────── */}
+                {draftErr&&(
+                  <div style={{marginTop:10,padding:'10px 12px',borderRadius:9,background:T.redBg||'rgba(192,48,32,0.08)',border:`1px solid ${T.red}30`}}>
+                    <div style={{fontSize:11,color:T.red,fontWeight:600}}>Could not connect to AI — check n8n</div>
+                  </div>
+                )}
+                {draft&&!draftErr&&(
+                  <div style={{marginTop:12,borderRadius:10,border:`1px solid ${T.border}`,overflow:'hidden'}}>
+                    {/* Draft header */}
+                    <div style={{padding:'9px 13px',background:T.green,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                      <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:'rgba(255,255,255,0.7)',textTransform:'uppercase',letterSpacing:'0.08em'}}>Renewal Draft · T1</div>
+                      <button onClick={()=>setDraft(null)} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(255,255,255,0.6)',fontSize:14,lineHeight:1}}>×</button>
+                    </div>
+                    {/* Subject */}
+                    <div style={{padding:'10px 13px',background:T.surface,borderBottom:`1px solid ${T.border}`}}>
+                      <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:8,color:T.text3,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:3}}>Subject</div>
+                      <div style={{fontSize:12,fontWeight:600,color:T.text}}>{draft.subject}</div>
+                    </div>
+                    {/* Body */}
+                    <div style={{padding:'10px 13px',background:T.card,maxHeight:160,overflowY:'auto'}}>
+                      <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:8,color:T.text3,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:5}}>Body</div>
+                      <div style={{fontSize:12,color:T.text2,lineHeight:1.65,whiteSpace:'pre-wrap'}}>{draft.body}</div>
+                    </div>
+                    {/* Open in email */}
+                    <div style={{padding:'9px 13px',background:T.surface,borderTop:`1px solid ${T.border}`}}>
+                      <button
+                        onClick={()=>{
+                          const subj = encodeURIComponent(draft.subject||'')
+                          const body = encodeURIComponent(draft.body||'')
+                          window.open(`mailto:?subject=${subj}&body=${body}`)
+                        }}
+                        style={{fontSize:12,fontWeight:600,color:T.green,background:'none',border:'none',cursor:'pointer',padding:0,display:'flex',alignItems:'center',gap:5}}
+                      >
+                        ↗ Open in Email
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )
