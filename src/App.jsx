@@ -9,6 +9,7 @@ import CRM from './modules/CRM/CRM'
 import Analytics from './modules/Analytics/Analytics'
 import Insights from './modules/Analytics/Insights'
 import TechStack from './modules/TechStack/TechStack'
+import SchoolDashboard from './modules/SchoolDashboard/SchoolDashboard'
 
 /* ─── Loading screen ─────────────────────────────────────────────────────── */
 function LoadingScreen() {
@@ -36,7 +37,7 @@ function LoadingScreen() {
 
 /* ─── Main app shell ─────────────────────────────────────────────────────── */
 function AppShell() {
-  const { hasModule } = useUser()
+  const { hasModule, canSeeAllSchools } = useUser()
   const [activeTab, setActiveTab] = useState('crm')
 
   const renderTab = () => {
@@ -48,6 +49,7 @@ function AppShell() {
       case 'insights':  return hasModule('analytics')  ? <Insights/>  : <AccessDenied/>
       case 'agent':     return hasModule('agent')      ? <SalesAgent/>: <AccessDenied/>
       case 'stack':     return <TechStack/>
+      case 'dashboard': return canSeeAllSchools ? <SchoolDashboard/> : <AccessDenied/>
       default:          return <CRM/>
     }
   }
@@ -111,7 +113,7 @@ function AccessDenied() {
 
 /* ─── Mobile nav ─────────────────────────────────────────────────────────── */
 function MobileNav({ activeTab, onTabChange }) {
-  const { hasModule } = useUser()
+  const { hasModule, canSeeAllSchools } = useUser()
   const tabs = [
     { id:'crm',       label:'CRM',      emoji:'📧', mod:'crm' },
     { id:'priority',  label:'Priority', emoji:'⭐', mod:'priority' },

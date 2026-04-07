@@ -91,6 +91,22 @@ export function UserProvider({ children }) {
     setUser(null)
   }
 
+  // ── Reset password — sends magic link to email ─────────────────────────────
+  const resetPassword = async (email) => {
+    setError(null)
+    try {
+      const { error: err } = await supabase.auth.resetPasswordForEmail(
+        email.toLowerCase().trim(),
+        { redirectTo: `${window.location.origin}/reset-password` }
+      )
+      if (err) { setError(err.message); return false }
+      return true
+    } catch {
+      setError("Something went wrong. Try again.")
+      return false
+    }
+  }
+
   // ── Access rules ──────────────────────────────────────────────────────────────
   const canSeeAllSchools = user?.role === 'admin' || user?.role === 'peak_staff'
   const allowedSchoolId  = canSeeAllSchools ? null : user?.school_id || null
@@ -109,6 +125,7 @@ export function UserProvider({ children }) {
       canSeeAllSchools,
       allowedSchoolId,
       hasModule,
+      resetPassword,
     }}>
       {children}
     </UserContext.Provider>
