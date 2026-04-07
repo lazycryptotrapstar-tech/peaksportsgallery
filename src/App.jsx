@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { UserProvider, useUser } from './context/UserContext'
 import { SchoolProvider } from './context/SchoolContext'
 import Login from './components/Login/Login'
-import Gallery from './components/Gallery/Gallery'
 import Sidebar from './components/Sidebar/Sidebar'
 import SalesAgent from './modules/SalesAgent/SalesAgent'
 import Ticketing from './modules/Ticketing/Ticketing'
@@ -11,93 +10,157 @@ import Analytics from './modules/Analytics/Analytics'
 import Insights from './modules/Analytics/Insights'
 import TechStack from './modules/TechStack/TechStack'
 
-function AppShell() {
-  const [activeTab, setActiveTab] = useState('agent')
-
-  const renderTab = () => {
-    switch (activeTab) {
-      case 'agent':     return <SalesAgent />
-      case 'ticketing': return <Ticketing />
-      case 'crm':       return <CRM />
-      case 'analytics': return <Analytics />
-      case 'insights':  return <Insights />
-      case 'stack':     return <TechStack />
-      default:          return <SalesAgent />
-    }
-  }
-
+/* ─── Loading screen ─────────────────────────────────────────────────────── */
+function LoadingScreen() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-      <Gallery />
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        <div className="desktop-sidebar">
-          <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
-        </div>
-        <main style={{ flex: 1, overflowY: 'auto', background: 'var(--color-bg)', paddingBottom: 72 }} className="fade-in">
-          {renderTab()}
-        </main>
-      </div>
-      <MobileNav activeTab={activeTab} onTabChange={setActiveTab} />
-      <style>{`
-        .desktop-sidebar { display: flex; }
-        .mobile-nav { display: none; }
-        @media (max-width: 768px) {
-          .desktop-sidebar { display: none; }
-          .mobile-nav { display: flex; }
-        }
-      `}</style>
+    <div style={{
+      minHeight:'100vh',background:'#060C1A',
+      display:'flex',alignItems:'center',justifyContent:'center',
+      flexDirection:'column',gap:16,
+    }}>
+      <div style={{
+        width:40,height:40,borderRadius:'50%',
+        border:'3px solid #1C2840',
+        borderTop:'3px solid #EFA020',
+        animation:'spin 0.8s linear infinite',
+      }}/>
+      <div style={{
+        fontFamily:"'JetBrains Mono',monospace",
+        fontSize:10,color:'#4A5A70',
+        letterSpacing:'0.12em',textTransform:'uppercase',
+      }}>Loading Playbook…</div>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
 }
 
+/* ─── Main app shell ─────────────────────────────────────────────────────── */
+function AppShell() {
+  const { hasModule } = useUser()
+  const [activeTab, setActiveTab] = useState('crm')
+
+  const renderTab = () => {
+    switch(activeTab) {
+      case 'crm':       return hasModule('crm')       ? <CRM/>       : <AccessDenied/>
+      case 'priority':  return hasModule('priority')   ? null         : <AccessDenied/>
+      case 'ticketing': return hasModule('ticketing')  ? <Ticketing/> : <AccessDenied/>
+      case 'analytics': return hasModule('analytics')  ? <Analytics/> : <AccessDenied/>
+      case 'insights':  return hasModule('analytics')  ? <Insights/>  : <AccessDenied/>
+      case 'agent':     return hasModule('agent')      ? <SalesAgent/>: <AccessDenied/>
+      case 'stack':     return <TechStack/>
+      default:          return <CRM/>
+    }
+  }
+
+  return (
+    <div style={{display:'flex',height:'100vh',overflow:'hidden',background:'var(--color-bg,#060C1A)'}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@500;600&display=swap');
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{-webkit-font-smoothing:antialiased}
+        ::-webkit-scrollbar{width:5px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:rgba(45,110,28,0.20);border-radius:3px}
+        .desktop-sidebar{display:flex}
+        .mobile-nav{display:none}
+        @media(max-width:768px){
+          .desktop-sidebar{display:none}
+          .mobile-nav{display:flex}
+        }
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+        .fade-in{animation:fadeIn 0.25s ease both}
+      `}</style>
+
+      {/* Sidebar */}
+      <div className="desktop-sidebar">
+        <Sidebar activeTab={activeTab} onTabChange={setActiveTab}/>
+      </div>
+
+      {/* Main content */}
+      <main key={activeTab} className="fade-in" style={{
+        flex:1,overflow:'hidden',position:'relative',
+        background:'var(--color-bg,#F0F7EE)',
+      }}>
+        <div style={{position:'absolute',inset:0,overflowY:'auto',paddingBottom:'var(--mobile-nav-h,0px)'}}>
+          {renderTab()}
+        </div>
+      </main>
+
+      {/* Mobile nav */}
+      <MobileNav activeTab={activeTab} onTabChange={setActiveTab}/>
+    </div>
+  )
+}
+
+/* ─── Access denied ──────────────────────────────────────────────────────── */
+function AccessDenied() {
+  return (
+    <div style={{
+      display:'flex',alignItems:'center',justifyContent:'center',
+      height:'100%',flexDirection:'column',gap:12,
+    }}>
+      <div style={{fontSize:32}}>🔒</div>
+      <div style={{
+        fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:18,
+        color:'#1A2E18',
+      }}>Module not activated</div>
+      <div style={{fontSize:13,color:'#6A8864'}}>Contact dee@simplegenius.io to enable this module</div>
+    </div>
+  )
+}
+
+/* ─── Mobile nav ─────────────────────────────────────────────────────────── */
 function MobileNav({ activeTab, onTabChange }) {
+  const { hasModule } = useUser()
   const tabs = [
-    { id: 'agent',     label: 'Agent',       emoji: '🤖' },
-    { id: 'crm',       label: 'CRM',         emoji: '📧' },
-    { id: 'ticketing', label: 'Tickets',     emoji: '🎟️' },
-    { id: 'analytics', label: 'Analytics',   emoji: '📊' },
-    { id: 'insights',  label: 'AI vs Manual',emoji: '⚡' },
-  ]
+    { id:'crm',       label:'CRM',      emoji:'📧', mod:'crm' },
+    { id:'priority',  label:'Priority', emoji:'⭐', mod:'priority' },
+    { id:'ticketing', label:'Tickets',  emoji:'🎟️', mod:'ticketing' },
+    { id:'analytics', label:'Analytics',emoji:'📊', mod:'analytics' },
+    { id:'agent',     label:'Agent',    emoji:'🤖', mod:'agent' },
+  ].filter(t=>hasModule(t.mod))
+
   return (
     <nav className="mobile-nav" style={{
-      position: 'fixed', bottom: 0, left: 0, right: 0,
-      background: 'white', borderTop: '1px solid #e8eaed',
-      padding: '4px 0 8px', zIndex: 40,
-      justifyContent: 'space-around', alignItems: 'center',
+      position:'fixed',bottom:0,left:0,right:0,
+      background:'#152E10',borderTop:'1px solid rgba(255,255,255,0.08)',
+      padding:'8px 0 calc(8px + env(safe-area-inset-bottom,0px))',
+      zIndex:50,flexDirection:'row',justifyContent:'space-around',alignItems:'center',
     }}>
-      {tabs.map(tab => (
-        <button key={tab.id} onClick={() => onTabChange(tab.id)}
-          style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
-            padding: '4px 8px', border: 'none', background: 'none', cursor: 'pointer',
-            minWidth: 44, minHeight: 44,
-          }}>
-          <span style={{ fontSize: 18 }}>{tab.emoji}</span>
-          <span style={{ fontSize: 10, fontFamily: "'Inter', sans-serif", fontWeight: 600, color: activeTab === tab.id ? 'var(--color-accent)' : '#94a3b8' }}>
-            {tab.label}
-          </span>
+      {tabs.map(tab=>(
+        <button key={tab.id} onClick={()=>onTabChange(tab.id)} style={{
+          flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3,
+          border:'none',background:'none',cursor:'pointer',padding:'4px 4px 0',minWidth:44,
+        }}>
+          <span style={{fontSize:18}}>{tab.emoji}</span>
+          <span style={{
+            fontFamily:"'DM Sans',sans-serif",fontSize:9.5,fontWeight:600,
+            color:activeTab===tab.id?'#EFA020':'rgba(255,255,255,0.28)',
+            letterSpacing:'0.02em',transition:'color 0.15s',
+          }}>{tab.label}</span>
         </button>
       ))}
     </nav>
   )
 }
 
-// ── Login gate — checks for authenticated user before rendering the app ────────
+/* ─── Auth gate ──────────────────────────────────────────────────────────── */
 function AppGate() {
-  const { user } = useUser()
-  if (!user) return <Login />
+  const { user, loading } = useUser()
+  if (loading) return <LoadingScreen/>
+  if (!user)   return <Login/>
   return (
     <SchoolProvider>
-      <AppShell />
+      <AppShell/>
     </SchoolProvider>
   )
 }
 
-// ── Root — UserProvider must wrap everything so Login can access it ────────────
+/* ─── Root ───────────────────────────────────────────────────────────────── */
 export default function App() {
   return (
     <UserProvider>
-      <AppGate />
+      <AppGate/>
     </UserProvider>
   )
 }

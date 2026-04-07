@@ -4,56 +4,112 @@ import { supabase } from '../lib/supabase'
 const UserContext = createContext(null)
 
 export function UserProvider({ children }) {
-  const [user, setUser]       = useState(null)   // { id, name, email, role, school_id }
-  const [loading, setLoading] = useState(false)
-  const [error, setError]     = useState(null)
+  const [user,    setUser]    = useState(null)   // full profile from user_profiles
+  const [loading, setLoading] = useState(true)   // true on mount while session is checked
+  const [error,   setError]   = useState(null)
 
-  // Persist login across page refreshes
+  // ── On mount — restore session from Supabase Auth ────────────────────────────
   useEffect(() => {
-    const saved = localStorage.getItem('playbook_user')
-    if (saved) {
-      try { setUser(JSON.parse(saved)) } catch { localStorage.removeItem('playbook_user') }
-    }
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        fetchProfile(session.user.id)
+      } else {
+        setLoading(false)
+      }
+    })
+
+    // Listen for auth state changes (login, logout, token refresh)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        fetchProfile(session.user.id)
+      } else {
+        setUser(null)
+        setLoading(false)
+      }
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
-  const login = async (email) => {
+  // ── Fetch user profile from user_profiles table ───────────────────────────────
+  const fetchProfile = async (authId) => {
     setLoading(true)
-    setError(null)
     try {
       const { data, error: err } = await supabase
-        .from('users')
-        .select('id, name, email, role, school_id, active')
-        .eq('email', email.toLowerCase().trim())
+        .from('user_profiles')
+        .select('id, auth_id, name, email, role, school_id, active, modules')
+        .eq('auth_id', authId)
         .eq('active', true)
         .single()
 
       if (err || !data) {
-        setError('No account found for that email. Contact Dee to get access.')
-        return false
+        // Profile missing or inactive — sign out
+        await supabase.auth.signOut()
+        setError('Your account is not active. Contact dee@simplegenius.io')
+        setUser(null)
+      } else {
+        setUser(data)
+        setError(null)
       }
-
-      localStorage.setItem('playbook_user', JSON.stringify(data))
-      setUser(data)
-      return true
     } catch {
-      setError('Something went wrong. Try again.')
-      return false
+      setUser(null)
+      setError('Something went wrong loading your profile.')
     } finally {
       setLoading(false)
     }
   }
 
-  const logout = () => {
-    localStorage.removeItem('playbook_user')
+  // ── Login with email + password ───────────────────────────────────────────────
+  const login = async (email, password) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const { data, error: err } = await supabase.auth.signInWithPassword({
+        email: email.toLowerCase().trim(),
+        password,
+      })
+
+      if (err) {
+        setError('Invalid email or password. Try again.')
+        setLoading(false)
+        return false
+      }
+
+      // Profile fetch is handled by onAuthStateChange
+      return true
+    } catch {
+      setError('Something went wrong. Try again.')
+      setLoading(false)
+      return false
+    }
+  }
+
+  // ── Logout ────────────────────────────────────────────────────────────────────
+  const logout = async () => {
+    await supabase.auth.signOut()
     setUser(null)
   }
 
-  // Access rules
-  const canSeeAllSchools = user && (user.role === 'admin' || user.role === 'peak_staff')
-  const allowedSchoolId  = user?.school_id || null   // null = all schools
+  // ── Access rules ──────────────────────────────────────────────────────────────
+  const canSeeAllSchools = user?.role === 'admin' || user?.role === 'peak_staff'
+  const allowedSchoolId  = canSeeAllSchools ? null : user?.school_id || null
+  const hasModule = (mod) => {
+    if (canSeeAllSchools) return true
+    return (user?.modules || []).includes(mod)
+  }
 
   return (
-    <UserContext.Provider value={{ user, loading, error, login, logout, canSeeAllSchools, allowedSchoolId }}>
+    <UserContext.Provider value={{
+      user,
+      loading,
+      error,
+      login,
+      logout,
+      canSeeAllSchools,
+      allowedSchoolId,
+      hasModule,
+    }}>
       {children}
     </UserContext.Provider>
   )
