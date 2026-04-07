@@ -3,6 +3,23 @@ import { useUser } from '../../context/UserContext'
 
 const SCREEN = { LOGIN: 'login', RESET: 'reset', RESET_SENT: 'reset_sent' }
 
+// ── Wrap defined OUTSIDE component to prevent re-render focus loss ────────────
+function Wrap({ children }) {
+  return (
+    <div style={{minHeight:'100vh',background:'#060C1A',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'DM Sans',Inter,sans-serif",padding:24}}>
+      <div style={{width:'100%',maxWidth:400}}>
+        <div style={{textAlign:'center',marginBottom:40}}>
+          <div style={{fontFamily:"'Syne',sans-serif",fontSize:13,color:'rgba(255,255,255,0.35)',letterSpacing:'0.18em',textTransform:'uppercase',marginBottom:12}}>Peak Sports MGMT</div>
+          <div style={{fontFamily:"'Syne',sans-serif",fontSize:44,fontWeight:800,color:'#FFFFFF',letterSpacing:'-0.02em',lineHeight:1,marginBottom:8}}>The Playbook</div>
+          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:'#EFA020',letterSpacing:'0.12em',textTransform:'uppercase'}}>AI Revenue Intelligence · Staff Portal</div>
+        </div>
+        {children}
+        <p style={{textAlign:'center',marginTop:20,fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:'#3A4A60',letterSpacing:'0.08em'}}>Need access? Contact dee@simplegenius.io</p>
+      </div>
+    </div>
+  )
+}
+
 export default function Login() {
   const { login, resetPassword, loading, error } = useUser()
   const [screen,   setScreen]   = useState(SCREEN.LOGIN)
@@ -25,20 +42,6 @@ export default function Login() {
   }
 
   const ready = email.trim() && password && !loading
-
-  const Wrap = ({ children }) => (
-    <div style={{minHeight:'100vh',background:'#060C1A',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'DM Sans',Inter,sans-serif",padding:24}}>
-      <div style={{width:'100%',maxWidth:400}}>
-        <div style={{textAlign:'center',marginBottom:40}}>
-          <div style={{fontFamily:"'Syne',sans-serif",fontSize:13,color:'rgba(255,255,255,0.35)',letterSpacing:'0.18em',textTransform:'uppercase',marginBottom:12}}>Peak Sports MGMT</div>
-          <div style={{fontFamily:"'Syne',sans-serif",fontSize:44,fontWeight:800,color:'#FFFFFF',letterSpacing:'-0.02em',lineHeight:1,marginBottom:8}}>The Playbook</div>
-          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:'#EFA020',letterSpacing:'0.12em',textTransform:'uppercase'}}>AI Revenue Intelligence · Staff Portal</div>
-        </div>
-        {children}
-        <p style={{textAlign:'center',marginTop:20,fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:'#3A4A60',letterSpacing:'0.08em'}}>Need access? Contact dee@simplegenius.io</p>
-      </div>
-    </div>
-  )
 
   // ── Reset sent ──────────────────────────────────────────────────────────────
   if (screen === SCREEN.RESET_SENT) return (
@@ -65,7 +68,7 @@ export default function Login() {
         <form onSubmit={handleReset}>
           <div style={{marginBottom:20}}>
             <label style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:'#8892AA',letterSpacing:'0.1em',textTransform:'uppercase',display:'block',marginBottom:6}}>Email</label>
-            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="your@email.com" autoFocus
+            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="your@email.com"
               style={{width:'100%',padding:'11px 14px',borderRadius:10,border:'1px solid #1C2840',background:'#060C1A',color:'#EAF0FF',fontSize:14,fontFamily:"'DM Sans',sans-serif",outline:'none',boxSizing:'border-box',transition:'border-color 0.15s'}}
               onFocus={e=>e.target.style.borderColor='#EFA020'} onBlur={e=>e.target.style.borderColor='#1C2840'}/>
           </div>
@@ -88,7 +91,7 @@ export default function Login() {
         <form onSubmit={handleLogin}>
           <div style={{marginBottom:14}}>
             <label style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:'#8892AA',letterSpacing:'0.1em',textTransform:'uppercase',display:'block',marginBottom:6}}>Email</label>
-            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="your@email.com" autoFocus
+            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="your@email.com"
               style={{width:'100%',padding:'11px 14px',borderRadius:10,border:'1px solid #1C2840',background:'#060C1A',color:'#EAF0FF',fontSize:14,fontFamily:"'DM Sans',sans-serif",outline:'none',boxSizing:'border-box',transition:'border-color 0.15s'}}
               onFocus={e=>e.target.style.borderColor='#EFA020'} onBlur={e=>e.target.style.borderColor='#1C2840'}/>
           </div>
