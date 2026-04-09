@@ -2,7 +2,7 @@ import React from 'react'
 import { useSchool } from '../../context/SchoolContext'
 import { useUser } from '../../context/UserContext'
 import { MEMBERSHIP_TIERS } from '../../data/tiers'
-import { Sparkles, ShoppingCart, Mail, TrendingUp, Network, BarChart2, LayoutDashboard, LogOut } from 'lucide-react'
+import { Sparkles, ShoppingCart, Mail, TrendingUp, Network, BarChart2, LayoutDashboard, LogOut, PenSquare } from 'lucide-react'
 
 const NAV_ITEMS = [
   { id: 'crm',       label: 'CRM Outreach',    sub: 'AI Emails · Leads',  icon: Mail,            mod: 'crm' },
@@ -15,7 +15,8 @@ const NAV_ITEMS = [
 
 // Peak staff only — client dashboard
 const STAFF_NAV = [
-  { id: 'dashboard', label: 'School Dashboard', sub: 'Client Overview',    icon: LayoutDashboard, mod: null },
+  { id: 'outreach',  label: 'My Outreach',      sub: 'Draft & Send',   icon: PenSquare,       mod: null },
+  { id: 'dashboard', label: 'School Dashboard', sub: 'Client Overview', icon: LayoutDashboard, mod: null },
 ]
 
 export default function Sidebar({ activeTab, onTabChange }) {

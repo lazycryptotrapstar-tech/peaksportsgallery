@@ -10,6 +10,7 @@ import Analytics from './modules/Analytics/Analytics'
 import Insights from './modules/Analytics/Insights'
 import TechStack from './modules/TechStack/TechStack'
 import SchoolDashboard from './modules/SchoolDashboard/SchoolDashboard'
+import PeakOutreach from './modules/PeakOutreach/PeakOutreach'
 
 /* ─── Loading screen ─────────────────────────────────────────────────────── */
 function LoadingScreen() {
@@ -38,7 +39,7 @@ function LoadingScreen() {
 /* ─── Main app shell ─────────────────────────────────────────────────────── */
 function AppShell() {
   const { hasModule, canSeeAllSchools } = useUser()
-  const [activeTab, setActiveTab] = useState('crm')
+  const [activeTab, setActiveTab] = useState(() => canSeeAllSchools ? 'outreach' : 'crm')
 
   const renderTab = () => {
     switch(activeTab) {
@@ -50,7 +51,8 @@ function AppShell() {
       case 'agent':     return hasModule('agent')      ? <SalesAgent/>: <AccessDenied/>
       case 'stack':     return <TechStack/>
       case 'dashboard': return canSeeAllSchools ? <SchoolDashboard/> : <AccessDenied/>
-      default:          return <CRM/>
+      case 'outreach':  return canSeeAllSchools ? <PeakOutreach/>    : <AccessDenied/>
+      default:          return canSeeAllSchools ? <PeakOutreach/>    : <CRM/>
     }
   }
 
