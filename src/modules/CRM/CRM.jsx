@@ -3,13 +3,13 @@ import { useSchool } from '../../context/SchoolContext'
 import {
   ShoppingCart, Trophy, Star, Users, ArrowLeft, Edit2,
   RefreshCw, ExternalLink, Zap, ChevronRight, Search,
-  Plus, X, UserPlus, Building2, Ticket, Users2
+  Plus, X, UserPlus, Building2, Ticket, Users2, Pin, PinOff,
+  ChevronDown, ChevronUp
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 
 const PLAYBOOK_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/playbook'
 
-// ── Scoring ───────────────────────────────────────────────────────────────────
 const computeScore = (ct) => {
   let s = 30
   s += Math.min((ct.purchase_count || 0) * 10, 40)
@@ -22,7 +22,6 @@ const computeScore = (ct) => {
 }
 const SCORE_COLOR = (s) => s >= 80 ? '#3CDB7A' : s >= 60 ? '#F5C842' : '#f97316'
 
-// ── Pipeline stages ───────────────────────────────────────────────────────────
 const STAGES = [
   { id: 'prospect',  label: 'Prospect',  color: '#94a3b8', desc: 'New — not yet contacted' },
   { id: 'contacted', label: 'Contacted', color: '#3b82f6', desc: 'T1 sent' },
@@ -39,24 +38,16 @@ const CAMPAIGNS = [
 ]
 
 const TABS = [
-  { id: 'tickets',   label: 'Ticket Holders', icon: Ticket,   desc: 'Season ticket buyers' },
+  { id: 'tickets',   label: 'Ticket Holders', icon: Ticket,    desc: 'Season ticket buyers' },
   { id: 'prospects', label: 'Prospects',       icon: Building2, desc: 'Businesses & orgs' },
-  { id: 'groups',    label: 'Group Buyers',    icon: Users2,   desc: 'Past group purchasers' },
+  { id: 'groups',    label: 'Group Buyers',    icon: Users2,    desc: 'Past group purchasers' },
 ]
 
 const CATEGORY_LABEL = {
-  business:              'Business',
-  professional_services: 'Professional Services',
-  financial:             'Financial',
-  healthcare:            'Healthcare',
-  retail:                'Retail',
-  property:              'Property',
-  community:             'Community',
-  youth_sports:          'Youth Sports',
-  group_mbb:             'MBB Group',
-  group_wbb:             'WBB Group',
-  group_fb:              'FB Group',
-  group_vball:           'Volleyball Group',
+  business: 'Business', professional_services: 'Professional Services',
+  financial: 'Financial', healthcare: 'Healthcare', retail: 'Retail',
+  property: 'Property', community: 'Community', youth_sports: 'Youth Sports',
+  group_mbb: 'MBB Group', group_wbb: 'WBB Group', group_fb: 'FB Group', group_vball: 'Volleyball Group',
 }
 
 const getStage = (ct, touchMap) => {
@@ -98,6 +89,7 @@ const CSS = (primary) => `
   .crm-row { display:flex; align-items:center; padding:13px 16px; border-radius:11px; border:1px solid var(--pb-border); background:var(--pb-surface); cursor:pointer; transition:all 0.15s; gap:12px; width:100%; text-align:left; }
   .crm-row:hover { border-color:${primary}44; background:var(--pb-surface2); transform:translateX(2px); }
   .crm-row.active { border-color:${primary}; background:var(--pb-surface2); }
+  .crm-row.pinned { border-color:${primary}66; background:${primary}08; }
   .crm-score { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:#fff; flex-shrink:0; }
   .crm-touch-btn { width:38px; height:38px; border-radius:9px; border:1px solid var(--pb-border); background:var(--pb-surface2); color:var(--pb-muted); cursor:pointer; font-weight:700; font-size:14px; transition:all 0.15s; }
   .crm-touch-btn.active { background:${primary}; border-color:${primary}; color:#fff; }
@@ -108,12 +100,17 @@ const CSS = (primary) => `
   .crm-tab { display:flex; align-items:center; gap:8px; padding:10px 18px; border-radius:10px; border:1.5px solid var(--pb-border); background:var(--pb-surface); color:var(--pb-muted); cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; transition:all 0.15s; white-space:nowrap; }
   .crm-tab.active { background:${primary}; border-color:${primary}; color:#fff; }
   .crm-tab:not(.active):hover { border-color:${primary}44; color:var(--pb-text); }
+  .pin-btn { background:none; border:none; cursor:pointer; padding:4px; border-radius:6px; display:flex; align-items:center; justify-content:center; transition:all 0.15s; opacity:0.4; flex-shrink:0; }
+  .pin-btn:hover { opacity:1; background:${primary}18; }
+  .pin-btn.pinned { opacity:1; }
+  .cold-toggle { display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:10px; border:1px dashed var(--pb-border); background:transparent; color:var(--pb-muted); cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; width:100%; transition:all 0.15s; }
+  .cold-toggle:hover { border-color:${primary}44; color:var(--pb-text); }
   @keyframes crm-bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-7px)} }
-  @media (max-width: 640px) {
-    .crm-stats-grid { grid-template-columns: 1fr 1fr !important; }
-    .crm-pipeline-grid { grid-template-columns: 1fr !important; }
-    .crm-modal { padding: 20px !important; }
-    .crm-modal-fields { grid-template-columns: 1fr !important; }
+  @media (max-width:640px) {
+    .crm-stats-grid { grid-template-columns:1fr 1fr !important; }
+    .crm-pipeline-grid { grid-template-columns:1fr !important; }
+    .crm-modal { padding:20px !important; }
+    .crm-modal-fields { grid-template-columns:1fr !important; }
     .crm-contact-panel { position:fixed !important; inset:auto 0 0 0 !important; border-radius:20px 20px 0 0 !important; max-height:80vh !important; overflow-y:auto !important; z-index:100; }
     .crm-tabs { overflow-x:auto; padding-bottom:4px; }
   }
@@ -124,12 +121,12 @@ const TouchBadges = ({ contactId, touchMap }) => {
   return (
     <div style={{ display: 'flex', gap: 3, flexShrink: 0 }}>
       {[1, 2, 3].map(t => {
-        const done = touches.has(String(t)) || touches.has(t)
+        const done = touches.has(String(t))
         return (
           <div key={t} style={{
             width: 20, height: 20, borderRadius: 5,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: "'JetBrains Mono', monospace", fontSize: 8, fontWeight: 700,
+            fontFamily: "'JetBrains Mono',monospace", fontSize: 8, fontWeight: 700,
             background: done ? 'rgba(60,219,122,0.15)' : 'rgba(0,0,0,0.06)',
             border: done ? '1px solid rgba(60,219,122,0.4)' : '1px solid rgba(0,0,0,0.1)',
             color: done ? '#3CDB7A' : '#bbb',
@@ -141,15 +138,10 @@ const TouchBadges = ({ contactId, touchMap }) => {
 }
 
 function AddProspectModal({ school, onClose, onAdd }) {
-  const c = school.colors
-  const primary = c.accent
-  const [form, setForm] = useState({
-    name: '', email: '', phone: '', city: '',
-    organization: '', sport: 'Football', campaign: 'TICKETS', notes: '',
-  })
+  const primary = school.colors.accent
+  const [form, setForm] = useState({ name: '', email: '', phone: '', organization: '', sport: 'Football', campaign: 'TICKETS', notes: '' })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
   const handleSave = async () => {
@@ -157,38 +149,24 @@ function AddProspectModal({ school, onClose, onAdd }) {
     setSaving(true)
     try {
       const newContact = {
-        school_id: school.id,
-        name: form.name.trim(),
+        school_id: school.id, name: form.name.trim(),
         email: form.email.trim().toLowerCase() || null,
         phone: form.phone.trim() || null,
         organization: form.organization.trim() || null,
         title: `Prospect | ${form.sport}`,
-        contact_type: 'prospect',
-        status: 'warm',
-        tags: [form.campaign],
-        purchase_count: 0,
-        is_lapsed_season: false,
-        is_alumni: false,
-        current_touch: 0,
-        notes: form.notes.trim() || null,
-        pipeline_stage: 'prospect',
-        campaign: form.campaign,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        contact_type: 'prospect', status: 'warm',
+        tags: [form.campaign], purchase_count: 0,
+        is_lapsed_season: false, is_alumni: false, current_touch: 0,
+        notes: form.notes.trim() || null, pipeline_stage: 'prospect',
+        campaign: form.campaign, is_pinned: false,
+        created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
       }
-      const { data, error: err } = await supabase
-        .from('contacts')
-        .insert([newContact])
-        .select()
+      const { data, error: err } = await supabase.from('contacts').insert([newContact]).select()
       if (err) throw err
       onAdd({ ...newContact, id: data?.[0]?.id || `temp-${Date.now()}`, sport: form.sport, last_year: 0 })
       onClose()
-    } catch (err) {
-      setError('Could not save — check Supabase connection')
-      console.error(err)
-    } finally {
-      setSaving(false)
-    }
+    } catch (err) { setError('Could not save — check Supabase connection'); console.error(err) }
+    finally { setSaving(false) }
   }
 
   return (
@@ -243,51 +221,46 @@ export default function CRM() {
   const c = school.colors
   const primary = c.accent
 
-  const [view, setView]                     = useState('pipeline')
-  const [activeTab, setActiveTab]           = useState('tickets')
+  const [view, setView]                       = useState('pipeline')
+  const [activeTab, setActiveTab]             = useState('tickets')
   const [selectedContact, setSelectedContact] = useState(null)
-  const [campaign, setCampaign]             = useState('TICKETS')
-  const [touch, setTouch]                   = useState(1)
-  const [parsed, setParsed]                 = useState(null)
-  const [drafting, setDrafting]             = useState(false)
-  const [editMode, setEditMode]             = useState(false)
-  const [editedSubject, setEditedSubject]   = useState('')
-  const [editedBody, setEditedBody]         = useState('')
-  const [notes, setNotes]                   = useState('')
-  const [savingNotes, setSavingNotes]       = useState(false)
-  const [search, setSearch]                 = useState('')
-  const [stageFilter, setStageFilter]       = useState('all')
-  const [camFilter, setCamFilter]           = useState('all')
-  const [showAddModal, setShowAddModal]     = useState(false)
-  const [allContacts, setAllContacts]       = useState([])
+  const [campaign, setCampaign]               = useState('TICKETS')
+  const [touch, setTouch]                     = useState(1)
+  const [parsed, setParsed]                   = useState(null)
+  const [drafting, setDrafting]               = useState(false)
+  const [editMode, setEditMode]               = useState(false)
+  const [editedSubject, setEditedSubject]     = useState('')
+  const [editedBody, setEditedBody]           = useState('')
+  const [notes, setNotes]                     = useState('')
+  const [savingNotes, setSavingNotes]         = useState(false)
+  const [search, setSearch]                   = useState('')
+  const [camFilter, setCamFilter]             = useState('all')
+  const [showAddModal, setShowAddModal]       = useState(false)
+  const [allContacts, setAllContacts]         = useState([])
   const [loadingContacts, setLoadingContacts] = useState(true)
-  const [touchMap, setTouchMap]             = useState({})
-  const [newProspects, setNewProspects]     = useState([])
+  const [touchMap, setTouchMap]               = useState({})
+  const [newProspects, setNewProspects]       = useState([])
+  const [showCold, setShowCold]               = useState(false)
 
-  // ── Fetch contacts from Supabase ──────────────────────────────────────────
+  // ── Fetch contacts ────────────────────────────────────────────────────────
   useEffect(() => {
-    const fetchContacts = async () => {
+    const fetch = async () => {
       setLoadingContacts(true)
       try {
         const { data, error } = await supabase
-          .from('contacts')
-          .select('*')
-          .eq('school_id', school.id)
-          .order('name')
+          .from('contacts').select('*')
+          .eq('school_id', school.id).order('name')
         if (!error && data) setAllContacts(data)
       } catch (e) { console.error(e) }
       finally { setLoadingContacts(false) }
     }
-    fetchContacts()
+    fetch()
   }, [school.id])
 
   // ── Fetch touch history ───────────────────────────────────────────────────
   const fetchTouchHistory = useCallback(async (schoolId) => {
     try {
-      const { data } = await supabase
-        .from('sequences')
-        .select('contact_id, touch_number')
-        .eq('school_id', schoolId)
+      const { data } = await supabase.from('sequences').select('contact_id, touch_number').eq('school_id', schoolId)
       if (!data) return
       const map = {}
       data.forEach(row => {
@@ -300,7 +273,16 @@ export default function CRM() {
 
   useEffect(() => { fetchTouchHistory(school.id) }, [school.id, fetchTouchHistory])
 
-  // ── Tab-filtered contacts ─────────────────────────────────────────────────
+  // ── Pin / unpin ───────────────────────────────────────────────────────────
+  const togglePin = async (e, ct) => {
+    e.stopPropagation()
+    const newVal = !ct.is_pinned
+    setAllContacts(prev => prev.map(c => c.id === ct.id ? { ...c, is_pinned: newVal } : c))
+    if (selectedContact?.id === ct.id) setSelectedContact(prev => ({ ...prev, is_pinned: newVal }))
+    await supabase.from('contacts').update({ is_pinned: newVal, updated_at: new Date().toISOString() }).eq('id', ct.id)
+  }
+
+  // ── Tab filtering ─────────────────────────────────────────────────────────
   const tabContacts = useMemo(() => {
     const base = [...newProspects, ...allContacts]
     if (activeTab === 'tickets')   return base.filter(ct => ct.contact_type === 'ticket_buyer' && !ct.business_category?.startsWith('group_'))
@@ -322,30 +304,22 @@ export default function CRM() {
     }
     if (camFilter !== 'all') {
       list = list.filter(ct =>
-        (ct.tags || []).includes(camFilter) ||
-        ct.campaign === camFilter ||
+        (ct.tags || []).includes(camFilter) || ct.campaign === camFilter ||
         (camFilter === 'TICKETS' && ct.contact_type === 'ticket_buyer')
       )
     }
     return list
   }, [tabContacts, search, camFilter])
 
-  // ── Group by pipeline stage ───────────────────────────────────────────────
-  const grouped = useMemo(() => {
-    const g = {}
-    STAGES.forEach(s => { g[s.id] = [] })
-    filteredContacts.forEach(ct => {
-      const stage = getStage(ct, touchMap)
-      if (g[stage]) g[stage].push(ct)
-      else g['prospect'].push(ct)
-    })
-    Object.keys(g).forEach(k => {
-      g[k].sort((a, b) => computeScore(b) - computeScore(a))
-    })
-    return g
-  }, [filteredContacts, touchMap])
-
-  const visibleStages = stageFilter === 'all' ? STAGES : STAGES.filter(s => s.id === stageFilter)
+  // ── Queue logic — pinned + warm/hot on top, cold separated ───────────────
+  const { pinned, queue, cold } = useMemo(() => {
+    const sorted = [...filteredContacts].sort((a, b) => computeScore(b) - computeScore(a))
+    const pinned = sorted.filter(ct => ct.is_pinned)
+    const unpinned = sorted.filter(ct => !ct.is_pinned)
+    const queue = unpinned.filter(ct => ct.status === 'hot' || ct.status === 'warm')
+    const cold  = unpinned.filter(ct => ct.status === 'cold' || ct.status === 'prospect' || (!ct.status))
+    return { pinned, queue, cold }
+  }, [filteredContacts])
 
   // ── Tab counts ────────────────────────────────────────────────────────────
   const tabCounts = useMemo(() => {
@@ -357,13 +331,12 @@ export default function CRM() {
     }
   }, [allContacts, newProspects])
 
-  // ── Stats ─────────────────────────────────────────────────────────────────
   const stats = useMemo(() => ({
-    total:     tabContacts.length,
-    hot:       tabContacts.filter(ct => ct.status === 'hot').length,
+    queue:   pinned.length + queue.length,
+    pinned:  pinned.length,
     contacted: Object.values(touchMap).filter(t => t.size > 0).length,
-    added:     newProspects.length,
-  }), [tabContacts, touchMap, newProspects])
+    cold:    cold.length,
+  }), [pinned, queue, cold, touchMap])
 
   // ── Generate draft ────────────────────────────────────────────────────────
   const requestDraft = async (ct, t, cam) => {
@@ -409,21 +382,54 @@ export default function CRM() {
   const saveNotes = async () => {
     if (!selectedContact) return
     setSavingNotes(true)
-    try {
-      await supabase.from('contacts').update({ notes, updated_at: new Date().toISOString() }).eq('id', selectedContact.id)
-    } catch (e) { console.error(e) }
+    try { await supabase.from('contacts').update({ notes, updated_at: new Date().toISOString() }).eq('id', selectedContact.id) }
+    catch (e) { console.error(e) }
     finally { setSavingNotes(false) }
   }
 
   const vars = {
-    '--pb-bg': c.bg || '#F0F7EE',
-    '--pb-surface': '#ffffff',
-    '--pb-surface2': c.bg || '#F0F7EE',
-    '--pb-border': c.border || '#C4D8BE',
-    '--pb-text': c.primary || '#1A2E18',
-    '--pb-muted': c.accent || '#6A8864',
+    '--pb-bg': c.bg || '#F0F7EE', '--pb-surface': '#ffffff',
+    '--pb-surface2': c.bg || '#F0F7EE', '--pb-border': c.border || '#C4D8BE',
+    '--pb-text': c.primary || '#1A2E18', '--pb-muted': c.accent || '#6A8864',
   }
   const initials = (name) => (name || '??').split(' ').map(n => n[0]).slice(0, 2).join('')
+
+  // ── Contact row ───────────────────────────────────────────────────────────
+  const ContactRow = ({ ct }) => {
+    const score = computeScore(ct)
+    const isActive = selectedContact?.id === ct.id
+    const subtitle = ct.organization || ct.email || ''
+    return (
+      <button
+        className={`crm-row${isActive ? ' active' : ''}${ct.is_pinned ? ' pinned' : ''}`}
+        onClick={() => { setSelectedContact(ct); setNotes(ct.notes || ''); setCampaign(ct.campaign || 'TICKETS'); setParsed(null); setView('pipeline') }}
+      >
+        {/* Pin button */}
+        <button
+          className={`pin-btn${ct.is_pinned ? ' pinned' : ''}`}
+          onClick={(e) => togglePin(e, ct)}
+          title={ct.is_pinned ? 'Unpin' : 'Pin to top'}
+        >
+          {ct.is_pinned
+            ? <Pin size={13} color={primary} fill={primary} />
+            : <Pin size={13} color={primary} />
+          }
+        </button>
+        {/* Avatar */}
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: isActive ? `${primary}22` : c.border, border: `1px solid ${primary}33`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 13, color: primary, flexShrink: 0 }}>
+          {initials(ct.name)}
+        </div>
+        {/* Info */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: 'var(--pb-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ct.name}</p>
+          <p style={{ margin: 0, fontSize: 11, color: 'var(--pb-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{subtitle}</p>
+        </div>
+        <TouchBadges contactId={ct.id} touchMap={touchMap} />
+        <div className="crm-score" style={{ background: SCORE_COLOR(score) }}>{score}</div>
+        <ChevronRight size={14} color={primary} style={{ flexShrink: 0 }} />
+      </button>
+    )
+  }
 
   // ── DRAFT VIEW ────────────────────────────────────────────────────────────
   if (view === 'draft' && selectedContact) {
@@ -434,7 +440,6 @@ export default function CRM() {
           <button className="crm-btn" onClick={() => setView('pipeline')} style={{ marginBottom: 16 }}>
             <ArrowLeft size={15} /> Back to Pipeline
           </button>
-
           {drafting ? (
             <div style={{ textAlign: 'center', padding: '80px 0' }}>
               <div style={{ width: 64, height: 64, borderRadius: '50%', background: `${primary}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: 28 }}>{school.emoji}</div>
@@ -452,7 +457,6 @@ export default function CRM() {
                   <p style={{ margin: 0, fontSize: 13, color: 'var(--pb-text)', lineHeight: 1.5 }}>{parsed.reason}</p>
                 </div>
               </div>
-
               <div style={{ background: '#fff', border: '1px solid var(--pb-border)', borderRadius: 16, overflow: 'hidden', marginBottom: 16 }}>
                 <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--pb-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
                   <div>
@@ -468,10 +472,7 @@ export default function CRM() {
                 </div>
                 <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--pb-border)' }}>
                   <p className="crm-label" style={{ marginBottom: 6 }}>Subject</p>
-                  {editMode
-                    ? <input className="crm-input" value={editedSubject} onChange={e => setEditedSubject(e.target.value)} />
-                    : <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: 'var(--pb-text)' }}>{parsed.subject}</p>
-                  }
+                  {editMode ? <input className="crm-input" value={editedSubject} onChange={e => setEditedSubject(e.target.value)} /> : <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: 'var(--pb-text)' }}>{parsed.subject}</p>}
                 </div>
                 <div style={{ padding: '18px 20px' }}>
                   <p className="crm-label" style={{ marginBottom: 8 }}>Body</p>
@@ -481,14 +482,12 @@ export default function CRM() {
                   }
                 </div>
               </div>
-
               {parsed.followUp && (
                 <div style={{ padding: '12px 16px', borderRadius: 11, background: '#f0fdf4', border: '1px solid #86efac', marginBottom: 18 }}>
                   <p style={{ margin: '0 0 3px', fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: '#16a34a', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Rep Note</p>
                   <p style={{ margin: 0, fontSize: 13, color: '#166534', lineHeight: 1.6 }}>{parsed.followUp}</p>
                 </div>
               )}
-
               <div style={{ display: 'flex', gap: 12 }}>
                 <button className="crm-btn crm-btn-primary" onClick={openInEmail} style={{ flex: 1, justifyContent: 'center', padding: '14px', borderRadius: 12, fontFamily: "'Syne',sans-serif", fontSize: 16, fontWeight: 800 }}>
                   <ExternalLink size={18} /> Open in Email
@@ -510,15 +509,9 @@ export default function CRM() {
   return (
     <div className="crm-shell" style={vars}>
       <style>{CSS(primary)}</style>
-      {showAddModal && (
-        <AddProspectModal
-          school={school}
-          onClose={() => setShowAddModal(false)}
-          onAdd={(ct) => setNewProspects(prev => [ct, ...prev])}
-        />
-      )}
+      {showAddModal && <AddProspectModal school={school} onClose={() => setShowAddModal(false)} onAdd={(ct) => setNewProspects(prev => [ct, ...prev])} />}
 
-      <div style={{ maxWidth: 1060, margin: '0 auto', padding: '24px 24px' }}>
+      <div style={{ maxWidth: 1060, margin: '0 auto', padding: '24px' }}>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
@@ -526,9 +519,7 @@ export default function CRM() {
             <p className="crm-label" style={{ marginBottom: 5 }}>CRM · {school.short || school.name}</p>
             <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 'clamp(28px,4vw,42px)', fontWeight: 800, color: 'var(--pb-text)', margin: 0, letterSpacing: '-0.02em' }}>Sales Pipeline</h2>
           </div>
-          <button className="crm-btn crm-btn-primary" onClick={() => setShowAddModal(true)}>
-            <Plus size={15} /> Add Prospect
-          </button>
+          <button className="crm-btn crm-btn-primary" onClick={() => setShowAddModal(true)}><Plus size={15} /> Add Prospect</button>
         </div>
 
         {/* Tabs */}
@@ -536,19 +527,10 @@ export default function CRM() {
           {TABS.map(tab => {
             const Icon = tab.icon
             return (
-              <button
-                key={tab.id}
-                className={`crm-tab${activeTab === tab.id ? ' active' : ''}`}
-                onClick={() => { setActiveTab(tab.id); setSelectedContact(null); setSearch('') }}
-              >
+              <button key={tab.id} className={`crm-tab${activeTab === tab.id ? ' active' : ''}`} onClick={() => { setActiveTab(tab.id); setSelectedContact(null); setSearch(''); setShowCold(false) }}>
                 <Icon size={14} />
                 {tab.label}
-                <span style={{
-                  padding: '1px 8px', borderRadius: 20,
-                  background: activeTab === tab.id ? 'rgba(255,255,255,0.25)' : `${primary}18`,
-                  fontFamily: "'JetBrains Mono',monospace", fontSize: 9, fontWeight: 700,
-                  color: activeTab === tab.id ? '#fff' : primary,
-                }}>
+                <span style={{ padding: '1px 8px', borderRadius: 20, background: activeTab === tab.id ? 'rgba(255,255,255,0.25)' : `${primary}18`, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, fontWeight: 700, color: activeTab === tab.id ? '#fff' : primary }}>
                   {tabCounts[tab.id]}
                 </span>
               </button>
@@ -559,28 +541,25 @@ export default function CRM() {
         {/* Stats */}
         <div className="crm-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 20 }}>
           {[
-            { label: 'Total',     value: stats.total },
-            { label: 'Hot Leads', value: stats.hot },
-            { label: 'Contacted', value: stats.contacted },
-            { label: 'Added',     value: stats.added },
+            { label: 'My Queue',  value: stats.queue,     note: 'active contacts' },
+            { label: 'Pinned',    value: stats.pinned,    note: 'working now' },
+            { label: 'Contacted', value: stats.contacted, note: 'touches sent' },
+            { label: 'Cold',      value: stats.cold,      note: 'not yet warm' },
           ].map(s => (
             <div key={s.label} style={{ padding: '14px 16px', borderRadius: 12, background: '#fff', border: '1px solid var(--pb-border)' }}>
               <p className="crm-label" style={{ marginBottom: 4 }}>{s.label}</p>
               <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 26, fontWeight: 700, color: primary }}>{s.value}</p>
+              <p style={{ margin: '2px 0 0', fontSize: 10, color: 'var(--pb-muted)' }}>{s.note}</p>
             </div>
           ))}
         </div>
 
-        {/* Filters */}
+        {/* Search + filter */}
         <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
           <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
             <Search size={13} color={primary} style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
             <input className="crm-input" style={{ paddingLeft: 32 }} placeholder="Search contacts..." value={search} onChange={e => setSearch(e.target.value)} />
           </div>
-          <select className="crm-select" style={{ width: 'auto' }} value={stageFilter} onChange={e => setStageFilter(e.target.value)}>
-            <option value="all">All Stages</option>
-            {STAGES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
-          </select>
           <select className="crm-select" style={{ width: 'auto' }} value={camFilter} onChange={e => setCamFilter(e.target.value)}>
             <option value="all">All Campaigns</option>
             {CAMPAIGNS.map(cam => <option key={cam.id} value={cam.id}>{cam.label}</option>)}
@@ -588,66 +567,69 @@ export default function CRM() {
         </div>
 
         {loadingContacts ? (
-          <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--pb-muted)', fontFamily: "'JetBrains Mono',monospace", fontSize: 12 }}>
-            Loading contacts...
-          </div>
+          <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--pb-muted)', fontFamily: "'JetBrains Mono',monospace", fontSize: 12 }}>Loading contacts...</div>
         ) : (
           <div className="crm-pipeline-grid" style={{ display: 'grid', gridTemplateColumns: selectedContact ? '1fr 340px' : '1fr', gap: 20, alignItems: 'start' }}>
 
-            {/* Pipeline list */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              {visibleStages.map(stage => {
-                const stageContacts = grouped[stage.id] || []
-                if (stageContacts.length === 0 && stageFilter === 'all') return null
-                return (
-                  <div key={stage.id}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, paddingBottom: 8, borderBottom: `2px solid ${stage.color}33` }}>
-                      <div style={{ width: 10, height: 10, borderRadius: '50%', background: stage.color, flexShrink: 0 }} />
-                      <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, fontWeight: 700, color: stage.color, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{stage.label}</p>
-                      <div style={{ padding: '1px 8px', borderRadius: 20, background: `${stage.color}18`, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: stage.color, fontWeight: 700 }}>{stageContacts.length}</div>
-                      <p style={{ margin: 0, fontSize: 11, color: 'var(--pb-muted)' }}>{stage.desc}</p>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      {stageContacts.map(ct => {
-                        const score = computeScore(ct)
-                        const isActive = selectedContact?.id === ct.id
-                        const subtitle = ct.organization || ct.email || ''
-                        return (
-                          <button
-                            key={ct.id}
-                            className={`crm-row${isActive ? ' active' : ''}`}
-                            onClick={() => {
-                              setSelectedContact(ct)
-                              setNotes(ct.notes || '')
-                              setCampaign(ct.campaign || 'TICKETS')
-                              setParsed(null)
-                              setView('pipeline')
-                            }}
-                          >
-                            <div style={{ width: 38, height: 38, borderRadius: 10, background: isActive ? `${primary}22` : c.border, border: `1px solid ${primary}33`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 13, color: primary, flexShrink: 0 }}>
-                              {initials(ct.name)}
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: 'var(--pb-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ct.name}</p>
-                              <p style={{ margin: 0, fontSize: 11, color: 'var(--pb-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{subtitle}</p>
-                            </div>
-                            <TouchBadges contactId={ct.id} touchMap={touchMap} />
-                            <div className="crm-score" style={{ background: SCORE_COLOR(score) }}>{score}</div>
-                            <ChevronRight size={14} color={primary} style={{ flexShrink: 0 }} />
-                          </button>
-                        )
-                      })}
-                    </div>
+            {/* Contact list */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+
+              {/* Pinned section */}
+              {pinned.length > 0 && (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, paddingBottom: 6, borderBottom: `2px solid ${primary}33` }}>
+                    <Pin size={11} color={primary} fill={primary} />
+                    <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, fontWeight: 700, color: primary, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Pinned</p>
+                    <div style={{ padding: '1px 8px', borderRadius: 20, background: `${primary}18`, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: primary, fontWeight: 700 }}>{pinned.length}</div>
                   </div>
-                )
-              })}
+                  {pinned.map(ct => <ContactRow key={ct.id} ct={ct} />)}
+                  <div style={{ height: 1, background: 'var(--pb-border)', margin: '8px 0' }} />
+                </>
+              )}
+
+              {/* Active queue */}
+              {queue.length > 0 && (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, paddingBottom: 6, borderBottom: `2px solid #3CDB7A33` }}>
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#3CDB7A' }} />
+                    <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, fontWeight: 700, color: '#3CDB7A', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Active Queue</p>
+                    <div style={{ padding: '1px 8px', borderRadius: 20, background: '#3CDB7A18', fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: '#3CDB7A', fontWeight: 700 }}>{queue.length}</div>
+                    <p style={{ margin: 0, fontSize: 11, color: 'var(--pb-muted)' }}>Hot & warm contacts</p>
+                  </div>
+                  {queue.map(ct => <ContactRow key={ct.id} ct={ct} />)}
+                </>
+              )}
+
+              {pinned.length === 0 && queue.length === 0 && (
+                <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--pb-muted)', fontSize: 13 }}>
+                  No active contacts in queue. Try showing cold contacts below.
+                </div>
+              )}
+
+              {/* Cold toggle */}
+              {cold.length > 0 && (
+                <div style={{ marginTop: 16 }}>
+                  <button className="cold-toggle" onClick={() => setShowCold(!showCold)}>
+                    {showCold ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    {showCold ? 'Hide' : 'Show'} {cold.length} cold contacts
+                    {!showCold && <span style={{ marginLeft: 'auto', fontSize: 9 }}>Not yet warmed up</span>}
+                  </button>
+                  {showCold && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+                      <p style={{ margin: '0 0 8px', fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: 'var(--pb-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                        Pin contacts to move them into your active queue
+                      </p>
+                      {cold.map(ct => <ContactRow key={ct.id} ct={ct} />)}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Contact detail panel */}
             {selectedContact && (
               <div className="crm-contact-panel" style={{ position: 'sticky', top: 16 }}>
                 <div style={{ background: '#fff', border: '1px solid var(--pb-border)', borderRadius: 18, overflow: 'hidden' }}>
-                  {/* Panel header */}
                   <div style={{ padding: '16px 18px', background: c.primary || '#152E10', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       <div style={{ width: 40, height: 40, borderRadius: 12, background: `${c.accent}22`, border: `1px solid ${c.accent}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 15, color: 'white' }}>
@@ -655,16 +637,23 @@ export default function CRM() {
                       </div>
                       <div>
                         <p style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 18, color: 'white', lineHeight: 1.1 }}>{selectedContact.name}</p>
-                        <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: c.accent }}>
-                          {selectedContact.organization || selectedContact.email || ''}
-                        </p>
+                        <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: c.accent }}>{selectedContact.organization || selectedContact.email || ''}</p>
                       </div>
                     </div>
-                    <button onClick={() => setSelectedContact(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)' }}><X size={16} /></button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <button
+                        className={`pin-btn${selectedContact.is_pinned ? ' pinned' : ''}`}
+                        onClick={(e) => togglePin(e, selectedContact)}
+                        title={selectedContact.is_pinned ? 'Unpin' : 'Pin to top'}
+                        style={{ opacity: 1 }}
+                      >
+                        <Pin size={16} color={selectedContact.is_pinned ? c.accent : 'rgba(255,255,255,0.5)'} fill={selectedContact.is_pinned ? c.accent : 'none'} />
+                      </button>
+                      <button onClick={() => setSelectedContact(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)' }}><X size={16} /></button>
+                    </div>
                   </div>
 
                   <div style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-                    {/* Score */}
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                       <div className="crm-score" style={{ background: SCORE_COLOR(computeScore(selectedContact)) }}>{computeScore(selectedContact)}</div>
                       <div style={{ flex: 1 }}>
@@ -679,19 +668,13 @@ export default function CRM() {
                       <TouchBadges contactId={selectedContact.id} touchMap={touchMap} />
                     </div>
 
-                    {/* Contact info */}
                     {(selectedContact.phone || selectedContact.email) && (
                       <div style={{ padding: '10px 12px', background: 'var(--pb-bg)', borderRadius: 9, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                        {selectedContact.phone && (
-                          <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: 'var(--pb-text)' }}>{selectedContact.phone}</p>
-                        )}
-                        {selectedContact.email && (
-                          <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: 'var(--pb-muted)' }}>{selectedContact.email}</p>
-                        )}
+                        {selectedContact.phone && <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: 'var(--pb-text)' }}>{selectedContact.phone}</p>}
+                        {selectedContact.email && <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: 'var(--pb-muted)' }}>{selectedContact.email}</p>}
                       </div>
                     )}
 
-                    {/* Devin's call notes (read-only) */}
                     {selectedContact.notes_devin && (
                       <div>
                         <p className="crm-label" style={{ marginBottom: 5 }}>Previous Activity</p>
@@ -701,7 +684,6 @@ export default function CRM() {
                       </div>
                     )}
 
-                    {/* Campaign */}
                     <div>
                       <p className="crm-label" style={{ marginBottom: 8 }}>Campaign</p>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -716,7 +698,6 @@ export default function CRM() {
                       </div>
                     </div>
 
-                    {/* Touch */}
                     <div>
                       <p className="crm-label" style={{ marginBottom: 8 }}>Touch</p>
                       <div style={{ display: 'flex', gap: 8 }}>
@@ -729,7 +710,6 @@ export default function CRM() {
                       </div>
                     </div>
 
-                    {/* Notes */}
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
                         <p className="crm-label" style={{ margin: 0 }}>Notes</p>
@@ -742,12 +722,7 @@ export default function CRM() {
                       <textarea className="crm-textarea" placeholder="Call notes, what they said, context for the AI..." value={notes} onChange={e => setNotes(e.target.value)} />
                     </div>
 
-                    {/* Generate */}
-                    <button
-                      className="crm-btn crm-btn-primary"
-                      onClick={() => requestDraft(selectedContact, touch, campaign)}
-                      style={{ width: '100%', justifyContent: 'center', padding: '13px', borderRadius: 12, fontFamily: "'Syne',sans-serif", fontSize: 16, fontWeight: 800 }}
-                    >
+                    <button className="crm-btn crm-btn-primary" onClick={() => requestDraft(selectedContact, touch, campaign)} style={{ width: '100%', justifyContent: 'center', padding: '13px', borderRadius: 12, fontFamily: "'Syne',sans-serif", fontSize: 16, fontWeight: 800 }}>
                       <Zap size={16} /> Generate Draft
                     </button>
                   </div>
