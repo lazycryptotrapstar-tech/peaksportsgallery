@@ -9,7 +9,7 @@ const SchoolContext = createContext(null)
 export function SchoolProvider({ children }) {
   const { allowedSchoolId, canSeeAllSchools } = useUser()
 
-  const defaultSchool = allowedSchoolId || 'wofford'
+  const defaultSchool = allowedSchoolId || (canSeeAllSchools ? 'demo' : 'wofford')
   const [activeSchoolId, setActiveSchoolId] = useState(defaultSchool)
   const [memberTier, setMemberTier]         = useState('platinum')
   const [logoUrl, setLogoUrl]               = useState(null)
