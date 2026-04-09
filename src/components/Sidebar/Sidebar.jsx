@@ -69,12 +69,7 @@ export default function Sidebar({ activeTab, onTabChange }) {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
-          <div style={{ width: 7, height: 7, borderRadius: '50%', background: accent, boxShadow: `0 0 6px ${accent}` }} />
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: tier?.color || accent, fontWeight: 700 }}>
-            {tier?.label?.toUpperCase() || 'MEMBER'}
-          </span>
-        </div>
+
       </div>
 
       {/* ── Nav ───────────────────────────────────────────────────────────── */}
