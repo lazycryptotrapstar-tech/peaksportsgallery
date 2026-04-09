@@ -4,11 +4,9 @@ import { SchoolProvider } from './context/SchoolContext'
 import Login from './components/Login/Login'
 import Sidebar from './components/Sidebar/Sidebar'
 import SalesAgent from './modules/SalesAgent/SalesAgent'
-import Ticketing from './modules/Ticketing/Ticketing'
 import CRM from './modules/CRM/CRM'
 import Analytics from './modules/Analytics/Analytics'
 import Insights from './modules/Analytics/Insights'
-import TechStack from './modules/TechStack/TechStack'
 import SchoolDashboard from './modules/SchoolDashboard/SchoolDashboard'
 import PeakOutreach from './modules/PeakOutreach/PeakOutreach'
 
@@ -39,17 +37,18 @@ function LoadingScreen() {
 /* ─── Main app shell ─────────────────────────────────────────────────────── */
 function AppShell() {
   const { hasModule, canSeeAllSchools } = useUser()
-  const [activeTab, setActiveTab] = useState(() => canSeeAllSchools ? 'outreach' : 'crm')
+  const [activeTab, setActiveTab] = useState('crm')
+
+  React.useEffect(() => {
+    if (canSeeAllSchools) setActiveTab('outreach')
+  }, [canSeeAllSchools])
 
   const renderTab = () => {
     switch(activeTab) {
-      case 'crm':       return hasModule('crm')       ? <CRM/>       : <AccessDenied/>
-      case 'priority':  return hasModule('priority')   ? null         : <AccessDenied/>
-      case 'ticketing': return hasModule('ticketing')  ? <Ticketing/> : <AccessDenied/>
-      case 'analytics': return hasModule('analytics')  ? <Analytics/> : <AccessDenied/>
-      case 'insights':  return hasModule('analytics')  ? <Insights/>  : <AccessDenied/>
-      case 'agent':     return hasModule('agent')      ? <SalesAgent/>: <AccessDenied/>
-      case 'stack':     return <TechStack/>
+      case 'crm':       return hasModule('crm')      ? <CRM/>        : <AccessDenied/>
+      case 'analytics': return hasModule('analytics') ? <Analytics/>  : <AccessDenied/>
+      case 'insights':  return hasModule('analytics') ? <Insights/>   : <AccessDenied/>
+      case 'agent':     return hasModule('agent')     ? <SalesAgent/> : <AccessDenied/>
       case 'dashboard': return canSeeAllSchools ? <SchoolDashboard/> : <AccessDenied/>
       case 'outreach':  return canSeeAllSchools ? <PeakOutreach/>    : <AccessDenied/>
       default:          return canSeeAllSchools ? <PeakOutreach/>    : <CRM/>
@@ -75,12 +74,10 @@ function AppShell() {
         .fade-in{animation:fadeIn 0.25s ease both}
       `}</style>
 
-      {/* Sidebar */}
       <div className="desktop-sidebar">
         <Sidebar activeTab={activeTab} onTabChange={setActiveTab}/>
       </div>
 
-      {/* Main content */}
       <main key={activeTab} className="fade-in" style={{
         flex:1,overflow:'hidden',position:'relative',
         background:'var(--color-bg,#F0F7EE)',
@@ -90,7 +87,6 @@ function AppShell() {
         </div>
       </main>
 
-      {/* Mobile nav */}
       <MobileNav activeTab={activeTab} onTabChange={setActiveTab}/>
     </div>
   )
@@ -104,10 +100,7 @@ function AccessDenied() {
       height:'100%',flexDirection:'column',gap:12,
     }}>
       <div style={{fontSize:32}}>🔒</div>
-      <div style={{
-        fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:18,
-        color:'#1A2E18',
-      }}>Module not activated</div>
+      <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:18,color:'#1A2E18'}}>Module not activated</div>
       <div style={{fontSize:13,color:'#6A8864'}}>Contact dee@simplegenius.io to enable this module</div>
     </div>
   )
@@ -115,14 +108,12 @@ function AccessDenied() {
 
 /* ─── Mobile nav ─────────────────────────────────────────────────────────── */
 function MobileNav({ activeTab, onTabChange }) {
-  const { hasModule, canSeeAllSchools } = useUser()
+  const { hasModule } = useUser()
   const tabs = [
     { id:'crm',       label:'CRM',      emoji:'📧', mod:'crm' },
-    { id:'priority',  label:'Priority', emoji:'⭐', mod:'priority' },
-    { id:'ticketing', label:'Tickets',  emoji:'🎟️', mod:'ticketing' },
     { id:'analytics', label:'Analytics',emoji:'📊', mod:'analytics' },
     { id:'agent',     label:'Agent',    emoji:'🤖', mod:'agent' },
-  ].filter(t=>hasModule(t.mod))
+  ].filter(t => hasModule(t.mod))
 
   return (
     <nav className="mobile-nav" style={{

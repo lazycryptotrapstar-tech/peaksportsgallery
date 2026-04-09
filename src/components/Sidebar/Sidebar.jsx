@@ -2,21 +2,17 @@ import React from 'react'
 import { useSchool } from '../../context/SchoolContext'
 import { useUser } from '../../context/UserContext'
 import { MEMBERSHIP_TIERS } from '../../data/tiers'
-import { Sparkles, ShoppingCart, Mail, TrendingUp, Network, BarChart2, LayoutDashboard, LogOut, PenSquare } from 'lucide-react'
+import { Sparkles, Mail, BarChart2, LayoutDashboard, LogOut, PenSquare } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { id: 'crm',       label: 'CRM Outreach',    sub: 'AI Emails · Leads',  icon: Mail,            mod: 'crm' },
-  { id: 'priority',  label: 'Priority Points',  sub: 'Donor Rankings',     icon: TrendingUp,      mod: 'priority' },
-  { id: 'ticketing', label: 'Ticket Hub',       sub: 'Marketplace',        icon: ShoppingCart,    mod: 'ticketing' },
-  { id: 'analytics', label: 'Analytics',        sub: 'Performance',        icon: BarChart2,       mod: 'analytics' },
-  { id: 'agent',     label: 'Sales Agent',      sub: 'AI Chat',            icon: Sparkles,        mod: 'agent' },
-  { id: 'stack',     label: 'Tech Stack',       sub: 'Infrastructure',     icon: Network,         mod: null },
+  { id: 'crm',       label: 'CRM Outreach',    sub: 'AI Emails · Leads',  icon: Mail,       mod: 'crm' },
+  { id: 'analytics', label: 'Analytics',        sub: 'Performance',        icon: BarChart2,  mod: 'analytics' },
+  { id: 'agent',     label: 'Sales Agent',      sub: 'AI Chat',            icon: Sparkles,   mod: 'agent' },
 ]
 
-// Peak staff only — client dashboard
 const STAFF_NAV = [
-  { id: 'outreach',  label: 'My Outreach',      sub: 'Draft & Send',   icon: PenSquare,       mod: null },
-  { id: 'dashboard', label: 'School Dashboard', sub: 'Client Overview', icon: LayoutDashboard, mod: null },
+  { id: 'outreach',  label: 'My Outreach',      sub: 'Draft & Send',       icon: PenSquare,       mod: null },
+  { id: 'dashboard', label: 'School Dashboard', sub: 'Client Overview',    icon: LayoutDashboard, mod: null },
 ]
 
 export default function Sidebar({ activeTab, onTabChange }) {
@@ -24,11 +20,10 @@ export default function Sidebar({ activeTab, onTabChange }) {
   const { user, logout, canSeeAllSchools, hasModule } = useUser()
   const tier = MEMBERSHIP_TIERS[memberTier] || MEMBERSHIP_TIERS.bronze
 
-  const accent    = school?.colors?.accent    || '#EFA020'
-  const accent2   = school?.colors?.accent2   || '#EFA020'
-  const primary   = school?.colors?.primary   || '#152E10'
+  const accent  = school?.colors?.accent  || '#EFA020'
+  const accent2 = school?.colors?.accent2 || '#EFA020'
+  const primary = school?.colors?.primary || '#152E10'
 
-  // Filter nav items by module access
   const visibleNav = NAV_ITEMS.filter(item => item.mod === null || hasModule(item.mod))
 
   return (
@@ -67,7 +62,7 @@ export default function Sidebar({ activeTab, onTabChange }) {
       {/* ── Nav ───────────────────────────────────────────────────────────── */}
       <nav style={{flex:1,padding:'12px 10px',display:'flex',flexDirection:'column',gap:1}}>
 
-        {/* Peak staff dashboard — only for admin/peak_staff */}
+        {/* Peak staff nav — only for admin/peak_staff */}
         {canSeeAllSchools && STAFF_NAV.map(item => {
           const Icon = item.icon
           const active = activeTab === item.id
@@ -117,9 +112,8 @@ export default function Sidebar({ activeTab, onTabChange }) {
         })}
       </nav>
 
-      {/* ── Footer — user info + logout ───────────────────────────────────── */}
+      {/* ── Footer ───────────────────────────────────────────────────────── */}
       <div style={{padding:'12px 14px 16px',borderTop:`1px solid ${accent}22`}}>
-        {/* User info */}
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
           <div style={{width:30,height:30,borderRadius:8,background:`${accent}22`,border:`1px solid ${accent}44`,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:accent,flexShrink:0}}>
             {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || '?'}
@@ -134,7 +128,6 @@ export default function Sidebar({ activeTab, onTabChange }) {
           </div>
         </div>
 
-        {/* Logout button */}
         <button onClick={logout} style={{
           width:'100%',display:'flex',alignItems:'center',gap:8,
           padding:'9px 12px',borderRadius:9,
