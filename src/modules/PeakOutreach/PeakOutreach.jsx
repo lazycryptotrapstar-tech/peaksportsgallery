@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react';
-import { UserContext } from '../../context/UserContext';
+import { useState } from 'react';
+import { useUser } from '../../context/UserContext'; 
 
 const WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/peak-outreach';
 
@@ -66,7 +66,7 @@ const parseDraft = (raw) => {
 };
 
 export default function PeakOutreach() {
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
 
   const [campaign,        setCampaign]        = useState('CLIENT_UPDATE');
   const [touch,           setTouch]           = useState(1);
