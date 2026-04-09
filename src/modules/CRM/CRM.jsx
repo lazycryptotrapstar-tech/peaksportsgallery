@@ -685,7 +685,7 @@ export default function CRM() {
         {loadingContacts ? (
           <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--pb-muted)', fontFamily: "'JetBrains Mono',monospace", fontSize: 12 }}>Loading contacts...</div>
         ) : (
-          <div className="crm-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 460px', gap: 16, alignItems: 'start' }}>
+          <div className="crm-layout" style={{ display: 'grid', gridTemplateColumns: parsed ? '380px 1fr' : '1fr 460px', gap: 16, alignItems: 'start' }}>
 
             {/* Contact list */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
@@ -744,7 +744,7 @@ export default function CRM() {
               position: 'sticky', top: 16,
               background: '#fff', border: '1px solid var(--pb-border)',
               borderRadius: 16, overflow: 'hidden',
-              maxHeight: 'calc(100vh - 80px)',
+              height: 'calc(100vh - 100px)',
               display: 'flex', flexDirection: 'column',
             }}>
               {renderPanel()}
