@@ -26,6 +26,12 @@ export default function Sidebar({ activeTab, onTabChange }) {
 
   const visibleNav = NAV_ITEMS.filter(item => item.mod === null || hasModule(item.mod))
 
+  // Footer label — title if set, otherwise role label
+  const footerLabel = user?.title
+    || (user?.role === 'admin' ? 'Admin'
+      : user?.role === 'peak_staff' ? 'Peak Staff'
+      : user?.school_id || 'Rep')
+
   return (
     <div style={{
       width: 256, minWidth: 256, height: '100vh',
@@ -74,7 +80,6 @@ export default function Sidebar({ activeTab, onTabChange }) {
       {/* ── Nav ───────────────────────────────────────────────────────────── */}
       <nav style={{ flex: 1, padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: 1 }}>
 
-        {/* Staff nav */}
         {canSeeAllSchools && STAFF_NAV.map(item => {
           const Icon = item.icon
           const active = activeTab === item.id
@@ -98,7 +103,6 @@ export default function Sidebar({ activeTab, onTabChange }) {
 
         {canSeeAllSchools && <div style={{ height: 1, background: `${accent}22`, margin: '6px 4px 10px' }} />}
 
-        {/* Regular nav */}
         {visibleNav.map(item => {
           const Icon = item.icon
           const active = activeTab === item.id
@@ -131,8 +135,8 @@ export default function Sidebar({ activeTab, onTabChange }) {
             <p style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 12, color: 'rgba(255,255,255,0.85)', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {user?.name || user?.email?.split('@')[0]}
             </p>
-            <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              {user?.role === 'admin' ? 'Admin' : user?.role === 'peak_staff' ? 'Peak Staff' : user?.school_id || 'Rep'}
+            <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {footerLabel}
             </p>
           </div>
         </div>
