@@ -431,8 +431,6 @@ holycross: {
     emoji: '🏅',
   },
 
-}
-
   demo: {
     id: 'demo',
     name: 'Peak University',
@@ -466,5 +464,6 @@ holycross: {
     emoji: '🏔️',
   },
 
+}
 
 export const SCHOOL_LIST = Object.values(SCHOOLS)
