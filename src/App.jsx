@@ -10,6 +10,7 @@ import Insights from './modules/Analytics/Insights'
 import SchoolDashboard from './modules/SchoolDashboard/SchoolDashboard'
 import PeakOutreach from './modules/PeakOutreach/PeakOutreach'
 import ExecutiveOutreach from './modules/ExecutiveOutreach/ExecutiveOutreach'
+import ExecutiveOutreach from './modules/ExecutiveOutreach/ExecutiveOutreach'
 import Productivity from './modules/Productivity/Productivity'
 
 /* ─── Loading screen ─────────────────────────────────────────────────────── */
