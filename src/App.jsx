@@ -9,6 +9,7 @@ import Analytics from './modules/Analytics/Analytics'
 import Insights from './modules/Analytics/Insights'
 import SchoolDashboard from './modules/SchoolDashboard/SchoolDashboard'
 import PeakOutreach from './modules/PeakOutreach/PeakOutreach'
+import Productivity from './modules/Productivity/Productivity'
 
 /* ─── Loading screen ─────────────────────────────────────────────────────── */
 function LoadingScreen() {
@@ -51,6 +52,7 @@ function AppShell() {
       case 'agent':     return hasModule('agent')     ? <SalesAgent/> : <AccessDenied/>
       case 'dashboard': return canSeeAllSchools ? <SchoolDashboard/> : <AccessDenied/>
       case 'outreach':  return canSeeAllSchools ? <PeakOutreach/>    : <AccessDenied/>
+      case 'productivity': return !canSeeAllSchools ? <Productivity/>  : <AccessDenied/>
       default:          return canSeeAllSchools ? <PeakOutreach/>    : <CRM/>
     }
   }

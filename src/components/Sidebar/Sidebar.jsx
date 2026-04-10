@@ -2,10 +2,11 @@ import React from 'react'
 import { useSchool } from '../../context/SchoolContext'
 import { useUser } from '../../context/UserContext'
 import { MEMBERSHIP_TIERS } from '../../data/tiers'
-import { Sparkles, Mail, BarChart2, LayoutDashboard, LogOut, PenSquare } from 'lucide-react'
+import { Sparkles, Mail, BarChart2, LayoutDashboard, LogOut, PenSquare, TrendingUp } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { id: 'crm',       label: 'CRM Outreach', sub: 'AI Emails · Leads', icon: Mail,      mod: 'crm' },
+  { id: 'crm',       label: 'CRM Outreach',  sub: 'AI Emails · Leads', icon: Mail,        mod: 'crm' },
+  { id: 'productivity', label: 'Productivity', sub: 'My Activity',    icon: TrendingUp,  mod: 'crm' },
   { id: 'analytics', label: 'Analytics',    sub: 'Performance',       icon: BarChart2, mod: 'analytics' },
   { id: 'agent',     label: 'Sales Agent',  sub: 'AI Chat',           icon: Sparkles,  mod: 'agent' },
 ]
