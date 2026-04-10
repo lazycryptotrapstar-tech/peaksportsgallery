@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { useSchool } from '../../context/SchoolContext'
+import { useUser } from '../../context/UserContext'
 import {
   ShoppingCart, Trophy, Star, Users, Edit2,
   RefreshCw, ExternalLink, Zap, ChevronRight, Search,
@@ -10,6 +11,21 @@ import {
 import { supabase } from '../../lib/supabase'
 
 const PLAYBOOK_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/playbook'
+
+// ── Silent activity logger ────────────────────────────────────────────────────
+const logActivity = async ({ schoolId, userId, action, contactId, contactName, metadata }) => {
+  try {
+    await supabase.from('activity_log').insert([{
+      school_id:    schoolId,
+      user_id:      userId,
+      action,
+      contact_id:   contactId   || null,
+      contact_name: contactName || null,
+      metadata:     metadata    || null,
+      created_at:   new Date().toISOString(),
+    }])
+  } catch (e) { /* silent — never block the UI */ }
+}
 
 const computeScore = (ct) => {
   let s = 30
@@ -184,7 +200,16 @@ function AddProspectModal({ school, onClose, onAdd }) {
       }
       const { data, error: err } = await supabase.from('contacts').insert([newContact]).select()
       if (err) throw err
-      onAdd({ ...newContact, id: data?.[0]?.id || `temp-${Date.now()}`, sport: form.sport, last_year: 0 })
+      const newId = data?.[0]?.id
+      onAdd({ ...newContact, id: newId || `temp-${Date.now()}`, sport: form.sport, last_year: 0 })
+      // Log contact added — fire and forget
+      if (newId) {
+        supabase.from('activity_log').insert([{
+          school_id: school.id, user_id: null,
+          action: 'contact_added', contact_id: newId, contact_name: form.name.trim(),
+          created_at: new Date().toISOString(),
+        }]).then(() => {})
+      }
       onClose()
     } catch (err) { setError('Could not save — check Supabase connection'); console.error(err) }
     finally { setSaving(false) }
@@ -239,6 +264,7 @@ function AddProspectModal({ school, onClose, onAdd }) {
 
 export default function CRM() {
   const { school } = useSchool()
+  const { user } = useUser()
   const c = school.colors
   const primary = c.accent
 
@@ -370,6 +396,8 @@ export default function CRM() {
       const data = await res.json()
       const p = parseDraft(data.draft || '')
       setParsed(p); setEditedSubject(p.subject); setEditedBody(p.body)
+      logActivity({ schoolId: school.id, userId: user?.id, action: 'draft_generated', contactId: ct.id, contactName: ct.name, metadata: { touch: t, campaign: cam } })
+      logActivity({ schoolId: school.id, userId: user?.id, action: `touch_${t}`, contactId: ct.id, contactName: ct.name })
       setTouchMap(prev => {
         const updated = { ...prev }
         if (!updated[ct.id]) updated[ct.id] = new Set()
@@ -386,6 +414,7 @@ export default function CRM() {
     const subj = encodeURIComponent(editMode ? editedSubject : parsed?.subject || '')
     const body = encodeURIComponent(editMode ? editedBody : parsed?.body || '')
     window.open(`mailto:${selectedContact?.email}?subject=${subj}&body=${body}`)
+    logActivity({ schoolId: school.id, userId: user?.id, action: 'email_opened', contactId: selectedContact?.id, contactName: selectedContact?.name })
   }
 
   const copyDraft = () => {
@@ -398,7 +427,10 @@ export default function CRM() {
   const saveNotes = async () => {
     if (!selectedContact) return
     setSavingNotes(true)
-    try { await supabase.from('contacts').update({ notes, updated_at: new Date().toISOString() }).eq('id', selectedContact.id) }
+    try {
+      await supabase.from('contacts').update({ notes, updated_at: new Date().toISOString() }).eq('id', selectedContact.id)
+      logActivity({ schoolId: school.id, userId: user?.id, action: 'note_saved', contactId: selectedContact?.id, contactName: selectedContact?.name })
+    }
     catch (e) { console.error(e) }
     finally { setSavingNotes(false) }
   }
@@ -433,6 +465,7 @@ export default function CRM() {
           setCampaign(ct.campaign || 'TICKETS')
           setParsed(null)
           setEditMode(false)
+          logActivity({ schoolId: school.id, userId: user?.id, action: 'contact_worked', contactId: ct.id, contactName: ct.name })
         }}
       >
         <button className={`pin-btn${ct.is_pinned ? ' pinned' : ''}`} onClick={e => togglePin(e, ct)} title={ct.is_pinned ? 'Unpin' : 'Pin to queue'}>
