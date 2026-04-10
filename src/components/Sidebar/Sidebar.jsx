@@ -12,7 +12,7 @@ const NAV_ITEMS = [
 ]
 
 const STAFF_NAV = [
-  { id: 'outreach',  label: 'My Outreach',      sub: 'Draft & Send',    icon: PenSquare,       mod: null },
+  { id: 'outreach',  label: 'Outreach',          sub: 'Contacts & Drafts', icon: PenSquare,     mod: null },
   { id: 'dashboard', label: 'School Dashboard', sub: 'Client Overview', icon: LayoutDashboard, mod: null },
 ]
 
