@@ -25,7 +25,7 @@ export default function Sidebar({ activeTab, onTabChange }) {
   const accent2 = school?.colors?.accent2 || '#EFA020'
   const primary = school?.colors?.primary || '#152E10'
 
-  const visibleNav = NAV_ITEMS.filter(item => item.mod === null || hasModule(item.mod))
+  const visibleNav = NAV_ITEMS.filter(item => (item.mod === null || hasModule(item.mod)) && !(canSeeAllSchools && item.id === 'crm'))
 
   // Footer label — title if set, otherwise role label
   const footerLabel = user?.title
