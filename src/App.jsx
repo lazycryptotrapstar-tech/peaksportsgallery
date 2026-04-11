@@ -8,8 +8,6 @@ import CRM from './modules/CRM/CRM'
 import Analytics from './modules/Analytics/Analytics'
 import Insights from './modules/Analytics/Insights'
 import SchoolDashboard from './modules/SchoolDashboard/SchoolDashboard'
-import PeakOutreach from './modules/PeakOutreach/PeakOutreach'
-import ExecutiveOutreach from './modules/ExecutiveOutreach/ExecutiveOutreach'
 import ExecutiveOutreach from './modules/ExecutiveOutreach/ExecutiveOutreach'
 import Productivity from './modules/Productivity/Productivity'
 
@@ -48,14 +46,14 @@ function AppShell() {
 
   const renderTab = () => {
     switch(activeTab) {
-      case 'crm':       return hasModule('crm')      ? <CRM/>        : <AccessDenied/>
-      case 'analytics': return hasModule('analytics') ? <Analytics/>  : <AccessDenied/>
-      case 'insights':  return hasModule('analytics') ? <Insights/>   : <AccessDenied/>
-      case 'agent':     return hasModule('agent')     ? <SalesAgent/> : <AccessDenied/>
-      case 'dashboard': return canSeeAllSchools ? <SchoolDashboard/> : <AccessDenied/>
-      case 'outreach':  return canSeeAllSchools ? <ExecutiveOutreach/> : <AccessDenied/>
-      case 'productivity': return !canSeeAllSchools ? <Productivity/>  : <AccessDenied/>
-      default:          return canSeeAllSchools ? <PeakOutreach/>    : <CRM/>
+      case 'crm':          return hasModule('crm')      ? <CRM/>              : <AccessDenied/>
+      case 'analytics':    return hasModule('analytics') ? <Analytics/>        : <AccessDenied/>
+      case 'insights':     return hasModule('analytics') ? <Insights/>         : <AccessDenied/>
+      case 'agent':        return hasModule('agent')     ? <SalesAgent/>       : <AccessDenied/>
+      case 'productivity': return !canSeeAllSchools      ? <Productivity/>     : <AccessDenied/>
+      case 'dashboard':    return canSeeAllSchools       ? <SchoolDashboard/>  : <AccessDenied/>
+      case 'outreach':     return canSeeAllSchools       ? <ExecutiveOutreach/>: <AccessDenied/>
+      default:             return canSeeAllSchools       ? <ExecutiveOutreach/>: <CRM/>
     }
   }
 
