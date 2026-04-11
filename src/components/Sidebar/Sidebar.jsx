@@ -62,7 +62,7 @@ export default function Sidebar({ activeTab, onTabChange }) {
 
           <div>
             <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 18, color: 'white', lineHeight: 1.1 }}>
-              {school?.mascotName || 'Grip'}<span style={{ color: accent2 }}>.</span><span style={{ color: accent }}>ai</span>
+              Peak<span style={{ color: accent2 }}>.</span><span style={{ color: accent }}>ai</span>
             </p>
             <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>
               {school?.name} · {school?.conference}
