@@ -56,9 +56,9 @@ export default function Login() {
     },
     logoIcon: {
       width: 40, height: 40, borderRadius: 10,
-      background: '#F0F7EE', border: '1px solid #C4D8BE',
+      background: '#000', border: '1px solid #C4D8BE',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: 20,
+      overflow: 'hidden',
     },
     headline: {
       fontFamily: "'Geist', sans-serif", fontWeight: 800,
@@ -132,7 +132,9 @@ export default function Login() {
 
         {/* Logo */}
         <div style={s.logo}>
-          <div style={s.logoIcon}>🏔️</div>
+          <div style={s.logoIcon}>
+            <img src="https://duxfxzblueyrlzttqtgk.supabase.co/storage/v1/object/public/assets/new%20PEAK.png" alt="Peak Sports" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          </div>
           <div>
             <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 18, color: '#0F172A', lineHeight: 1.1 }}>
               The<span style={{ color: '#2D6E1C' }}>Playbook</span>
