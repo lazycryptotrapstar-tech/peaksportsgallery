@@ -42,7 +42,7 @@ export default function Login() {
     shell: {
       minHeight: '100vh', background: '#0E1A0C',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontFamily: "'DM Sans', sans-serif", padding: 20,
+      fontFamily: "'Geist', sans-serif", padding: 20,
     },
     card: {
       width: '100%', maxWidth: 400,
@@ -61,20 +61,20 @@ export default function Login() {
       fontSize: 20,
     },
     headline: {
-      fontFamily: "'Syne', sans-serif", fontWeight: 800,
+      fontFamily: "'Geist', sans-serif", fontWeight: 800,
       fontSize: 22, color: '#0F172A', margin: '0 0 4px',
       letterSpacing: '-0.02em',
     },
     sub: { fontSize: 13, color: '#64748B', margin: 0 },
     label: {
-      fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5,
+      fontFamily: "'Geist Mono', monospace", fontSize: 9.5,
       fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
       color: '#64748B', display: 'block', marginBottom: 6,
     },
     input: {
       width: '100%', padding: '11px 14px', borderRadius: 9,
       border: '1.5px solid #E2E8F0', background: '#F8FAFC',
-      color: '#0F172A', fontSize: 14, fontFamily: "'DM Sans', sans-serif",
+      color: '#0F172A', fontSize: 14, fontFamily: "'Geist', sans-serif",
       outline: 'none', boxSizing: 'border-box', transition: 'all 0.12s',
     },
     inputFocus: { borderColor: '#2D6E1C', boxShadow: '0 0 0 3px rgba(45,110,28,0.12)', background: '#fff' },
@@ -83,7 +83,7 @@ export default function Login() {
     showBtn: {
       position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
       background: 'none', border: 'none', cursor: 'pointer',
-      fontFamily: "'JetBrains Mono', monospace", fontSize: 9,
+      fontFamily: "'Geist Mono', monospace", fontSize: 9,
       fontWeight: 700, color: '#94a3b8', letterSpacing: '0.06em',
       textTransform: 'uppercase',
     },
@@ -96,12 +96,12 @@ export default function Login() {
     forgotBtn: {
       background: 'none', border: 'none', cursor: 'pointer',
       fontSize: 12, color: '#2D6E1C', fontWeight: 600,
-      fontFamily: "'DM Sans', sans-serif",
+      fontFamily: "'Geist', sans-serif",
     },
     submitBtn: {
       width: '100%', padding: '13px', borderRadius: 10,
       background: '#2D6E1C', border: 'none', color: '#fff',
-      fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 15,
+      fontFamily: "'Geist', sans-serif", fontWeight: 800, fontSize: 15,
       cursor: 'pointer', transition: 'all 0.12s',
       boxShadow: '0 4px 12px rgba(45,110,28,0.35)',
       letterSpacing: '-0.01em',
@@ -123,7 +123,7 @@ export default function Login() {
   return (
     <div style={s.shell}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; }
         input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #F8FAFC inset !important; }
       `}</style>
@@ -134,10 +134,10 @@ export default function Login() {
         <div style={s.logo}>
           <div style={s.logoIcon}>🏔️</div>
           <div>
-            <p style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 18, color: '#0F172A', lineHeight: 1.1 }}>
+            <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 18, color: '#0F172A', lineHeight: 1.1 }}>
               The<span style={{ color: '#2D6E1C' }}>Playbook</span>
             </p>
-            <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: '#94a3b8', letterSpacing: '0.08em' }}>
+            <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: '#94a3b8', letterSpacing: '0.08em' }}>
               PEAK SPORTS MGMT
             </p>
           </div>
@@ -264,7 +264,7 @@ export default function Login() {
           </>
         )}
 
-        <p style={{ margin: '24px 0 0', textAlign: 'center', fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: '#CBD5E1', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+        <p style={{ margin: '24px 0 0', textAlign: 'center', fontFamily: "'Geist Mono',monospace", fontSize: 8, color: '#CBD5E1', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
           Powered by Simple Genius AI Solutions
         </p>
       </div>

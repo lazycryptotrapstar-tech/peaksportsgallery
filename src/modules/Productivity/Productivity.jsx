@@ -123,12 +123,12 @@ export default function Productivity() {
   const periodLabel = period === 'week' ? 'Last 7 days' : period === 'month' ? 'Last 30 days' : 'All time'
 
   return (
-    <div style={{ ...vars, background: 'var(--pb-bg)', minHeight: '100%', fontFamily: "'DM Sans',sans-serif", padding: '24px' }}>
+    <div style={{ ...vars, background: 'var(--pb-bg)', minHeight: '100%', fontFamily: "'Geist',sans-serif", padding: '24px' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap');
         .prod-card { background:#fff; border:1px solid #E2E8F0; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05); position:relative; overflow:hidden; }
         .prod-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:${primary}; border-radius:12px 0 0 12px; }
-        .period-btn { padding:6px 14px; border-radius:7px; border:1px solid #E2E8F0; background:#fff; color:#64748B; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; transition:all 0.12s; }
+        .period-btn { padding:6px 14px; border-radius:7px; border:1px solid #E2E8F0; background:#fff; color:#64748B; cursor:pointer; font-family:'Geist Mono',monospace; font-size:10px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; transition:all 0.12s; }
         .period-btn.active { background:${primary}; border-color:${primary}; color:#fff; }
         .activity-row { display:flex; align-items:center; gap:10px; padding:9px 14px; border-radius:8px; border:1px solid #F1F5F9; background:#fff; }
         .activity-row:hover { border-color:#E2E8F0; background:#FAFBFC; }
@@ -139,10 +139,10 @@ export default function Productivity() {
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <p style={{ margin: '0 0 4px', fontFamily: "'JetBrains Mono',monospace", fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#64748B' }}>
+            <p style={{ margin: '0 0 4px', fontFamily: "'Geist Mono',monospace", fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#64748B' }}>
               Productivity · {school.short || school.name}
             </p>
-            <h2 style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontSize: 'clamp(24px,3.5vw,36px)', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.025em' }}>
+            <h2 style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontSize: 'clamp(24px,3.5vw,36px)', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.025em' }}>
               My Activity
             </h2>
           </div>
@@ -161,7 +161,7 @@ export default function Productivity() {
             <Flame size={22} color={primary} />
           </div>
           <div>
-            <p style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 18, color: '#0F172A' }}>
+            <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 18, color: '#0F172A' }}>
               {streak} day streak
             </p>
             <p style={{ margin: 0, fontSize: 12, color: '#64748B' }}>
@@ -182,12 +182,12 @@ export default function Productivity() {
             return (
               <div key={s.label} className="prod-card" style={{ padding: '16px 18px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                  <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9.5, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase', color: '#64748B' }}>{s.label}</p>
+                  <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9.5, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase', color: '#64748B' }}>{s.label}</p>
                   <div style={{ width: 28, height: 28, borderRadius: 7, background: `${s.color}12`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Icon size={14} color={s.color} />
                   </div>
                 </div>
-                <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 30, fontWeight: 700, color: '#0F172A', lineHeight: 1 }}>{fmt(s.value)}</p>
+                <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 30, fontWeight: 700, color: '#0F172A', lineHeight: 1 }}>{fmt(s.value)}</p>
                 <p style={{ margin: '4px 0 0', fontSize: 10.5, color: '#94a3b8' }}>{periodLabel}</p>
               </div>
             )
@@ -199,7 +199,7 @@ export default function Productivity() {
 
           {/* Touch breakdown */}
           <div className="prod-card" style={{ padding: '18px' }}>
-            <p style={{ margin: '0 0 16px', fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 15, color: '#0F172A' }}>Touch Breakdown</p>
+            <p style={{ margin: '0 0 16px', fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 15, color: '#0F172A' }}>Touch Breakdown</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
                 { label: 'Touch 1 — The Moment', value: stats.t1, color: '#16a34a', total: stats.touches },
@@ -209,7 +209,7 @@ export default function Productivity() {
                 <div key={t.label}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
                     <p style={{ margin: 0, fontSize: 12, color: '#334155', fontWeight: 500 }}>{t.label}</p>
-                    <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 12, fontWeight: 700, color: t.color }}>{t.value}</p>
+                    <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 12, fontWeight: 700, color: t.color }}>{t.value}</p>
                   </div>
                   <div style={{ height: 6, borderRadius: 3, background: '#F1F5F9', overflow: 'hidden' }}>
                     <div style={{ height: '100%', width: `${t.total > 0 ? (t.value / t.total) * 100 : 0}%`, background: t.color, borderRadius: 3, transition: 'width 0.4s ease' }} />
@@ -218,14 +218,14 @@ export default function Productivity() {
               ))}
               <div style={{ marginTop: 6, paddingTop: 12, borderTop: '1px solid #F1F5F9', display: 'flex', justifyContent: 'space-between' }}>
                 <p style={{ margin: 0, fontSize: 12, color: '#64748B' }}>Total touches</p>
-                <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 13, fontWeight: 700, color: '#0F172A' }}>{stats.touches}</p>
+                <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 13, fontWeight: 700, color: '#0F172A' }}>{stats.touches}</p>
               </div>
             </div>
           </div>
 
           {/* 7-day activity chart */}
           <div className="prod-card" style={{ padding: '18px' }}>
-            <p style={{ margin: '0 0 16px', fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 15, color: '#0F172A' }}>Daily Activity — Last 7 Days</p>
+            <p style={{ margin: '0 0 16px', fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 15, color: '#0F172A' }}>Daily Activity — Last 7 Days</p>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 80 }}>
               {last7.map(day => {
                 const count = activityByDay[day]?.length || 0
@@ -241,7 +241,7 @@ export default function Productivity() {
                         border: isToday ? `1px solid ${primary}` : 'none',
                       }} />
                     </div>
-                    <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: isToday ? primary : '#94a3b8', fontWeight: isToday ? 700 : 500 }}>
+                    <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 8, color: isToday ? primary : '#94a3b8', fontWeight: isToday ? 700 : 500 }}>
                       {new Date(day + 'T12:00:00').toLocaleDateString('en', { weekday: 'short' }).toUpperCase()}
                     </p>
                   </div>
@@ -254,12 +254,12 @@ export default function Productivity() {
         {/* Recent activity feed */}
         <div className="prod-card" style={{ padding: '18px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-            <p style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 15, color: '#0F172A' }}>Recent Activity</p>
-            <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{periodLabel}</p>
+            <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 15, color: '#0F172A' }}>Recent Activity</p>
+            <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{periodLabel}</p>
           </div>
 
           {loading ? (
-            <p style={{ textAlign: 'center', padding: '24px 0', color: '#94a3b8', fontFamily: "'JetBrains Mono',monospace", fontSize: 11 }}>Loading activity...</p>
+            <p style={{ textAlign: 'center', padding: '24px 0', color: '#94a3b8', fontFamily: "'Geist Mono',monospace", fontSize: 11 }}>Loading activity...</p>
           ) : recentLogs.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '32px 0' }}>
               <TrendingUp size={28} color="#E2E8F0" style={{ marginBottom: 10 }} />
@@ -283,7 +283,7 @@ export default function Productivity() {
                         <p style={{ margin: 0, fontSize: 11, color: '#64748B' }}>{log.contact_name}</p>
                       )}
                     </div>
-                    <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: '#94a3b8', flexShrink: 0 }}>
+                    <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: '#94a3b8', flexShrink: 0 }}>
                       {time.toLocaleDateString('en', { month: 'short', day: 'numeric' })} · {time.toLocaleTimeString('en', { hour: 'numeric', minute: '2-digit' })}
                     </p>
                   </div>

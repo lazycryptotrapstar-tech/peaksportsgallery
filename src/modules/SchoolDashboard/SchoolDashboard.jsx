@@ -44,8 +44,8 @@ const timeAgo = (ts) => {
 function MiniStat({ label, value, color }) {
   return (
     <div style={{ textAlign: 'center' }}>
-      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 16, fontWeight: 700, color: color || T.text, lineHeight: 1 }}>{value ?? '—'}</div>
-      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: 3 }}>{label}</div>
+      <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 16, fontWeight: 700, color: color || T.text, lineHeight: 1 }}>{value ?? '—'}</div>
+      <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 8, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: 3 }}>{label}</div>
     </div>
   )
 }
@@ -53,8 +53,8 @@ function MiniStat({ label, value, color }) {
 function KpiTile({ label, value, color }) {
   return (
     <div style={{ flex: 1, minWidth: 0, padding: '10px 12px', background: T.surface, borderRadius: 9, border: `1px solid ${T.border}` }}>
-      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8.5, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 5 }}>{label}</div>
-      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 20, fontWeight: 700, color: color || T.text, lineHeight: 1 }}>{value ?? '—'}</div>
+      <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 8.5, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 5 }}>{label}</div>
+      <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 20, fontWeight: 700, color: color || T.text, lineHeight: 1 }}>{value ?? '—'}</div>
     </div>
   )
 }
@@ -89,8 +89,8 @@ function SchoolCard({ school, stats, loading, expanded, onToggle }) {
 
         {/* School name + meta */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 14, color: T.text, lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{school.name}</div>
-          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: T.muted, marginTop: 1 }}>{school.conference} · {stats?.repName || 'No rep'}</div>
+          <div style={{ fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 14, color: T.text, lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{school.name}</div>
+          <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 9, color: T.muted, marginTop: 1 }}>{school.conference} · {stats?.repName || 'No rep'}</div>
         </div>
 
         {/* Mini stats */}
@@ -102,12 +102,12 @@ function SchoolCard({ school, stats, loading, expanded, onToggle }) {
 
         {/* Status + last activity */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0, minWidth: 80 }}>
-          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, fontWeight: 700, padding: '2px 7px', borderRadius: 4, textTransform: 'uppercase', letterSpacing: '0.06em', background: hasActivity ? T.greenBg : T.amberBg, color: statusColor }}>
+          <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 8, fontWeight: 700, padding: '2px 7px', borderRadius: 4, textTransform: 'uppercase', letterSpacing: '0.06em', background: hasActivity ? T.greenBg : T.amberBg, color: statusColor }}>
             {hasActivity ? 'Active' : 'Onboarding'}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
             <Clock size={8} color={T.muted} />
-            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: T.muted }}>
+            <span style={{ fontFamily: "'Geist Mono',monospace", fontSize: 8, color: T.muted }}>
               {loading ? '...' : timeAgo(stats?.lastActivity)}
             </span>
           </div>
@@ -132,7 +132,7 @@ function SchoolCard({ school, stats, loading, expanded, onToggle }) {
           </div>
 
           {/* Touch breakdown */}
-          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Touch Breakdown</div>
+          <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 9, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Touch Breakdown</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginBottom: 14 }}>
             <KpiTile label="Touch 1 — The Moment"   value={loading ? '...' : stats?.t1} color={T.green} />
             <KpiTile label="Touch 2 — The Identity" value={loading ? '...' : stats?.t2} color={T.amber} />
@@ -140,7 +140,7 @@ function SchoolCard({ school, stats, loading, expanded, onToggle }) {
           </div>
 
           {/* This week */}
-          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>This Week</div>
+          <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 9, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>This Week</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginBottom: 14 }}>
             <KpiTile label="Drafts"      value={loading ? '...' : stats?.draftsWeek}  color="#7c3aed" />
             <KpiTile label="Touches"     value={loading ? '...' : stats?.touchesWeek} color={T.green} />
@@ -150,12 +150,12 @@ function SchoolCard({ school, stats, loading, expanded, onToggle }) {
           {/* Rep + modules row */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 12, borderTop: `1px solid ${T.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 28, height: 28, borderRadius: 7, background: '#F1F5F9', border: `1px solid ${T.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 11, color: T.text2, flexShrink: 0 }}>
+              <div style={{ width: 28, height: 28, borderRadius: 7, background: '#F1F5F9', border: `1px solid ${T.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 11, color: T.text2, flexShrink: 0 }}>
                 {stats?.repName?.[0]?.toUpperCase() || '?'}
               </div>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: T.text }}>{stats?.repName || 'No rep assigned'}</div>
-                <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: T.muted }}>{stats?.repTitle || ''}</div>
+                <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 9, color: T.muted }}>{stats?.repTitle || ''}</div>
               </div>
             </div>
             <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
@@ -163,7 +163,7 @@ function SchoolCard({ school, stats, loading, expanded, onToggle }) {
                 const m = MODULE_LABELS[mod]
                 if (!m) return null
                 return (
-                  <span key={mod} style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, fontWeight: 700, padding: '2px 7px', borderRadius: 4, textTransform: 'uppercase', letterSpacing: '0.05em', background: `${m.color}12`, color: m.color, border: `1px solid ${m.color}25` }}>
+                  <span key={mod} style={{ fontFamily: "'Geist Mono',monospace", fontSize: 8, fontWeight: 700, padding: '2px 7px', borderRadius: 4, textTransform: 'uppercase', letterSpacing: '0.05em', background: `${m.color}12`, color: m.color, border: `1px solid ${m.color}25` }}>
                     {m.label}
                   </span>
                 )
@@ -274,19 +274,19 @@ export default function SchoolDashboard() {
       <div style={{ display: 'flex', gap: 6 }}>
         {[0,1,2].map(i => <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: T.green, animation: `bounce 1s ${i*0.15}s infinite` }} />)}
       </div>
-      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: T.muted }}>Loading schools…</div>
+      <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 11, color: T.muted }}>Loading schools…</div>
     </div>
   )
 
   return (
     <div style={{ height: '100%', overflowY: 'auto', background: T.bg }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600;700&display=swap');*{box-sizing:border-box}`}</style>
-      <div style={{ padding: '24px 24px 80px', maxWidth: 1000, margin: '0 auto', fontFamily: "'DM Sans',sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap');*{box-sizing:border-box}`}</style>
+      <div style={{ padding: '24px 24px 80px', maxWidth: 1000, margin: '0 auto', fontFamily: "'Geist',sans-serif" }}>
 
         {/* Header */}
         <div style={{ marginBottom: 20 }}>
-          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: T.muted, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>Peak Sports MGMT</div>
-          <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 30, fontWeight: 800, color: T.text, letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: 4 }}>School Dashboard</div>
+          <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 10, color: T.muted, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>Peak Sports MGMT</div>
+          <div style={{ fontFamily: "'Geist',sans-serif", fontSize: 30, fontWeight: 800, color: T.text, letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: 4 }}>School Dashboard</div>
           <div style={{ fontSize: 13, color: T.muted }}>{schools.length} school{schools.length !== 1 ? 's' : ''} in portfolio</div>
         </div>
 
@@ -303,10 +303,10 @@ export default function SchoolDashboard() {
               <div key={s.label} style={{ background: T.surface, borderRadius: 11, border: `1px solid ${T.border}`, padding: '12px 14px', boxShadow: T.sh, position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: s.color, borderRadius: '11px 0 0 11px' }} />
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 5 }}>
-                  <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{s.label}</span>
+                  <span style={{ fontFamily: "'Geist Mono',monospace", fontSize: 9, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{s.label}</span>
                   <Icon size={12} color={s.color} />
                 </div>
-                <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 26, fontWeight: 700, color: s.color, lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 26, fontWeight: 700, color: s.color, lineHeight: 1 }}>{s.value}</div>
               </div>
             )
           })}
@@ -324,7 +324,7 @@ export default function SchoolDashboard() {
               border: `1.5px solid ${filter === f.key ? T.green : T.border}`,
               background: filter === f.key ? T.greenBg : 'transparent',
               color: filter === f.key ? T.green : T.muted,
-              fontFamily: "'DM Sans',sans-serif", fontWeight: 600, fontSize: 12,
+              fontFamily: "'Geist',sans-serif", fontWeight: 600, fontSize: 12,
               cursor: 'pointer', transition: 'all 0.12s',
             }}>{f.label}</button>
           ))}
@@ -346,7 +346,7 @@ export default function SchoolDashboard() {
 
         {/* Add school */}
         <div style={{ marginTop: 14, padding: '16px', borderRadius: 12, border: `2px dashed ${T.border}`, textAlign: 'center' }}>
-          <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 13, color: T.muted }}>+ Add New School</div>
+          <div style={{ fontFamily: "'Geist',sans-serif", fontWeight: 700, fontSize: 13, color: T.muted }}>+ Add New School</div>
           <div style={{ fontSize: 11, color: T.muted, marginTop: 2 }}>Insert a row in the Supabase schools table to onboard</div>
         </div>
 

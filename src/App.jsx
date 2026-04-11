@@ -26,7 +26,7 @@ function LoadingScreen() {
         animation:'spin 0.8s linear infinite',
       }}/>
       <div style={{
-        fontFamily:"'JetBrains Mono',monospace",
+        fontFamily:"'Geist Mono',monospace",
         fontSize:10,color:'#4A5A70',
         letterSpacing:'0.12em',textTransform:'uppercase',
       }}>Loading Playbook…</div>
@@ -60,7 +60,7 @@ function AppShell() {
   return (
     <div style={{display:'flex',height:'100vh',overflow:'hidden',background:'var(--color-bg,#060C1A)'}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         body{-webkit-font-smoothing:antialiased}
         ::-webkit-scrollbar{width:5px}
@@ -102,7 +102,7 @@ function AccessDenied() {
       height:'100%',flexDirection:'column',gap:12,
     }}>
       <div style={{fontSize:32}}>🔒</div>
-      <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:18,color:'#1A2E18'}}>Module not activated</div>
+      <div style={{fontFamily:"'Geist',sans-serif",fontWeight:700,fontSize:18,color:'#1A2E18'}}>Module not activated</div>
       <div style={{fontSize:13,color:'#6A8864'}}>Contact dee@simplegenius.io to enable this module</div>
     </div>
   )
@@ -131,7 +131,7 @@ function MobileNav({ activeTab, onTabChange }) {
         }}>
           <span style={{fontSize:18}}>{tab.emoji}</span>
           <span style={{
-            fontFamily:"'DM Sans',sans-serif",fontSize:9.5,fontWeight:600,
+            fontFamily:"'Geist',sans-serif",fontSize:9.5,fontWeight:600,
             color:activeTab===tab.id?'#EFA020':'rgba(255,255,255,0.28)',
             letterSpacing:'0.02em',transition:'color 0.15s',
           }}>{tab.label}</span>

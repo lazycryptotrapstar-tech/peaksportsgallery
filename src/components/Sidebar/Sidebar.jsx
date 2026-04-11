@@ -61,10 +61,10 @@ export default function Sidebar({ activeTab, onTabChange }) {
           </div>
 
           <div>
-            <p style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 18, color: 'white', lineHeight: 1.1 }}>
+            <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 18, color: 'white', lineHeight: 1.1 }}>
               {school?.mascotName || 'Grip'}<span style={{ color: accent2 }}>.</span><span style={{ color: accent }}>ai</span>
             </p>
-            <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>
+            <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>
               {school?.name} · {school?.conference}
             </p>
           </div>
@@ -90,8 +90,8 @@ export default function Sidebar({ activeTab, onTabChange }) {
             }}>
               <Icon size={18} color={active ? accent : `${accent}99`} />
               <div>
-                <p style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontWeight: active ? 700 : 600, fontSize: 13, color: active ? 'white' : 'rgba(255,255,255,0.75)', lineHeight: 1.2 }}>{item.label}</p>
-                <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: active ? accent : `${accent}77` }}>{item.sub}</p>
+                <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: active ? 700 : 600, fontSize: 13, color: active ? 'white' : 'rgba(255,255,255,0.75)', lineHeight: 1.2 }}>{item.label}</p>
+                <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: active ? accent : `${accent}77` }}>{item.sub}</p>
               </div>
             </button>
           )
@@ -113,8 +113,8 @@ export default function Sidebar({ activeTab, onTabChange }) {
             }}>
               <Icon size={18} color={active ? accent : 'rgba(255,255,255,0.4)'} />
               <div>
-                <p style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontWeight: active ? 700 : 500, fontSize: 13, color: active ? 'white' : 'rgba(255,255,255,0.6)', lineHeight: 1.2 }}>{item.label}</p>
-                <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: active ? accent : 'rgba(255,255,255,0.25)' }}>{item.sub}</p>
+                <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: active ? 700 : 500, fontSize: 13, color: active ? 'white' : 'rgba(255,255,255,0.6)', lineHeight: 1.2 }}>{item.label}</p>
+                <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: active ? accent : 'rgba(255,255,255,0.25)' }}>{item.sub}</p>
               </div>
             </button>
           )
@@ -124,14 +124,14 @@ export default function Sidebar({ activeTab, onTabChange }) {
       {/* ── Footer ───────────────────────────────────────────────────────── */}
       <div style={{ padding: '12px 14px 16px', borderTop: `1px solid ${accent}22` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-          <div style={{ width: 30, height: 30, borderRadius: 8, background: `${accent}22`, border: `1px solid ${accent}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 11, color: accent, flexShrink: 0 }}>
+          <div style={{ width: 30, height: 30, borderRadius: 8, background: `${accent}22`, border: `1px solid ${accent}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 11, color: accent, flexShrink: 0 }}>
             {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || '?'}
           </div>
           <div style={{ minWidth: 0 }}>
-            <p style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 12, color: 'rgba(255,255,255,0.85)', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: 700, fontSize: 12, color: 'rgba(255,255,255,0.85)', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {user?.name || user?.email?.split('@')[0]}
             </p>
-            <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 8, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {footerLabel}
             </p>
           </div>
@@ -148,10 +148,10 @@ export default function Sidebar({ activeTab, onTabChange }) {
           onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)' }}
         >
           <LogOut size={14} color='rgba(255,255,255,0.4)' />
-          <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.4)' }}>Sign out</span>
+          <span style={{ fontFamily: "'Geist',sans-serif", fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.4)' }}>Sign out</span>
         </button>
 
-        <p style={{ margin: '10px 0 0', fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: 'rgba(255,255,255,0.15)', textAlign: 'center', letterSpacing: '0.06em' }}>
+        <p style={{ margin: '10px 0 0', fontFamily: "'Geist Mono',monospace", fontSize: 8, color: 'rgba(255,255,255,0.15)', textAlign: 'center', letterSpacing: '0.06em' }}>
           POWERED BY PEAK SPORTS MGMT
         </p>
       </div>

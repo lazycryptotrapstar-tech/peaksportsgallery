@@ -78,22 +78,22 @@ const parseDraft = (raw) => {
 }
 
 const CSS = (primary) => `
-  .crm-shell { background:var(--pb-bg); min-height:100%; font-family:'DM Sans',Inter,sans-serif; color:var(--pb-text); }
+  .crm-shell { background:var(--pb-bg); min-height:100%; font-family:'Geist','Geist',sans-serif; color:var(--pb-text); }
 
-  .crm-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:8px; border:1px solid var(--pb-border); background:var(--pb-surface); color:var(--pb-text2); cursor:pointer; font-size:12px; font-family:'DM Sans',sans-serif; font-weight:600; transition:all 0.12s; box-shadow:0 1px 2px rgba(0,0,0,0.04); }
+  .crm-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:8px; border:1px solid var(--pb-border); background:var(--pb-surface); color:var(--pb-text2); cursor:pointer; font-size:12px; font-family:'Geist',sans-serif; font-weight:600; transition:all 0.12s; box-shadow:0 1px 2px rgba(0,0,0,0.04); }
   .crm-btn:hover { border-color:${primary}66; color:${primary}; background:#fff; }
   .crm-btn-primary { background:${primary}; border-color:${primary}; color:#fff !important; box-shadow:0 2px 8px ${primary}40; }
   .crm-btn-primary:hover { opacity:0.9; box-shadow:0 4px 12px ${primary}50; }
 
-  .crm-label { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--pb-muted); font-weight:600; }
+  .crm-label { font-family:'Geist Mono',monospace; font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--pb-muted); font-weight:600; }
 
-  .crm-input { width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-text); font-size:13px; font-family:'DM Sans',sans-serif; outline:none; box-sizing:border-box; transition:border-color 0.12s, box-shadow 0.12s; }
+  .crm-input { width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-text); font-size:13px; font-family:'Geist',sans-serif; outline:none; box-sizing:border-box; transition:border-color 0.12s, box-shadow 0.12s; }
   .crm-input:focus { border-color:${primary}; box-shadow:0 0 0 3px ${primary}18; }
 
-  .crm-textarea { width:100%; min-height:72px; padding:9px 12px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-text); font-size:13px; font-family:'DM Sans',sans-serif; outline:none; box-sizing:border-box; resize:vertical; line-height:1.6; transition:border-color 0.12s, box-shadow 0.12s; }
+  .crm-textarea { width:100%; min-height:72px; padding:9px 12px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-text); font-size:13px; font-family:'Geist',sans-serif; outline:none; box-sizing:border-box; resize:vertical; line-height:1.6; transition:border-color 0.12s, box-shadow 0.12s; }
   .crm-textarea:focus { border-color:${primary}; box-shadow:0 0 0 3px ${primary}18; }
 
-  .crm-select { padding:8px 12px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-text); font-size:12px; font-family:'JetBrains Mono',monospace; outline:none; cursor:pointer; box-sizing:border-box; transition:border-color 0.12s; }
+  .crm-select { padding:8px 12px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-text); font-size:12px; font-family:'Geist Mono',monospace; outline:none; cursor:pointer; box-sizing:border-box; transition:border-color 0.12s; }
   .crm-select:focus { border-color:${primary}; }
 
   .crm-row { display:flex; align-items:center; padding:10px 12px 10px 0; border-radius:10px; border:1px solid var(--pb-border); background:#fff; cursor:pointer; transition:all 0.12s; gap:10px; width:100%; text-align:left; position:relative; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
@@ -104,29 +104,29 @@ const CSS = (primary) => `
   .crm-row.active::before { background:${primary}; }
   .crm-row.pinned::before { background:${primary}; }
 
-  .crm-avatar { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:12px; flex-shrink:0; margin-left:12px; }
+  .crm-avatar { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Geist',sans-serif; font-weight:800; font-size:12px; flex-shrink:0; margin-left:12px; }
 
-  .crm-score { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; flex-shrink:0; }
+  .crm-score { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Geist Mono',monospace; font-size:11px; font-weight:700; flex-shrink:0; }
 
   .crm-touch-btn { width:36px; height:36px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-muted); cursor:pointer; font-weight:700; font-size:13px; transition:all 0.12s; box-shadow:0 1px 2px rgba(0,0,0,0.04); }
   .crm-touch-btn:hover { border-color:${primary}44; }
   .crm-touch-btn.active { background:${primary}; border-color:${primary}; color:#fff; box-shadow:0 2px 6px ${primary}40; }
 
-  .crm-cam-pill { display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:6px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-muted); cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; transition:all 0.12s; }
+  .crm-cam-pill { display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:6px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-muted); cursor:pointer; font-family:'Geist Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; transition:all 0.12s; }
   .crm-cam-pill:hover { border-color:${primary}44; color:${primary}; }
   .crm-cam-pill.active { background:${primary}; border-color:${primary}; color:#fff; box-shadow:0 2px 6px ${primary}30; }
 
   .crm-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; }
   .crm-modal { background:#fff; border-radius:16px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; padding:28px; box-shadow:0 24px 60px rgba(0,0,0,0.18), 0 8px 20px rgba(0,0,0,0.08); border:1px solid rgba(0,0,0,0.06); }
 
-  .crm-tab { display:flex; align-items:center; gap:7px; padding:8px 16px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-muted); cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; transition:all 0.12s; white-space:nowrap; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
+  .crm-tab { display:flex; align-items:center; gap:7px; padding:8px 16px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-muted); cursor:pointer; font-family:'Geist',sans-serif; font-size:13px; font-weight:600; transition:all 0.12s; white-space:nowrap; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
   .crm-tab.active { background:${primary}; border-color:${primary}; color:#fff; box-shadow:0 2px 8px ${primary}40; }
   .crm-tab:not(.active):hover { border-color:${primary}44; color:${primary}; }
 
   .pin-btn { background:none; border:none; cursor:pointer; padding:4px; border-radius:5px; display:flex; align-items:center; justify-content:center; transition:all 0.12s; opacity:0.25; flex-shrink:0; margin-left:8px; }
   .pin-btn:hover,.pin-btn.pinned { opacity:1; }
 
-  .cold-toggle { display:flex; align-items:center; gap:8px; padding:9px 14px; border-radius:8px; border:1px dashed var(--pb-border); background:transparent; color:var(--pb-muted); cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; width:100%; transition:all 0.12s; }
+  .cold-toggle { display:flex; align-items:center; gap:8px; padding:9px 14px; border-radius:8px; border:1px dashed var(--pb-border); background:transparent; color:var(--pb-muted); cursor:pointer; font-family:'Geist Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; width:100%; transition:all 0.12s; }
   .cold-toggle:hover { border-color:${primary}44; color:${primary}; background:${primary}05; }
 
   .stat-card { padding:16px 18px; border-radius:12px; background:#fff; border:1px solid var(--pb-border); box-shadow:0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03); position:relative; overflow:hidden; }
@@ -163,7 +163,7 @@ const TouchBadges = ({ contactId, touchMap }) => {
           <div key={t} style={{
             width: 19, height: 19, borderRadius: 5,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: "'JetBrains Mono',monospace", fontSize: 8, fontWeight: 700,
+            fontFamily: "'Geist Mono',monospace", fontSize: 8, fontWeight: 700,
             background: done ? '#dcfce7' : '#f1f5f9',
             border: done ? '1px solid #86efac' : '1px solid #e2e8f0',
             color: done ? '#16a34a' : '#94a3b8',
@@ -221,7 +221,7 @@ function AddProspectModal({ school, onClose, onAdd }) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
           <div>
             <p className="crm-label" style={{ marginBottom: 4 }}>New Prospect</p>
-            <h3 style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 800, color: '#0f172a' }}>Add Contact</h3>
+            <h3 style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontSize: 22, fontWeight: 800, color: '#0f172a' }}>Add Contact</h3>
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 4 }}><X size={20} /></button>
         </div>
@@ -507,8 +507,8 @@ export default function CRM() {
   const SectionHeader = ({ color, label, count, meta }) => (
     <div className="section-header" style={{ borderBottom: `1px solid ${color}22` }}>
       <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, flexShrink: 0 }} />
-      <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9.5, fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{label}</p>
-      <span style={{ padding: '1px 7px', borderRadius: 4, background: `${color}15`, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color, fontWeight: 700 }}>{count}</span>
+      <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9.5, fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{label}</p>
+      <span style={{ padding: '1px 7px', borderRadius: 4, background: `${color}15`, fontFamily: "'Geist Mono',monospace", fontSize: 9, color, fontWeight: 700 }}>{count}</span>
       {meta && <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{meta}</p>}
     </div>
   )
@@ -521,12 +521,12 @@ export default function CRM() {
           <MousePointerClick size={26} color="#CBD5E1" />
         </div>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ margin: '0 0 6px', fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 15, color: '#334155' }}>No contact selected</p>
+          <p style={{ margin: '0 0 6px', fontFamily: "'Geist',sans-serif", fontWeight: 700, fontSize: 15, color: '#334155' }}>No contact selected</p>
           <p style={{ margin: 0, fontSize: 12, color: '#94a3b8', lineHeight: 1.6 }}>Select a contact from the list to view details and generate a personalized draft.</p>
         </div>
         <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
           {['Pin contacts', 'Generate drafts', 'Track touches'].map(tip => (
-            <span key={tip} style={{ padding: '4px 10px', borderRadius: 6, background: '#F1F5F9', border: '1px solid #E2E8F0', fontSize: 10, color: '#64748B', fontFamily: "'JetBrains Mono',monospace", fontWeight: 600 }}>{tip}</span>
+            <span key={tip} style={{ padding: '4px 10px', borderRadius: 6, background: '#F1F5F9', border: '1px solid #E2E8F0', fontSize: 10, color: '#64748B', fontFamily: "'Geist Mono',monospace", fontWeight: 600 }}>{tip}</span>
           ))}
         </div>
       </div>
@@ -538,12 +538,12 @@ export default function CRM() {
         {/* Header */}
         <div style={{ padding: '14px 16px', background: c.primary || '#0F172A', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, borderBottom: `1px solid rgba(255,255,255,0.08)` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 10, background: `${c.accent}20`, border: `1px solid ${c.accent}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 14, color: 'white', flexShrink: 0 }}>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: `${c.accent}20`, border: `1px solid ${c.accent}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 14, color: 'white', flexShrink: 0 }}>
               {initials(selectedContact.name)}
             </div>
             <div style={{ minWidth: 0 }}>
-              <p style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 15, color: 'white', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedContact.name}</p>
-              <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: `${c.accent}cc`, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedContact.organization || selectedContact.email || ''}</p>
+              <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 15, color: 'white', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedContact.name}</p>
+              <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: `${c.accent}cc`, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedContact.organization || selectedContact.email || ''}</p>
             </div>
           </div>
           <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
@@ -577,7 +577,7 @@ export default function CRM() {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
               <TouchBadges contactId={selectedContact.id} touchMap={touchMap} />
               {selectedContact.status && (
-                <span style={{ padding: '2px 7px', borderRadius: 4, background: STATUS_COLOR(selectedContact.status) + '15', color: STATUS_COLOR(selectedContact.status), fontSize: 9, fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                <span style={{ padding: '2px 7px', borderRadius: 4, background: STATUS_COLOR(selectedContact.status) + '15', color: STATUS_COLOR(selectedContact.status), fontSize: 9, fontFamily: "'Geist Mono',monospace", fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                   {selectedContact.status}
                 </span>
               )}
@@ -588,10 +588,10 @@ export default function CRM() {
           {(selectedContact.phone || selectedContact.email) && (
             <div style={{ padding: '10px 14px', background: '#F8FAFC', borderRadius: 10, border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: 4 }}>
               {selectedContact.phone && (
-                <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: '#334155', fontWeight: 600 }}>{selectedContact.phone}</p>
+                <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 11, color: '#334155', fontWeight: 600 }}>{selectedContact.phone}</p>
               )}
               {selectedContact.email && (
-                <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: '#64748B' }}>{selectedContact.email}</p>
+                <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 11, color: '#64748B' }}>{selectedContact.email}</p>
               )}
             </div>
           )}
@@ -628,7 +628,7 @@ export default function CRM() {
               {[1, 2, 3].map(t => (
                 <button key={t} className={`crm-touch-btn${touch === t ? ' active' : ''}`} onClick={() => setTouch(t)}>{t}</button>
               ))}
-              <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: '#64748B', marginLeft: 4, fontWeight: 600 }}>
+              <span style={{ fontFamily: "'Geist Mono',monospace", fontSize: 9, color: '#64748B', marginLeft: 4, fontWeight: 600 }}>
                 {touch === 1 ? '· THE MOMENT' : touch === 2 ? '· THE IDENTITY' : '· THE DOOR'}
               </span>
             </div>
@@ -639,7 +639,7 @@ export default function CRM() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
               <p className="crm-label" style={{ margin: 0 }}>Call Notes</p>
               {notes !== (selectedContact.notes || '') && (
-                <button onClick={saveNotes} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: primary, fontFamily: "'DM Sans',sans-serif", fontWeight: 700 }}>
+                <button onClick={saveNotes} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: primary, fontFamily: "'Geist',sans-serif", fontWeight: 700 }}>
                   {savingNotes ? 'Saving...' : '↑ Save'}
                 </button>
               )}
@@ -652,7 +652,7 @@ export default function CRM() {
             className={`crm-btn crm-btn-primary${drafting ? ' gen-btn-loading' : ''}`}
             onClick={() => requestDraft(selectedContact, touch, campaign)}
             disabled={drafting}
-            style={{ width: '100%', justifyContent: 'center', padding: '13px', borderRadius: 10, fontFamily: "'Syne',sans-serif", fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em' }}
+            style={{ width: '100%', justifyContent: 'center', padding: '13px', borderRadius: 10, fontFamily: "'Geist',sans-serif", fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em' }}
           >
             {drafting ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -683,7 +683,7 @@ export default function CRM() {
               <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
                 {/* Toolbar */}
                 <div style={{ padding: '9px 14px', borderBottom: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FAFBFC' }}>
-                  <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: '#94a3b8', fontWeight: 600 }}>TOUCH {touch} · {campaign}</p>
+                  <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: '#94a3b8', fontWeight: 600 }}>TOUCH {touch} · {campaign}</p>
                   <div style={{ display: 'flex', gap: 5 }}>
                     <button className="crm-btn" onClick={() => requestDraft(selectedContact, touch, campaign)} style={{ padding: '4px 10px', fontSize: 10 }}><RefreshCw size={10} /> Redo</button>
                     <button className="crm-btn" onClick={() => setEditMode(!editMode)} style={{ padding: '4px 10px', fontSize: 10, ...(editMode ? { background: primary, borderColor: primary, color: '#fff' } : {}) }}><Edit2 size={10} /> {editMode ? 'Preview' : 'Edit'}</button>
@@ -712,21 +712,21 @@ export default function CRM() {
               {/* Rep note */}
               {parsed.followUp && (
                 <div style={{ padding: '10px 14px', borderRadius: 8, background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
-                  <p style={{ margin: '0 0 3px', fontFamily: "'JetBrains Mono',monospace", fontSize: 8.5, color: '#15803d', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Rep Note</p>
+                  <p style={{ margin: '0 0 3px', fontFamily: "'Geist Mono',monospace", fontSize: 8.5, color: '#15803d', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Rep Note</p>
                   <p style={{ margin: 0, fontSize: 12, color: '#166534', lineHeight: 1.6 }}>{parsed.followUp}</p>
                 </div>
               )}
 
               {/* Actions */}
               <div style={{ display: 'flex', gap: 8 }}>
-                <button className="crm-btn crm-btn-primary" onClick={openInEmail} style={{ flex: 1, justifyContent: 'center', padding: '11px', borderRadius: 10, fontFamily: "'Syne',sans-serif", fontSize: 13, fontWeight: 800 }}>
+                <button className="crm-btn crm-btn-primary" onClick={openInEmail} style={{ flex: 1, justifyContent: 'center', padding: '11px', borderRadius: 10, fontFamily: "'Geist',sans-serif", fontSize: 13, fontWeight: 800 }}>
                   <ExternalLink size={14} /> Open in Email
                 </button>
                 <button className="crm-btn" onClick={copyDraft} style={{ padding: '11px 14px', borderRadius: 10 }} title="Copy to clipboard">
                   {copied ? <Check size={14} color="#16a34a" /> : <Copy size={14} />}
                 </button>
                 {touch < 3 && (
-                  <button className="crm-btn" onClick={() => { const n = touch + 1; setTouch(n); requestDraft(selectedContact, n, campaign) }} style={{ padding: '11px 12px', borderRadius: 10, fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 12, gap: 4 }}>
+                  <button className="crm-btn" onClick={() => { const n = touch + 1; setTouch(n); requestDraft(selectedContact, n, campaign) }} style={{ padding: '11px 12px', borderRadius: 10, fontFamily: "'Geist',sans-serif", fontWeight: 700, fontSize: 12, gap: 4 }}>
                     T{touch + 1} <ChevronRight size={12} />
                   </button>
                 )}
@@ -750,7 +750,7 @@ export default function CRM() {
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 22, flexWrap: 'wrap', gap: 12 }}>
           <div>
             <p className="crm-label" style={{ marginBottom: 6 }}>CRM · {school.short || school.name}</p>
-            <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.025em' }}>Sales Pipeline</h2>
+            <h2 style={{ fontFamily: "'Geist',sans-serif", fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.025em' }}>Sales Pipeline</h2>
           </div>
           <button className="crm-btn crm-btn-primary" onClick={() => setShowAddModal(true)} style={{ padding: '10px 18px' }}>
             <Plus size={15} /> Add Prospect
@@ -766,7 +766,7 @@ export default function CRM() {
                 onClick={() => { setActiveTab(tab.id); setSelectedContact(null); setSearch(''); setShowCold(false); setParsed(null) }}>
                 <Icon size={13} />
                 {tab.label}
-                <span style={{ padding: '1px 7px', borderRadius: 4, background: activeTab === tab.id ? 'rgba(255,255,255,0.22)' : '#F1F5F9', fontFamily: "'JetBrains Mono',monospace", fontSize: 9, fontWeight: 700, color: activeTab === tab.id ? '#fff' : '#64748B' }}>
+                <span style={{ padding: '1px 7px', borderRadius: 4, background: activeTab === tab.id ? 'rgba(255,255,255,0.22)' : '#F1F5F9', fontFamily: "'Geist Mono',monospace", fontSize: 9, fontWeight: 700, color: activeTab === tab.id ? '#fff' : '#64748B' }}>
                   {tabCounts[tab.id]}
                 </span>
               </button>
@@ -784,8 +784,8 @@ export default function CRM() {
           ].map(s => (
             <div key={s.label} className="stat-card">
               <p className="crm-label" style={{ marginBottom: 6 }}>{s.label}</p>
-              <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 28, fontWeight: 700, color: '#0F172A', lineHeight: 1 }}>{s.value}</p>
-              <p style={{ margin: '4px 0 0', fontSize: 10.5, color: '#94a3b8', fontFamily: "'DM Sans',sans-serif" }}>{s.note}</p>
+              <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 28, fontWeight: 700, color: '#0F172A', lineHeight: 1 }}>{s.value}</p>
+              <p style={{ margin: '4px 0 0', fontSize: 10.5, color: '#94a3b8', fontFamily: "'Geist',sans-serif" }}>{s.note}</p>
             </div>
           ))}
         </div>
@@ -807,7 +807,7 @@ export default function CRM() {
             <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 16 }}>
               {[0,1,2].map(i => <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: primary, animation: `crm-bounce 1s ${i*0.15}s infinite` }} />)}
             </div>
-            <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Loading contacts</p>
+            <p style={{ fontFamily: "'Geist Mono',monospace", fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Loading contacts</p>
           </div>
         ) : (
           <div className="crm-layout" style={{ display: 'grid', gridTemplateColumns: parsed ? '380px 1fr' : '1fr 460px', gap: 16, alignItems: 'start' }}>

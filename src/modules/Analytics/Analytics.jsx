@@ -53,9 +53,9 @@ const BORDER = '#E2E8F0'
 const BG     = '#F7F9FC'
 const TEXT   = '#0F172A'
 const MUTED  = '#64748B'
-const MONO   = "'JetBrains Mono', monospace"
-const SANS   = "'DM Sans', sans-serif"
-const SYNE   = "'Syne', sans-serif"
+const MONO   = "'Geist Mono', monospace"
+const SANS   = "'Geist', sans-serif"
+const SYNE   = "'Geist', sans-serif"
 
 const label = (txt) => ({
   fontFamily: MONO, fontSize: 9.5, fontWeight: 600,
@@ -91,7 +91,7 @@ export default function Analytics() {
   return (
     <div style={{ background: BG, minHeight: '100%', fontFamily: SANS }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; }
         .an-card { background:#fff; border-radius:14px; border:1px solid ${BORDER}; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,0.05); }
         .an-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }

@@ -30,15 +30,15 @@ const parseDraft = (raw) => {
 }
 
 const CSS = () => `
-  .eo-shell { background:#F7F9FC; min-height:100%; font-family:'DM Sans',sans-serif; color:#0F172A; }
-  .eo-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:8px; border:1px solid #E2E8F0; background:#fff; color:#334155; cursor:pointer; font-size:12px; font-family:'DM Sans',sans-serif; font-weight:600; transition:all 0.12s; box-shadow:0 1px 2px rgba(0,0,0,0.04); }
+  .eo-shell { background:#F7F9FC; min-height:100%; font-family:'Geist',sans-serif; color:#0F172A; }
+  .eo-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:8px; border:1px solid #E2E8F0; background:#fff; color:#334155; cursor:pointer; font-size:12px; font-family:'Geist',sans-serif; font-weight:600; transition:all 0.12s; box-shadow:0 1px 2px rgba(0,0,0,0.04); }
   .eo-btn:hover { border-color:#EFA02066; color:#EFA020; }
   .eo-btn-primary { background:#EFA020; border-color:#EFA020; color:#fff !important; box-shadow:0 2px 8px #EFA02040; }
   .eo-btn-primary:hover { opacity:0.9; }
-  .eo-label { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; color:#64748B; font-weight:600; }
-  .eo-input { width:100%; padding:9px 12px; border-radius:8px; border:1px solid #E2E8F0; background:#fff; color:#0F172A; font-size:13px; font-family:'DM Sans',sans-serif; outline:none; box-sizing:border-box; transition:border-color 0.12s, box-shadow 0.12s; }
+  .eo-label { font-family:'Geist Mono',monospace; font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; color:#64748B; font-weight:600; }
+  .eo-input { width:100%; padding:9px 12px; border-radius:8px; border:1px solid #E2E8F0; background:#fff; color:#0F172A; font-size:13px; font-family:'Geist',sans-serif; outline:none; box-sizing:border-box; transition:border-color 0.12s, box-shadow 0.12s; }
   .eo-input:focus { border-color:#EFA020; box-shadow:0 0 0 3px #EFA02018; }
-  .eo-textarea { width:100%; min-height:72px; padding:9px 12px; border-radius:8px; border:1px solid #E2E8F0; background:#fff; color:#0F172A; font-size:13px; font-family:'DM Sans',sans-serif; outline:none; box-sizing:border-box; resize:vertical; line-height:1.6; }
+  .eo-textarea { width:100%; min-height:72px; padding:9px 12px; border-radius:8px; border:1px solid #E2E8F0; background:#fff; color:#0F172A; font-size:13px; font-family:'Geist',sans-serif; outline:none; box-sizing:border-box; resize:vertical; line-height:1.6; }
   .eo-textarea:focus { border-color:#EFA020; box-shadow:0 0 0 3px #EFA02018; }
   .eo-row { display:flex; align-items:center; padding:10px 12px 10px 0; border-radius:10px; border:1px solid #E2E8F0; background:#fff; cursor:pointer; transition:all 0.12s; gap:10px; width:100%; text-align:left; position:relative; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
   .eo-row::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:#E2E8F0; border-radius:10px 0 0 10px; transition:background 0.12s; }
@@ -47,19 +47,19 @@ const CSS = () => `
   .eo-row.active { border-color:#EFA02066; box-shadow:0 2px 12px #EFA02020; }
   .eo-row.active::before { background:#EFA020; }
   .eo-row.pinned::before { background:#EFA020; }
-  .eo-cam-pill { display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:6px; border:1px solid #E2E8F0; background:#fff; color:#64748B; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; transition:all 0.12s; }
+  .eo-cam-pill { display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:6px; border:1px solid #E2E8F0; background:#fff; color:#64748B; cursor:pointer; font-family:'Geist Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; transition:all 0.12s; }
   .eo-cam-pill:hover { border-color:#EFA02044; color:#EFA020; }
   .eo-cam-pill.active { background:#EFA020; border-color:#EFA020; color:#fff; }
   .eo-touch-btn { width:36px; height:36px; border-radius:8px; border:1px solid #E2E8F0; background:#fff; color:#64748B; cursor:pointer; font-weight:700; font-size:13px; transition:all 0.12s; }
   .eo-touch-btn.active { background:#EFA020; border-color:#EFA020; color:#fff; box-shadow:0 2px 6px #EFA02040; }
   .eo-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; }
   .eo-modal { background:#fff; border-radius:16px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; padding:28px; box-shadow:0 24px 60px rgba(0,0,0,0.18); border:1px solid rgba(0,0,0,0.06); }
-  .eo-tab { display:flex; align-items:center; gap:7px; padding:8px 16px; border-radius:8px; border:1.5px solid #E2E8F0; background:#fff; color:#64748B; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; transition:all 0.12s; white-space:nowrap; }
+  .eo-tab { display:flex; align-items:center; gap:7px; padding:8px 16px; border-radius:8px; border:1.5px solid #E2E8F0; background:#fff; color:#64748B; cursor:pointer; font-family:'Geist',sans-serif; font-size:13px; font-weight:600; transition:all 0.12s; white-space:nowrap; }
   .eo-tab.active { background:#EFA020; border-color:#EFA020; color:#fff; box-shadow:0 2px 8px #EFA02040; }
   .eo-tab:not(.active):hover { border-color:#EFA02044; color:#EFA020; }
   .pin-btn { background:none; border:none; cursor:pointer; padding:4px; border-radius:5px; display:flex; align-items:center; justify-content:center; transition:all 0.12s; opacity:0.25; flex-shrink:0; margin-left:8px; }
   .pin-btn:hover,.pin-btn.pinned { opacity:1; }
-  .cold-toggle { display:flex; align-items:center; gap:8px; padding:9px 14px; border-radius:8px; border:1px dashed #E2E8F0; background:transparent; color:#64748B; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; width:100%; transition:all 0.12s; }
+  .cold-toggle { display:flex; align-items:center; gap:8px; padding:9px 14px; border-radius:8px; border:1px dashed #E2E8F0; background:transparent; color:#64748B; cursor:pointer; font-family:'Geist Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; width:100%; transition:all 0.12s; }
   .cold-toggle:hover { border-color:#EFA02044; color:#EFA020; }
   .gen-btn-loading { animation:gen-pulse 1.5s ease-in-out infinite; }
   @keyframes gen-pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
@@ -112,7 +112,7 @@ function AddContactModal({ onClose, onAdd, userId }) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
           <div>
             <p className="eo-label" style={{ marginBottom: 4 }}>New Contact</p>
-            <h3 style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 800, color: '#0F172A' }}>Add Contact</h3>
+            <h3 style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontSize: 22, fontWeight: 800, color: '#0F172A' }}>Add Contact</h3>
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={20} /></button>
         </div>
@@ -261,7 +261,7 @@ export default function ExecutiveOutreach() {
         <button className={`pin-btn${ct.is_pinned ? ' pinned' : ''}`} onClick={e => togglePin(e, ct)}>
           <Pin size={12} color={primary} fill={ct.is_pinned ? primary : 'none'} />
         </button>
-        <div style={{ width: 34, height: 34, borderRadius: 8, background: isActive ? `${primary}18` : '#F1F5F9', border: `1px solid ${isActive ? primary + '33' : '#E2E8F0'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 12, color: isActive ? primary : '#475569', flexShrink: 0 }}>
+        <div style={{ width: 34, height: 34, borderRadius: 8, background: isActive ? `${primary}18` : '#F1F5F9', border: `1px solid ${isActive ? primary + '33' : '#E2E8F0'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 12, color: isActive ? primary : '#475569', flexShrink: 0 }}>
           {initials(ct.name)}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -281,12 +281,12 @@ export default function ExecutiveOutreach() {
           <MousePointerClick size={26} color="#CBD5E1" />
         </div>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ margin: '0 0 6px', fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 15, color: '#334155' }}>Select a contact</p>
+          <p style={{ margin: '0 0 6px', fontFamily: "'Geist',sans-serif", fontWeight: 700, fontSize: 15, color: '#334155' }}>Select a contact</p>
           <p style={{ margin: 0, fontSize: 12, color: '#94a3b8', lineHeight: 1.6 }}>Pick a contact to draft an email in your voice.</p>
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
           {['Pin contacts', 'Your voice', 'Inline draft'].map(tip => (
-            <span key={tip} style={{ padding: '4px 10px', borderRadius: 6, background: '#F1F5F9', border: '1px solid #E2E8F0', fontSize: 10, color: '#64748B', fontFamily: "'JetBrains Mono',monospace", fontWeight: 600 }}>{tip}</span>
+            <span key={tip} style={{ padding: '4px 10px', borderRadius: 6, background: '#F1F5F9', border: '1px solid #E2E8F0', fontSize: 10, color: '#64748B', fontFamily: "'Geist Mono',monospace", fontWeight: 600 }}>{tip}</span>
           ))}
         </div>
       </div>
@@ -297,12 +297,12 @@ export default function ExecutiveOutreach() {
         {/* Header */}
         <div style={{ padding: '14px 16px', background: '#152E10', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 10, background: `${primary}20`, border: `1px solid ${primary}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 14, color: 'white', flexShrink: 0 }}>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: `${primary}20`, border: `1px solid ${primary}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 14, color: 'white', flexShrink: 0 }}>
               {initials(selectedContact.name)}
             </div>
             <div style={{ minWidth: 0 }}>
-              <p style={{ margin: 0, fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 15, color: 'white', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedContact.name}</p>
-              <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: `${primary}cc`, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 15, color: 'white', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedContact.name}</p>
+              <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: `${primary}cc`, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {selectedContact.title && selectedContact.organization ? `${selectedContact.title} · ${selectedContact.organization}` : selectedContact.organization || selectedContact.email || ''}
               </p>
             </div>
@@ -321,8 +321,8 @@ export default function ExecutiveOutreach() {
           {/* Contact info */}
           {(selectedContact.phone || selectedContact.email) && (
             <div style={{ padding: '10px 14px', background: '#F8FAFC', borderRadius: 10, border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {selectedContact.phone && <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: '#334155', fontWeight: 600 }}>{selectedContact.phone}</p>}
-              {selectedContact.email && <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: '#64748B' }}>{selectedContact.email}</p>}
+              {selectedContact.phone && <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 11, color: '#334155', fontWeight: 600 }}>{selectedContact.phone}</p>}
+              {selectedContact.email && <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 11, color: '#64748B' }}>{selectedContact.email}</p>}
             </div>
           )}
 
@@ -348,7 +348,7 @@ export default function ExecutiveOutreach() {
               {[1, 2, 3].map(t => (
                 <button key={t} className={`eo-touch-btn${touch === t ? ' active' : ''}`} onClick={() => setTouch(t)}>{t}</button>
               ))}
-              <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: '#64748B', marginLeft: 4, fontWeight: 600 }}>
+              <span style={{ fontFamily: "'Geist Mono',monospace", fontSize: 9, color: '#64748B', marginLeft: 4, fontWeight: 600 }}>
                 · {TOUCH_LABELS[touch]?.toUpperCase()}
               </span>
             </div>
@@ -359,7 +359,7 @@ export default function ExecutiveOutreach() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
               <p className="eo-label" style={{ margin: 0 }}>Context & Notes</p>
               {notes !== (selectedContact.notes || '') && (
-                <button onClick={saveNotes} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: primary, fontFamily: "'DM Sans',sans-serif", fontWeight: 700 }}>
+                <button onClick={saveNotes} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: primary, fontFamily: "'Geist',sans-serif", fontWeight: 700 }}>
                   {savingNotes ? 'Saving...' : '↑ Save'}
                 </button>
               )}
@@ -372,7 +372,7 @@ export default function ExecutiveOutreach() {
             className={`eo-btn eo-btn-primary${drafting ? ' gen-btn-loading' : ''}`}
             onClick={() => requestDraft(selectedContact, touch, campaign)}
             disabled={drafting}
-            style={{ width: '100%', justifyContent: 'center', padding: '13px', borderRadius: 10, fontFamily: "'Syne',sans-serif", fontSize: 15, fontWeight: 800 }}
+            style={{ width: '100%', justifyContent: 'center', padding: '13px', borderRadius: 10, fontFamily: "'Geist',sans-serif", fontSize: 15, fontWeight: 800 }}
           >
             {drafting ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -391,7 +391,7 @@ export default function ExecutiveOutreach() {
             <div className="draft-appear" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
                 <div style={{ padding: '9px 14px', borderBottom: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FAFBFC' }}>
-                  <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: '#94a3b8', fontWeight: 600 }}>TOUCH {touch} · {campaign.replace('_', ' ')}</p>
+                  <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: '#94a3b8', fontWeight: 600 }}>TOUCH {touch} · {campaign.replace('_', ' ')}</p>
                   <div style={{ display: 'flex', gap: 5 }}>
                     <button className="eo-btn" onClick={() => requestDraft(selectedContact, touch, campaign)} style={{ padding: '4px 10px', fontSize: 10 }}><RefreshCw size={10} /> Redo</button>
                     <button className="eo-btn" onClick={() => setEditMode(!editMode)} style={{ padding: '4px 10px', fontSize: 10, ...(editMode ? { background: primary, borderColor: primary, color: '#fff' } : {}) }}><Edit2 size={10} /> {editMode ? 'Preview' : 'Edit'}</button>
@@ -414,14 +414,14 @@ export default function ExecutiveOutreach() {
               </div>
 
               <div style={{ display: 'flex', gap: 8 }}>
-                <button className="eo-btn eo-btn-primary" onClick={openInEmail} style={{ flex: 1, justifyContent: 'center', padding: '11px', borderRadius: 10, fontFamily: "'Syne',sans-serif", fontSize: 13, fontWeight: 800 }}>
+                <button className="eo-btn eo-btn-primary" onClick={openInEmail} style={{ flex: 1, justifyContent: 'center', padding: '11px', borderRadius: 10, fontFamily: "'Geist',sans-serif", fontSize: 13, fontWeight: 800 }}>
                   <ExternalLink size={14} /> Open in Email
                 </button>
                 <button className="eo-btn" onClick={copyDraft} style={{ padding: '11px 14px', borderRadius: 10 }} title="Copy">
                   {copied ? <Check size={14} color="#16a34a" /> : <Copy size={14} />}
                 </button>
                 {touch < 3 && (
-                  <button className="eo-btn" onClick={() => { const n = touch + 1; setTouch(n); requestDraft(selectedContact, n, campaign) }} style={{ padding: '11px 12px', borderRadius: 10, fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 12, gap: 4 }}>
+                  <button className="eo-btn" onClick={() => { const n = touch + 1; setTouch(n); requestDraft(selectedContact, n, campaign) }} style={{ padding: '11px 12px', borderRadius: 10, fontFamily: "'Geist',sans-serif", fontWeight: 700, fontSize: 12, gap: 4 }}>
                     T{touch + 1} <ChevronRight size={12} />
                   </button>
                 )}
@@ -444,7 +444,7 @@ export default function ExecutiveOutreach() {
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
           <div>
             <p className="eo-label" style={{ marginBottom: 5 }}>Executive Outreach · Peak Sports MGMT</p>
-            <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 'clamp(24px,3.5vw,36px)', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.025em' }}>My Outreach</h2>
+            <h2 style={{ fontFamily: "'Geist',sans-serif", fontSize: 'clamp(24px,3.5vw,36px)', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.025em' }}>My Outreach</h2>
           </div>
           <button className="eo-btn eo-btn-primary" onClick={() => setShowAddModal(true)} style={{ padding: '10px 18px' }}>
             <Plus size={15} /> Add Contact
@@ -461,7 +461,7 @@ export default function ExecutiveOutreach() {
             <div key={s.label} style={{ background: '#fff', borderRadius: 11, border: '1px solid #E2E8F0', padding: '12px 14px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: primary, borderRadius: '11px 0 0 11px' }} />
               <p className="eo-label" style={{ marginBottom: 4 }}>{s.label}</p>
-              <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 26, fontWeight: 700, color: '#0F172A', lineHeight: 1 }}>{s.value}</p>
+              <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 26, fontWeight: 700, color: '#0F172A', lineHeight: 1 }}>{s.value}</p>
               <p style={{ margin: '3px 0 0', fontSize: 10.5, color: '#94a3b8' }}>{s.note}</p>
             </div>
           ))}
@@ -481,7 +481,7 @@ export default function ExecutiveOutreach() {
             <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 12 }}>
               {[0,1,2].map(i => <div key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: primary, animation: `eo-bounce 1s ${i*0.15}s infinite` }} />)}
             </div>
-            <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: '#94a3b8' }}>Loading contacts</p>
+            <p style={{ fontFamily: "'Geist Mono',monospace", fontSize: 11, color: '#94a3b8' }}>Loading contacts</p>
           </div>
         ) : (
           <div className="eo-layout" style={{ display: 'grid', gridTemplateColumns: parsed ? '380px 1fr' : '1fr 460px', gap: 16, alignItems: 'start' }}>
@@ -494,8 +494,8 @@ export default function ExecutiveOutreach() {
                 <>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 4, paddingBottom: 6, borderBottom: `2px solid ${primary}25` }}>
                     <Pin size={10} color={primary} fill={primary} />
-                    <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, fontWeight: 700, color: primary, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Pinned</p>
-                    <span style={{ padding: '1px 7px', borderRadius: 4, background: `${primary}15`, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: primary, fontWeight: 700 }}>{pinned.length}</span>
+                    <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, fontWeight: 700, color: primary, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Pinned</p>
+                    <span style={{ padding: '1px 7px', borderRadius: 4, background: `${primary}15`, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: primary, fontWeight: 700 }}>{pinned.length}</span>
                   </div>
                   {pinned.map(ct => <ContactRow key={ct.id} ct={ct} />)}
                   <div style={{ height: 1, background: '#E2E8F0', margin: '6px 0 10px' }} />
@@ -507,8 +507,8 @@ export default function ExecutiveOutreach() {
                 <>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 4, paddingBottom: 6, borderBottom: '2px solid #16a34a25' }}>
                     <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#16a34a' }} />
-                    <p style={{ margin: 0, fontFamily: "'JetBrains Mono',monospace", fontSize: 9, fontWeight: 700, color: '#16a34a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Contacts</p>
-                    <span style={{ padding: '1px 7px', borderRadius: 4, background: '#dcfce7', fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: '#16a34a', fontWeight: 700 }}>{active.length}</span>
+                    <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, fontWeight: 700, color: '#16a34a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Contacts</p>
+                    <span style={{ padding: '1px 7px', borderRadius: 4, background: '#dcfce7', fontFamily: "'Geist Mono',monospace", fontSize: 9, color: '#16a34a', fontWeight: 700 }}>{active.length}</span>
                   </div>
                   {active.map(ct => <ContactRow key={ct.id} ct={ct} />)}
                 </>

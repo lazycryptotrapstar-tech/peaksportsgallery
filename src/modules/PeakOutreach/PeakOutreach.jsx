@@ -84,14 +84,14 @@ export default function PeakOutreach() {
   }
 
   const accent = '#2D6E1C'
-  const lbl = { fontFamily: 'JetBrains Mono, monospace', fontSize: 10, fontWeight: 600, letterSpacing: '0.09em', color: '#6A8864', textTransform: 'uppercase', marginBottom: 8, display: 'block' }
-  const inp = { width: '100%', padding: '10px 12px', borderRadius: 8, border: '1.5px solid #C4D8BE', fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: '#1A2E18', background: '#fff', boxSizing: 'border-box', outline: 'none' }
+  const lbl = { fontFamily: ''Geist Mono', monospace', fontSize: 10, fontWeight: 600, letterSpacing: '0.09em', color: '#6A8864', textTransform: 'uppercase', marginBottom: 8, display: 'block' }
+  const inp = { width: '100%', padding: '10px 12px', borderRadius: 8, border: '1.5px solid #C4D8BE', fontFamily: ''Geist', sans-serif', fontSize: 14, color: '#1A2E18', background: '#fff', boxSizing: 'border-box', outline: 'none' }
 
   return (
     <div style={{ padding: '32px', maxWidth: 780, margin: '0 auto' }}>
 
-      <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 28, fontWeight: 800, color: '#1A2E18', letterSpacing: '-0.03em', marginBottom: 4 }}>My Outreach</div>
-      <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 13, color: '#6A8864', marginBottom: 32 }}>Generate a draft in your voice — client updates, partner reach, prospect intros.</div>
+      <div style={{ fontFamily: ''Geist', sans-serif', fontSize: 28, fontWeight: 800, color: '#1A2E18', letterSpacing: '-0.03em', marginBottom: 4 }}>My Outreach</div>
+      <div style={{ fontFamily: ''Geist', sans-serif', fontSize: 13, color: '#6A8864', marginBottom: 32 }}>Generate a draft in your voice — client updates, partner reach, prospect intros.</div>
 
       {/* Campaign Type */}
       <div style={{ marginBottom: 22 }}>
@@ -99,8 +99,8 @@ export default function PeakOutreach() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
           {CAMPAIGN_TYPES.map(c => (
             <button key={c.id} onClick={() => setCampaign(c.id)} style={{ padding: '12px 16px', borderRadius: 8, cursor: 'pointer', textAlign: 'left', width: '100%', border: 'none', background: campaign === c.id ? accent : '#fff', outline: `1.5px solid ${campaign === c.id ? accent : '#C4D8BE'}` }}>
-              <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 14, fontWeight: 700, display: 'block', color: campaign === c.id ? '#fff' : '#1A2E18' }}>{c.label}</span>
-              <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, display: 'block', marginTop: 2, color: campaign === c.id ? 'rgba(255,255,255,0.75)' : '#6A8864' }}>{c.desc}</span>
+              <span style={{ fontFamily: ''Geist', sans-serif', fontSize: 14, fontWeight: 700, display: 'block', color: campaign === c.id ? '#fff' : '#1A2E18' }}>{c.label}</span>
+              <span style={{ fontFamily: ''Geist', sans-serif', fontSize: 12, display: 'block', marginTop: 2, color: campaign === c.id ? 'rgba(255,255,255,0.75)' : '#6A8864' }}>{c.desc}</span>
             </button>
           ))}
         </div>
@@ -111,7 +111,7 @@ export default function PeakOutreach() {
         <span style={lbl}>Touch</span>
         <div style={{ display: 'flex', gap: 8 }}>
           {[1, 2, 3].map(t => (
-            <button key={t} onClick={() => setTouch(t)} style={{ padding: '8px 20px', borderRadius: 6, cursor: 'pointer', border: 'none', background: touch === t ? accent : '#fff', outline: `1.5px solid ${touch === t ? accent : '#C4D8BE'}`, color: touch === t ? '#fff' : '#1A2E18', fontFamily: 'JetBrains Mono, monospace', fontSize: 13, fontWeight: 600 }}>
+            <button key={t} onClick={() => setTouch(t)} style={{ padding: '8px 20px', borderRadius: 6, cursor: 'pointer', border: 'none', background: touch === t ? accent : '#fff', outline: `1.5px solid ${touch === t ? accent : '#C4D8BE'}`, color: touch === t ? '#fff' : '#1A2E18', fontFamily: ''Geist Mono', monospace', fontSize: 13, fontWeight: 600 }}>
               Touch {t}
             </button>
           ))}
@@ -134,9 +134,9 @@ export default function PeakOutreach() {
         <textarea style={{ ...inp, minHeight: 100, resize: 'vertical' }} placeholder="What's the purpose of this email? What do you want them to know or do?" value={context} onChange={e => setContext(e.target.value)} />
       </div>
 
-      {error && <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 13, color: '#C03020', marginBottom: 12 }}>{error}</div>}
+      {error && <div style={{ fontFamily: ''Geist', sans-serif', fontSize: 13, color: '#C03020', marginBottom: 12 }}>{error}</div>}
 
-      <button onClick={generate} disabled={loading} style={{ padding: '12px 28px', borderRadius: 8, background: accent, color: '#fff', border: 'none', fontFamily: 'DM Sans, sans-serif', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}>
+      <button onClick={generate} disabled={loading} style={{ padding: '12px 28px', borderRadius: 8, background: accent, color: '#fff', border: 'none', fontFamily: ''Geist', sans-serif', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}>
         {loading ? 'Generating...' : 'Generate Draft'}
       </button>
 
@@ -145,20 +145,20 @@ export default function PeakOutreach() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <span style={lbl}>Generated Draft</span>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={copy} style={{ padding: '7px 18px', borderRadius: 6, background: copied ? accent : '#F0F7EE', color: copied ? '#fff' : accent, border: `1.5px solid ${accent}`, fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={copy} style={{ padding: '7px 18px', borderRadius: 6, background: copied ? accent : '#F0F7EE', color: copied ? '#fff' : accent, border: `1.5px solid ${accent}`, fontFamily: ''Geist', sans-serif', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
                 {copied ? 'Copied!' : 'Copy'}
               </button>
-              <button onClick={reset} style={{ padding: '7px 18px', borderRadius: 6, background: '#F0F7EE', color: '#6A8864', border: '1.5px solid #C4D8BE', fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={reset} style={{ padding: '7px 18px', borderRadius: 6, background: '#F0F7EE', color: '#6A8864', border: '1.5px solid #C4D8BE', fontFamily: ''Geist', sans-serif', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
                 New Draft
               </button>
             </div>
           </div>
           {draft.subject && (
-            <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 13, fontWeight: 700, color: accent, background: '#F0F7EE', padding: '8px 12px', borderRadius: 6, marginBottom: 16 }}>
+            <div style={{ fontFamily: ''Geist', sans-serif', fontSize: 13, fontWeight: 700, color: accent, background: '#F0F7EE', padding: '8px 12px', borderRadius: 6, marginBottom: 16 }}>
               Subject: {draft.subject}
             </div>
           )}
-          <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: '#1A2E18', lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
+          <div style={{ fontFamily: ''Geist', sans-serif', fontSize: 14, color: '#1A2E18', lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
             {draft.body}
           </div>
         </div>
