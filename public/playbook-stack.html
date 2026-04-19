@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Playbook — Technology Stack | Simple Genius AI Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --obsidian: #050505; --obsidian2: #0a0a0a; --obsidian3: #030303;
+      --gold: #D4AF37; --gold-light: #F5E07A; --gold-dark: #AA8A2E;
+      --amethyst: #A855F7; --amethyst-dim: rgba(168,85,247,0.12);
+      --lime: #5cb832; --lime-bright: #72d43e;
+      --lime-dim: rgba(92,184,50,0.10); --lime-glow: rgba(92,184,50,0.18);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--obsidian); color: #fff; overflow-x: hidden; }
+    h1,h2,h3,h4 { font-family: 'Montserrat', sans-serif; }
+    .grad-gold { background: linear-gradient(135deg,#F5E07A,#D4AF37,#AA8A2E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .grad-lime { background: linear-gradient(135deg,#72d43e,#5cb832); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .grad-am   { background: linear-gradient(135deg,#C084FC,#A855F7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .section-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.35em; text-transform: uppercase; color: var(--lime); }
+    .accent-line { display: inline-block; width: 32px; height: 2px; background: var(--lime); margin-right: 12px; vertical-align: middle; }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    /* NAV */
+    nav { position: fixed; top: 0; width: 100%; z-index: 50; }
+    .nav-inner { background: rgba(0,0,0,0.88); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .nav-logo-clip { width: 54px; height: 54px; flex-shrink: 0; }
+    @keyframes spin-cw  { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes spin-ccw { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+    .gear-primary   { transform-origin: 200px 178px; animation: spin-cw  18s linear infinite; }
+    .gear-secondary { transform-origin: 253px 140px; animation: spin-ccw 11s linear infinite; }
+    .gear-tertiary  { transform-origin: 162px 222px; animation: spin-ccw 14s linear infinite; }
+    .gear-accent    { transform-origin: 248px 202px; animation: spin-cw   7s linear infinite; }
+    /* STACK CARDS */
+    .stack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; }
+    /* Cards use left-border style matching site's why-card pattern */
+    .stack-card { background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid; border-radius: 0.5rem; padding: 1.75rem 1.75rem 1.75rem 1.5rem; transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s; position: relative; overflow: hidden; }
+    .stack-card.cat-fixed { border-left-color: var(--gold); }
+    .stack-card.cat-ai    { border-left-color: var(--lime); }
+    .stack-card.cat-comms { border-left-color: var(--amethyst); }
+    .stack-card:hover { border-color: rgba(255,255,255,0.1); border-left-color: inherit; box-shadow: 0 8px 40px rgba(0,0,0,0.4); transform: translateY(-2px); }
+    /* Card step label — matches "01 — DISCOVERY" pattern from site */
+    .stack-step { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 0.9rem; }
+    .stack-step.lime  { color: var(--lime); }
+    .stack-step.gold  { color: var(--gold); }
+    .stack-step.am    { color: #C084FC; }
+    /* Card heading — Plus Jakarta Sans 700 matching site card headings */
+    .stack-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 700; color: #fff; margin: 0 0 0.25rem; line-height: 1.3; }
+    .stack-subtitle { font-size: 0.72rem; color: #6b7280; font-weight: 300; margin-bottom: 0.75rem; }
+    .stack-cost { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em; color: var(--gold); text-transform: uppercase; margin-bottom: 1rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05); }
+    .stack-desc { font-size: 0.86rem; color: #9ca3af; line-height: 1.78; font-weight: 300; }
+    .stack-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.85rem; }
+    .badge { font-size: 0.5rem; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 999px; }
+    .badge-live    { border: 1px solid rgba(92,184,50,0.4);  color: var(--lime);     background: rgba(92,184,50,0.08);  }
+    .badge-planned { border: 1px solid rgba(168,85,247,0.4); color: #C084FC;         background: rgba(168,85,247,0.08); }
+    .badge-fixed   { border: 1px solid rgba(212,175,55,0.3); color: var(--gold);     background: rgba(212,175,55,0.06); }
+    .badge-ai      { border: 1px solid rgba(92,184,50,0.3);  color: var(--lime-bright); background: rgba(92,184,50,0.06); }
+    .badge-comms   { border: 1px solid rgba(168,85,247,0.3); color: #C084FC;         background: rgba(168,85,247,0.06); }
+    /* ARCH DIAGRAM */
+    .arch-layer { border: 1px solid rgba(255,255,255,0.06); border-radius: 0.75rem; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1.25rem; transition: border-color 0.2s; }
+    .arch-layer:hover { border-color: rgba(212,175,55,0.2); }
+    .arch-layer-label { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.25em; text-transform: uppercase; min-width: 90px; }
+    .arch-layer-items { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .arch-pill { font-size: 0.65rem; font-weight: 600; padding: 0.3rem 0.8rem; border-radius: 999px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #d1d5db; }
+    .arch-arrow { text-align: center; color: rgba(212,175,55,0.3); font-size: 1rem; padding: 0.2rem 0; }
+    /* EXPLORER */
+    .explorer-wrap { background: rgba(255,255,255,0.015); border: 1px solid rgba(212,175,55,0.1); border-radius: 1.5rem; overflow: hidden; }
+    .explorer-kpi  { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .kpi-block     { padding: 1.5rem 2rem; }
+    .kpi-block:first-child { border-right: 1px solid rgba(255,255,255,0.04); }
+    .kpi-label     { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #4b5563; margin-bottom: 0.5rem; font-family: 'Montserrat', sans-serif; }
+    .kpi-value     { font-family: 'Montserrat', sans-serif; font-size: 2.8rem; font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
+    .kpi-sub       { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280; margin-top: 0.45rem; font-family: 'Montserrat', sans-serif; }
+    .toggle-wrap   { display: flex; gap: 6px; background: rgba(0,0,0,0.4); padding: 4px; border-radius: 8px; width: fit-content; }
+    .toggle-btn    { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; transition: all 0.2s; background: transparent; color: #555; }
+    .toggle-btn.active { background: var(--gold); color: #000; }
+    .bar-track  { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+    .bar-fill   { height: 100%; border-radius: 3px; transition: width 0.55s cubic-bezier(0.4,0,0.2,1); }
+    .sum-table  { width: 100%; border-collapse: collapse; }
+    .sum-table th { padding: 10px 12px; font-size: 0.55rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); border-bottom: 1px solid rgba(255,255,255,0.06); text-align: right; }
+    .sum-table th:first-child { text-align: left; }
+    .sum-table td { padding: 11px 12px; font-size: 0.82rem; border-bottom: 1px solid rgba(255,255,255,0.03); color: #9ca3af; text-align: right; }
+    .sum-table td:first-child { text-align: left; color: #d1d5db; }
+    .sum-table tr.active-row td { color: var(--gold); font-weight: 700; }
+    .sum-table tr.active-row td:first-child { color: #fff; }
+    .sum-table tr:last-child td { border-bottom: none; }
+    .sum-table tr { cursor: pointer; transition: background 0.15s; }
+    .sum-table tr:hover td { color: #fff; }
+    /* MISC */
+    .why-card-sg      { border-left: 2px solid var(--lime); padding-left: 1.5rem; }
+    .why-card-sg.gold { border-left-color: var(--gold); }
+    .why-card-sg.am   { border-left-color: var(--amethyst); }
+    /* Section heading scale — matches original site clamp values */
+    .section-h2 { font-family: 'Montserrat', sans-serif; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; margin-top: 0.75rem; }
+    .section-body { font-size: 0.92rem; color: #9ca3af; max-width: 580px; line-height: 1.8; font-weight: 300; margin-top: 0.85rem; }
+    input[type=range] { width: 100%; cursor: pointer; accent-color: var(--gold); height: 3px; }
+    /* ── TIMELINE / BUILD LOG ─────────────────────────────────────────── */
+    .tl-wrap { position:relative; padding-left:2.5rem; }
+    .tl-wrap::before { content:''; position:absolute; left:0; top:10px; bottom:0; width:2px; background:linear-gradient(to bottom, var(--lime) 0%, rgba(92,184,50,0.2) 80%, transparent 100%); }
+    .tl-entry { position:relative; margin-bottom:3.5rem; }
+    .tl-dot { position:absolute; left:-3rem; top:3px; width:14px; height:14px; border-radius:50%; background:var(--lime); border:2px solid var(--obsidian); box-shadow:0 0 0 4px rgba(92,184,50,0.2); }
+    .tl-dot.gold  { background:var(--gold); box-shadow:0 0 0 4px rgba(212,175,55,0.2); }
+    .tl-dot.am    { background:var(--amethyst); box-shadow:0 0 0 4px rgba(168,85,247,0.2); }
+    .tl-week  { font-family:'Montserrat',sans-serif; font-size:0.58rem; font-weight:800; letter-spacing:0.3em; text-transform:uppercase; color:var(--lime); margin-bottom:0.65rem; }
+    .tl-week.gold { color:var(--gold); }
+    .tl-headline  { font-family:'Montserrat',sans-serif; font-size:1.35rem; font-weight:900; color:#fff; letter-spacing:-0.02em; line-height:1.2; margin-bottom:0.4rem; }
+    .tl-summary   { font-size:0.86rem; color:#9ca3af; line-height:1.75; font-weight:300; margin-bottom:1.1rem; max-width:640px; }
+    .tl-items     { display:flex; flex-direction:column; gap:0.55rem; }
+    .tl-item      { display:flex; align-items:flex-start; gap:0.75rem; font-size:0.84rem; line-height:1.55; }
+    .tl-pip       { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:0.4rem; }
+    .tl-item.shipped   .tl-pip { background:var(--lime); }
+    .tl-item.progress  .tl-pip { background:var(--gold); }
+    .tl-item.planned   .tl-pip { background:#1f2937; border:1px solid #374151; }
+    .tl-item.shipped   span { color:#d1d5db; }
+    .tl-item.progress  span { color:#d1d5db; }
+    .tl-item.planned   span { color:#6b7280; }
+    .tl-tag { display:inline-flex; align-items:center; gap:0.4rem; font-family:'Montserrat',sans-serif; font-size:0.48rem; font-weight:800; letter-spacing:0.16em; text-transform:uppercase; padding:0.18rem 0.6rem; border-radius:999px; flex-shrink:0; margin-top:0.28rem; }
+    .tl-tag.shipped  { color:var(--lime);     background:rgba(92,184,50,0.1);   border:1px solid rgba(92,184,50,0.3); }
+    .tl-tag.progress { color:var(--gold);     background:rgba(212,175,55,0.1);  border:1px solid rgba(212,175,55,0.3); }
+    .tl-tag.planned  { color:#6b7280;         background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); }
+    .current-box  { background:rgba(92,184,50,0.05); border:1px solid rgba(92,184,50,0.18); border-radius:1rem; padding:2rem 2.5rem; margin-bottom:4rem; }
+    .current-item { display:flex; align-items:flex-start; gap:0.85rem; padding:0.75rem 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .current-item:last-child { border-bottom:none; padding-bottom:0; }
+    /* ── PHASE CAROUSEL ───────────────────────────────────────────────── */
+    .phase-nav-row { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:2.5rem; }
+    .phase-pill-btn { width:40px; height:40px; border-radius:50%; font-family:'Montserrat',sans-serif; font-size:0.65rem; font-weight:900; border:2px solid rgba(92,184,50,0.25); background:transparent; color:#3a3a3a; cursor:pointer; transition:all 0.25s; }
+    .phase-pill-btn:hover { border-color:rgba(92,184,50,0.5); color:var(--lime); }
+    .phase-pill-btn.p-active { background:var(--lime); border-color:var(--lime); color:#000; box-shadow:0 0 0 5px rgba(92,184,50,0.18); }
+    .phase-pill-btn.p-next { border-color:rgba(212,175,55,0.3); color:#3a3a3a; }
+    .phase-pill-btn.p-next:hover { border-color:var(--gold); color:var(--gold); }
+    .phase-pill-btn.p-next.p-active { background:var(--gold); border-color:var(--gold); color:#000; box-shadow:0 0 0 5px rgba(212,175,55,0.18); }
+    .phase-connector-line { flex:1; height:2px; background:rgba(92,184,50,0.12); max-width:48px; }
+    .phase-card-main { border-radius:1.25rem; padding:2.5rem; transition:opacity 0.3s, transform 0.3s; }
+    .phase-card-main.lime-card { background:rgba(92,184,50,0.04); border:1px solid rgba(92,184,50,0.15); }
+    .phase-card-main.gold-card { background:rgba(212,175,55,0.04); border:1px solid rgba(212,175,55,0.15); }
+    .phase-shipped-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:0.6rem; margin-top:1.25rem; }
+    .phase-item { display:flex; align-items:flex-start; gap:0.7rem; padding:0.7rem 0.85rem; background:rgba(255,255,255,0.02); border-radius:0.5rem; border:1px solid rgba(255,255,255,0.04); }
+    .phase-item-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:0.4rem; background:var(--lime); }
+    .phase-item-dot.gold { background:var(--gold); }
+    .phase-item span { font-size:0.81rem; color:#d1d5db; line-height:1.5; font-weight:300; }
+    .phase-nav-btns { display:flex; gap:0.75rem; align-items:center; margin-top:2rem; }
+    .phase-btn { font-family:'Montserrat',sans-serif; font-size:0.6rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; padding:0.7rem 1.5rem; border-radius:999px; border:none; cursor:pointer; transition:all 0.2s; }
+    .phase-btn.prev { background:rgba(255,255,255,0.05); color:#555; border:1px solid rgba(255,255,255,0.08); }
+    .phase-btn.prev:hover { background:rgba(255,255,255,0.08); color:#fff; }
+    .phase-btn.next { background:var(--lime); color:#000; }
+    .phase-btn.next:hover { transform:scale(1.04); box-shadow:0 0 24px var(--lime-glow); }
+    .phase-btn.next.gold-btn { background:var(--gold); }
+    .phase-btn.next.gold-btn:hover { box-shadow:0 0 24px rgba(212,175,55,0.35); }
+    .phase-progress { height:3px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; margin-bottom:2.5rem; }
+    .phase-progress-fill { height:100%; background:linear-gradient(90deg,var(--lime),#72d43e); border-radius:2px; transition:width 0.4s ease; }
+    .whats-next-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-top:1.5rem; }
+    .whats-next-card { background:rgba(212,175,55,0.04); border:1px solid rgba(212,175,55,0.12); border-radius:0.75rem; padding:1.25rem 1.5rem; }
+    @media(max-width:640px) {
+      .phase-card-main { padding:1.5rem; }
+      .phase-shipped-grid { grid-template-columns:1fr; }
+      .whats-next-grid { grid-template-columns:1fr; }
+      .phase-nav-row { gap:0.35rem; }
+      .phase-pill-btn { width:34px; height:34px; font-size:0.6rem; }
+    }
+    .nav-switcher { display:flex; gap:4px; background:rgba(255,255,255,0.04); padding:3px; border-radius:8px; }
+    .nav-sw-btn   { font-family:'Montserrat',sans-serif; font-size:0.58rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:6px 14px; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:#555; }
+    .nav-sw-btn.active { background:var(--gold); color:#000; }
+    @media(max-width:640px) {
+      .nav-switcher { display:none; }
+      .tl-wrap { padding-left:1.5rem; }
+      .tl-dot { left:-2rem; }
+      .current-box { padding:1.5rem; }
+    }
+      .stack-grid { grid-template-columns: 1fr; }
+      .explorer-kpi { grid-template-columns: 1fr; }
+      .kpi-block:first-child { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.04); }
+      .kpi-value { font-size: 2.2rem; }
+      .arch-layer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SVG DEFS (shared gradients/filters for logo) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="g-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8EF8A"/><stop offset="25%" stop-color="#D4AF37"/><stop offset="60%" stop-color="#A07820"/><stop offset="100%" stop-color="#6B4E12"/>
+    </linearGradient>
+    <linearGradient id="g-gold2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EDD76A"/><stop offset="50%" stop-color="#C49B28"/><stop offset="100%" stop-color="#7A5510"/>
+    </linearGradient>
+    <linearGradient id="g-gold-sm" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F0DC6A"/><stop offset="50%" stop-color="#C8A025"/><stop offset="100%" stop-color="#85640E"/>
+    </linearGradient>
+    <linearGradient id="g-amethyst" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DA9EFF"/><stop offset="45%" stop-color="#A855F7"/><stop offset="100%" stop-color="#6B21A8"/>
+    </linearGradient>
+    <radialGradient id="g-gear-ambient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.13"/><stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="f-purple-glow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b4"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="b9"/>
+      <feMerge><feMergeNode in="b9"/><feMergeNode in="b4"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="f-gear-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-color="#000" flood-opacity="0.7"/>
+    </filter>
+    <filter id="f-purple-gear" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#A855F7" flood-opacity="0.4" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+</svg>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;height:5rem;display:flex;align-items:center;justify-content:space-between;">
+      <a href="https://simplegenius.io" style="display:flex;align-items:center;gap:0;text-decoration:none;">
+        <div class="nav-logo-clip">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="112 78 210 355" width="54" height="54">
+            <g filter="url(#f-purple-glow)">
+              <path d="M 258,90 C 238,85 205,88 182,102 C 155,118 138,148 132,180 C 126,212 130,244 133,265 C 135,278 134,292 132,306 C 129,322 124,334 124,350 C 124,368 136,378 152,380 C 164,381 174,374 180,364 C 185,355 186,342 186,328 L 186,314 C 200,322 220,326 238,320 C 256,314 268,300 274,284 C 279,268 275,250 278,237 C 282,218 296,207 305,192 C 314,176 313,154 306,136 C 298,116 280,97 258,90 Z" fill="none" stroke="#A855F7" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+            </g>
+            <ellipse cx="205" cy="178" rx="75" ry="70" fill="url(#g-gear-ambient)"/>
+            <g class="gear-primary" filter="url(#f-gear-shadow)">
+              <path d="M 229.79,174.47 L 241.57,171.97 L 241.57,184.03 L 229.79,181.53 L 227.56,189.84 L 239.01,193.56 L 232.98,204.00 L 224.04,195.95 L 217.95,202.04 L 226.00,210.98 L 215.56,217.01 L 211.84,205.56 L 203.53,207.79 L 206.03,219.57 L 193.97,219.57 L 196.47,207.79 L 188.16,205.56 L 184.44,217.01 L 174.00,210.98 L 182.05,202.04 L 175.96,195.95 L 167.02,204.00 L 160.99,193.56 L 172.44,189.84 L 170.21,181.53 L 158.43,184.03 L 158.43,171.97 L 170.21,174.47 L 172.44,166.16 L 160.99,162.44 L 167.02,152.00 L 175.96,160.05 L 182.05,153.96 L 174.00,145.02 L 184.44,138.99 L 188.16,150.44 L 196.47,148.21 L 193.97,136.43 L 206.03,136.43 L 203.53,148.21 L 211.84,150.44 L 215.56,138.99 L 226.00,145.02 L 217.95,153.96 L 224.04,160.05 L 232.98,152.00 L 239.01,162.44 L 227.56,166.16 Z" fill="url(#g-gold)"/>
+              <circle cx="200" cy="178" r="29" fill="url(#g-gold)"/>
+              <circle cx="200" cy="178" r="7.5" fill="#080808" stroke="#D4AF37" stroke-width="1.3"/>
+              <circle cx="200" cy="178" r="3.2" fill="#D4AF37"/>
+            </g>
+            <g class="gear-secondary" filter="url(#f-gear-shadow)">
+              <path d="M 271.00,140.31 L 278.00,139.56 L 276.34,148.96 L 270.02,145.86 L 266.58,151.81 L 272.43,155.73 L 265.12,161.87 L 262.27,155.43 L 255.82,157.78 L 257.77,164.54 L 248.23,164.54 L 250.18,157.78 L 243.73,155.43 L 240.88,161.87 L 233.57,155.73 L 239.42,151.81 L 235.98,145.86 L 229.66,148.96 L 228.00,139.56 L 235.00,140.31 L 236.20,133.55 L 229.36,131.86 L 234.13,123.60 L 239.01,128.67 L 244.27,124.26 L 240.12,118.57 L 249.09,115.31 L 249.57,122.33 L 256.43,122.33 L 256.91,115.31 L 265.88,118.57 L 261.73,124.26 L 266.99,128.67 L 271.87,123.60 L 276.64,131.86 L 269.80,133.55 Z" fill="url(#g-gold2)"/>
+              <circle cx="253" cy="140" r="17.5" fill="url(#g-gold2)"/>
+              <circle cx="253" cy="140" r="5.5" fill="#080808" stroke="#D4AF37" stroke-width="1.1"/>
+            </g>
+            <g class="gear-tertiary" filter="url(#f-purple-gear)">
+              <circle cx="162" cy="222" r="15.5" fill="url(#g-amethyst)"/>
+              <circle cx="162" cy="222" r="5" fill="#080808" stroke="#A855F7" stroke-width="1.1"/>
+            </g>
+            <g class="gear-accent" filter="url(#f-gear-shadow)">
+              <circle cx="248" cy="202" r="10.5" fill="url(#g-gold-sm)"/>
+              <circle cx="248" cy="202" r="3.8" fill="#080808" stroke="#C8A025" stroke-width="0.9"/>
+            </g>
+          </svg>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:0.18em;line-height:1;margin-left:-8px;">
+          <span style="font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:900;color:#fff;letter-spacing:-0.02em;">Simple</span>
+          <span style="font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:900;background:linear-gradient(135deg,#F5E07A,#D4AF37,#AA8A2E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.02em;">Genius.</span>
+        </div>
+      </a>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <!-- PAGE SWITCHER -->
+        <div class="nav-switcher">
+          <button class="nav-sw-btn active" id="sw-stack" onclick="showPage('stack')">Tech Stack</button>
+          <button class="nav-sw-btn" id="sw-log" onclick="showPage('log')">Build Log</button>
+        </div>
+        <div style="width:1px;height:28px;background:rgba(255,255,255,0.07);"></div>
+        <div style="text-align:right;">
+          <div style="font-size:0.5rem;color:#4b5563;letter-spacing:0.15em;text-transform:uppercase;">Prepared for</div>
+          <div style="font-size:0.7rem;font-weight:700;color:var(--gold);">Peak Sports MGMT</div>
+        </div>
+        <div style="width:1px;height:28px;background:rgba(255,255,255,0.07);"></div>
+        <div style="background:rgba(92,184,50,0.12);border:1px solid rgba(92,184,50,0.25);border-radius:999px;padding:0.3rem 0.85rem;">
+          <span style="font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--lime);">Phase 1 Live</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE: TECH STACK -->
+<div id="page-stack">
+
+<!-- HERO -->
+<section style="padding:8rem 1.5rem 5rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 0%, var(--amethyst-dim) 0%, transparent 60%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:0;left:30%;width:50vw;height:40vh;background:radial-gradient(ellipse, var(--lime-dim) 0%, transparent 70%);pointer-events:none;"></div>
+  <div style="max-width:1280px;margin:0 auto;position:relative;z-index:1;">
+    <div class="reveal">
+      <span class="section-label"><span class="accent-line"></span>The Playbook</span>
+      <h1 style="font-size:clamp(2.4rem,6vw,5rem);font-weight:900;line-height:1.05;letter-spacing:-0.03em;margin-top:0.75rem;margin-bottom:1rem;">
+        Technology<br/><span class="grad-gold">Stack &amp; Infrastructure</span>
+      </h1>
+      <p style="font-size:1rem;color:#9ca3af;max-width:560px;line-height:1.8;font-weight:300;margin-bottom:2.5rem;">
+        Every component powering The Playbook — what it is, what it does, and exactly what it costs. Written for business leaders, not engineers.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:1rem;">
+        <div style="border:1px solid rgba(212,175,55,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(212,175,55,0.04);">
+          <div style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#F5E07A,#D4AF37,#AA8A2E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">$174–189</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#6b7280;margin-top:0.4rem;">Current Monthly Cost</div>
+        </div>
+        <div style="border:1px solid rgba(92,184,50,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(92,184,50,0.04);">
+          <div style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#72d43e,#5cb832);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">8</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#6b7280;margin-top:0.4rem;">Live Components</div>
+        </div>
+        <div style="border:1px solid rgba(168,85,247,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(168,85,247,0.04);">
+          <div style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#C084FC,#A855F7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">24</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#6b7280;margin-top:0.4rem;">School Capacity</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE OVERVIEW -->
+<section style="padding:4rem 1.5rem;background:var(--obsidian3);">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div class="reveal" style="margin-bottom:2.5rem;">
+      <span class="section-label"><span class="accent-line"></span>How It All Connects</span>
+      <h2 class="section-h2">One platform. <span class="grad-gold">Eight interlocking components.</span></h2>
+      <p class="section-body">Each layer is independently deployable and has a specific job. Remove any one piece and a critical capability disappears. Together they form a production-grade revenue intelligence platform.</p>
+    </div>
+    <div class="reveal" style="display:flex;flex-direction:column;gap:0.35rem;max-width:760px;">
+      <div class="arch-layer">
+        <div class="arch-layer-label" style="color:#6b7280;">User Layer</div>
+        <div class="arch-layer-items">
+          <span class="arch-pill">Reps</span>
+          <span class="arch-pill">Athletic Directors</span>
+          <span class="arch-pill">Peak Staff</span>
+          <span class="arch-pill">Fans (Phase 2)</span>
+        </div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer" style="border-color:rgba(92,184,50,0.2);">
+        <div class="arch-layer-label" style="color:var(--lime);">Interface</div>
+        <div class="arch-layer-items">
+          <span class="arch-pill" style="border-color:rgba(92,184,50,0.3);color:var(--lime-bright);">React + Vite — Frontend</span>
+          <span class="arch-pill" style="border-color:rgba(92,184,50,0.3);color:var(--lime-bright);">Vercel — Hosting</span>
+        </div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer" style="border-color:rgba(212,175,55,0.2);">
+        <div class="arch-layer-label" style="color:var(--gold);">Data &amp; Auth</div>
+        <div class="arch-layer-items">
+          <span class="arch-pill" style="border-color:rgba(212,175,55,0.3);color:var(--gold);">Supabase — Database</span>
+          <span class="arch-pill" style="border-color:rgba(212,175,55,0.3);color:var(--gold);">Supabase Auth — Roles &amp; Permissions</span>
+        </div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer" style="border-color:rgba(92,184,50,0.2);">
+        <div class="arch-layer-label" style="color:var(--lime);">AI Engine</div>
+        <div class="arch-layer-items">
+          <span class="arch-pill" style="border-color:rgba(92,184,50,0.3);color:var(--lime-bright);">n8n Workflows</span>
+          <span class="arch-pill" style="border-color:rgba(92,184,50,0.3);color:var(--lime-bright);">OpenAI GPT-4o</span>
+          <span class="arch-pill" style="border-color:rgba(92,184,50,0.3);color:var(--lime-bright);">Railway Server</span>
+        </div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer" style="border-color:rgba(212,175,55,0.15);">
+        <div class="arch-layer-label" style="color:#6b7280;">Infrastructure</div>
+        <div class="arch-layer-items">
+          <span class="arch-pill">GitHub</span>
+          <span class="arch-pill">Cloudflare</span>
+          <span class="arch-pill">Claude Max (Dev)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHASE 1 — CURRENT STACK -->
+<section style="padding:5rem 1.5rem;background:var(--obsidian);">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div class="reveal" style="margin-bottom:3rem;">
+      <span class="section-label" style="color:var(--lime);"><span class="accent-line"></span>Phase 1 — Live Now</span>
+      <h2 class="section-h2">Current Stack — <span class="grad-lime">8 Components Running</span></h2>
+      <p class="section-body">Everything below is live and operational. Email outreach in Phase 1 uses a rep-approved workflow — the AI drafts, the rep sends through their own email client. No platform-side delivery cost.</p>
+    </div>
+    <div class="stack-grid reveal" id="phase1-grid"></div>
+  </div>
+</section>
+
+<!-- PHASE 2 — PLANNED -->
+<section style="padding:5rem 1.5rem;background:var(--obsidian3);position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%, var(--amethyst-dim) 0%, transparent 55%);pointer-events:none;"></div>
+  <div style="max-width:1280px;margin:0 auto;position:relative;z-index:1;">
+    <div class="reveal" style="margin-bottom:3rem;">
+      <span class="section-label" style="color:#C084FC;"><span class="accent-line" style="background:var(--amethyst);"></span>Phase 2 — Planned</span>
+      <h2 class="section-h2">Full CRM Outreach — <span class="grad-am">4 Additions</span></h2>
+      <p class="section-body">These additions activate platform-sent email, AI-drafted SMS, and tracked phone calls — all logged in the CRM. This is the layer that makes outreach fully automated and fully measurable.</p>
+    </div>
+    <div class="stack-grid reveal" id="phase2-grid"></div>
+  </div>
+</section>
+
+<!-- COST EXPLORER -->
+<section style="padding:5rem 1.5rem;background:var(--obsidian);">
+  <div style="max-width:960px;margin:0 auto;">
+    <div class="reveal" style="margin-bottom:3rem;">
+      <span class="section-label"><span class="accent-line"></span>Cost Explorer</span>
+      <h2 class="section-h2">Model costs at any <span class="grad-gold">portfolio size.</span></h2>
+    </div>
+    <div class="explorer-wrap reveal">
+      <!-- Phase Toggle + Slider -->
+      <div style="padding:1.75rem 2rem;border-bottom:1px solid rgba(255,255,255,0.04);">
+        <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+          <div class="toggle-wrap">
+            <button class="toggle-btn active" id="btn-p1" onclick="setPhase(1)">Current Stack</button>
+            <button class="toggle-btn" id="btn-p2" onclick="setPhase(2)">Full Stack + Comms</button>
+          </div>
+          <div style="height:28px;width:1px;background:rgba(255,255,255,0.06);"></div>
+          <div style="font-size:0.6rem;color:#4b5563;font-weight:600;letter-spacing:0.1em;">SCHOOLS IN PORTFOLIO</div>
+          <div id="schools-badge" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#F5E07A,#D4AF37,#AA8A2E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">6</div>
+        </div>
+        <input type="range" min="1" max="24" value="6" id="schools-slider" oninput="setSchools(parseInt(this.value))"/>
+        <div style="display:flex;justify-content:space-between;margin-top:0.85rem;">
+          <button onclick="setSchools(1)"  class="milestone-pill" data-s="1">1</button>
+          <button onclick="setSchools(6)"  class="milestone-pill" data-s="6">6</button>
+          <button onclick="setSchools(8)"  class="milestone-pill" data-s="8">8</button>
+          <button onclick="setSchools(12)" class="milestone-pill" data-s="12">12</button>
+          <button onclick="setSchools(24)" class="milestone-pill" data-s="24">24</button>
+        </div>
+        <style>
+          .milestone-pill { background:transparent; border:1px solid #1e1e1e; color:#3a3a3a; font-family:'Montserrat',sans-serif; font-size:0.65rem; font-weight:800; padding:4px 14px; border-radius:999px; cursor:pointer; transition:all 0.15s; }
+          .milestone-pill.active { border-color:var(--gold); background:rgba(212,175,55,0.1); color:var(--gold); }
+        </style>
+      </div>
+      <!-- KPIs -->
+      <div class="explorer-kpi">
+        <div class="kpi-block">
+          <div class="kpi-label">Monthly Total</div>
+          <div class="kpi-value grad-gold" id="kpi-total">$291</div>
+          <div class="kpi-sub" id="kpi-sub-total">at 6 schools</div>
+        </div>
+        <div class="kpi-block">
+          <div class="kpi-label">Per School / Month</div>
+          <div class="kpi-value" id="kpi-perschool" style="color:#fff;">$49</div>
+          <div class="kpi-sub">infrastructure cost</div>
+        </div>
+      </div>
+      <!-- Category Bars -->
+      <div style="padding:1.75rem 2rem;border-bottom:1px solid rgba(255,255,255,0.04);">
+        <div style="font-size:0.55rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-bottom:1.25rem;">Cost Categories</div>
+        <div id="cat-bars" style="display:flex;flex-direction:column;gap:1.1rem;"></div>
+      </div>
+      <!-- Component Lines -->
+      <div style="padding:1.75rem 2rem;border-bottom:1px solid rgba(255,255,255,0.04);">
+        <div style="font-size:0.55rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-bottom:1.25rem;">Line Items</div>
+        <div id="line-items" style="display:flex;flex-direction:column;gap:0.7rem;"></div>
+      </div>
+      <!-- Summary Table -->
+      <div style="padding:1.75rem 2rem;">
+        <div style="font-size:0.55rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-bottom:1rem;">Milestone Summary — click to select</div>
+        <table class="sum-table" id="milestone-table"></table>
+      </div>
+    </div>
+
+    <!-- Assumptions -->
+    <div class="reveal" style="margin-top:2rem;padding:1.5rem 2rem;border:1px solid rgba(255,255,255,0.05);border-radius:1rem;background:rgba(255,255,255,0.01);">
+      <div style="font-size:0.55rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#374151;margin-bottom:0.75rem;">Modeling Assumptions</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.5rem;">
+        <div class="why-card-sg" style="border-color:rgba(212,175,55,0.2);"><span style="font-size:0.78rem;color:#6b7280;font-weight:300;line-height:1.6;">3 active reps per school</span></div>
+        <div class="why-card-sg" style="border-color:rgba(212,175,55,0.2);"><span style="font-size:0.78rem;color:#6b7280;font-weight:300;line-height:1.6;">15 AI actions / rep / day (Phase 1)</span></div>
+        <div class="why-card-sg" style="border-color:rgba(212,175,55,0.2);"><span style="font-size:0.78rem;color:#6b7280;font-weight:300;line-height:1.6;">10 texts + 5 calls (5 min) + 20 emails / rep / day (Phase 2)</span></div>
+        <div class="why-card-sg" style="border-color:rgba(212,175,55,0.2);"><span style="font-size:0.78rem;color:#6b7280;font-weight:300;line-height:1.6;">22 working days / month</span></div>
+        <div class="why-card-sg" style="border-color:rgba(212,175,55,0.2);"><span style="font-size:0.78rem;color:#6b7280;font-weight:300;line-height:1.6;">Twilio SMS $0.013 all-in · Voice $0.014/min</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY TAKEAWAY -->
+<section style="padding:5rem 1.5rem 6rem;background:var(--obsidian3);position:relative;overflow:hidden;">
+  <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:70vw;height:50%;background:radial-gradient(ellipse, rgba(92,184,50,0.06) 0%, transparent 70%);pointer-events:none;"></div>
+  <div style="max-width:1280px;margin:0 auto;position:relative;z-index:1;">
+    <div class="reveal" style="margin-bottom:3rem;">
+      <span class="section-label"><span class="accent-line"></span>The Case for the Platform</span>
+      <h2 class="section-h2">Why these numbers<br/><span class="grad-gold">tell a good story.</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2rem;">
+      <div class="reveal why-card-sg gold">
+        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:0.5rem;">The baseline is under $190/month</h3>
+        <p style="font-size:0.82rem;color:#9ca3af;line-height:1.75;font-weight:300;">The full platform — multi-school, AI-powered, secure, live — costs less per month than a tank of gas per school. That's the foundation the comms layer is built on top of.</p>
+      </div>
+      <div class="reveal why-card-sg">
+        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:0.5rem;">Cost per school drops 70% at scale</h3>
+        <p style="font-size:0.82rem;color:#9ca3af;line-height:1.75;font-weight:300;">Fixed costs are already paid at school one. Every school added after that primarily adds AI usage and communication volume — not new infrastructure. The economics improve as the portfolio grows.</p>
+      </div>
+      <div class="reveal why-card-sg">
+        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:0.5rem;">The comms cost is tied to revenue</h3>
+        <p style="font-size:0.82rem;color:#9ca3af;line-height:1.75;font-weight:300;">Every Twilio call and SMS is a rep touching a donor or ticket buyer. That activity drives conversions. The communications cost scales with outreach volume — which scales with revenue opportunity.</p>
+      </div>
+      <div class="reveal why-card-sg gold">
+        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:0.5rem;">Adding a school takes one config entry</h3>
+        <p style="font-size:0.82rem;color:#9ca3af;line-height:1.75;font-weight:300;">The platform is built to grow without rebuilding. New school, new branding, new data — one configuration entry. No new deployments, no new infrastructure, no new engineering work required.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /page-stack -->
+
+<!-- PAGE: BUILD LOG -->
+<div id="page-log" style="display:none;">
+
+  <!-- BUILD LOG HERO -->
+  <section style="padding:8rem 1.5rem 3rem;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 0%, var(--lime-dim) 0%, transparent 55%);pointer-events:none;"></div>
+    <div style="max-width:1280px;margin:0 auto;position:relative;z-index:1;">
+      <div class="reveal">
+        <span class="section-label"><span class="accent-line"></span>The Playbook</span>
+        <h1 style="font-family:'Montserrat',sans-serif;font-size:clamp(2.4rem,6vw,5rem);font-weight:900;line-height:1.05;letter-spacing:-0.03em;margin-top:0.75rem;margin-bottom:1rem;">
+          Build Log<br/><span class="grad-lime">22 Days of Velocity.</span>
+        </h1>
+        <p style="font-size:1rem;color:#9ca3af;max-width:520px;line-height:1.8;font-weight:300;margin-bottom:2.5rem;">
+          March 20 → April 11, 2026. 112 commits. 5 phases shipped. This is what was built.
+        </p>
+        <!-- Velocity stats -->
+        <div style="display:flex;flex-wrap:wrap;gap:0;border:1px solid rgba(255,255,255,0.06);border-radius:1rem;overflow:hidden;width:fit-content;">
+          <div style="padding:1rem 1.5rem;border-right:1px solid rgba(255,255,255,0.06);">
+            <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,#72d43e,#5cb832);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">22</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-top:3px;">Days Active</div>
+          </div>
+          <div style="padding:1rem 1.5rem;border-right:1px solid rgba(255,255,255,0.06);">
+            <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,#F5E07A,#D4AF37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">112</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-top:3px;">Commits</div>
+          </div>
+          <div style="padding:1rem 1.5rem;border-right:1px solid rgba(255,255,255,0.06);">
+            <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-0.02em;color:#fff;">5</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-top:3px;">Phases Shipped</div>
+          </div>
+          <div style="padding:1rem 1.5rem;">
+            <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,#C084FC,#A855F7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">2</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-top:3px;">Environments Live</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE CAROUSEL -->
+  <section style="padding:2rem 1.5rem 6rem;">
+    <div style="max-width:1280px;margin:0 auto;">
+
+      <!-- Progress bar -->
+      <div class="phase-progress reveal">
+        <div class="phase-progress-fill" id="phase-progress-fill" style="width:83.3%"></div>
+      </div>
+
+      <!-- Phase nav pills -->
+      <div class="phase-nav-row reveal">
+        <button class="phase-pill-btn p-active" onclick="goPhase(0)">01</button>
+        <div class="phase-connector-line"></div>
+        <button class="phase-pill-btn" onclick="goPhase(1)">02</button>
+        <div class="phase-connector-line"></div>
+        <button class="phase-pill-btn" onclick="goPhase(2)">03</button>
+        <div class="phase-connector-line"></div>
+        <button class="phase-pill-btn" onclick="goPhase(3)">04</button>
+        <div class="phase-connector-line"></div>
+        <button class="phase-pill-btn" onclick="goPhase(4)">05</button>
+        <div class="phase-connector-line" style="background:rgba(212,175,55,0.15);"></div>
+        <button class="phase-pill-btn p-next" onclick="goPhase(5)" title="What's Next">→</button>
+      </div>
+
+      <!-- Phase display -->
+      <div id="phase-display" class="reveal"></div>
+
+    </div>
+  </section>
+
+</div><!-- /page-log -->
+
+<!-- FOOTER -->
+<footer style="padding:2.5rem 1.5rem;border-top:1px solid rgba(255,255,255,0.04);background:#000;">
+  <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1.5rem;">
+    <div>
+      <div style="margin-bottom:0.4rem;">
+        <span style="font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:900;color:#fff;">Simple </span>
+        <span style="font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:900;background:linear-gradient(135deg,#F5E07A,#D4AF37,#AA8A2E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Genius.</span>
+      </div>
+      <p style="font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:#4b5563;">McKinney, TX &nbsp;·&nbsp; dee@simplegenius.io &nbsp;·&nbsp; simplegenius.io</p>
+    </div>
+    <p style="font-size:0.6rem;color:#374151;letter-spacing:0.08em;">Confidential — For Peak Sports MGMT Internal Use Only</p>
+  </div>
+</footer>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const STACK_P1 = [
+  { num:'01', name:'React + Vite', sub:'Frontend Framework', cost:'No additional cost', cat:'fixed', catLabel:'Included in Development',
+    desc:'The framework that builds every screen, button, and interface your reps interact with. A single codebase serves all schools simultaneously — Wofford sees Wofford branding and data, Holy Cross sees theirs. Adding a new school is a single configuration entry with zero code change.' },
+  { num:'02', name:'Vercel', sub:'Hosting & Deployment', cost:'$20 / month', cat:'fixed', catLabel:'Fixed Infrastructure',
+    desc:'The service keeping the platform live on the internet 24/7. Handles global load speed, automatic deployments every time code is updated, and SSL security certificates. The platform never goes down for maintenance and does not require a more expensive tier as schools are added.' },
+  { num:'03', name:'Supabase', sub:'Database & Login System', cost:'$25 / month', cat:'fixed', catLabel:'Fixed Infrastructure',
+    desc:'The secure database storing all school data, user accounts, contacts, and permissions — plus the login system controlling who sees what. A Wofford rep sees only Wofford data. Wes, Cara, and Kyle see every school. Also accumulates donor history and outreach records over time. Remove it and there is no secure, multi-school platform.' },
+  { num:'04', name:'n8n on Railway', sub:'AI Workflow Engine', cost:'$10–20 / month', cat:'ai', catLabel:'AI & Workflows',
+    desc:'The automation engine that runs every time a rep triggers an AI-powered action. When a rep requests a renewal email for a lapsed donor, that request flows through n8n — it pulls contact history, applies the Simple Genius methodology, calls the AI model, and returns a finished draft in seconds. Railway is the always-on server it runs on.' },
+  { num:'05', name:'OpenAI GPT-4o', sub:'Rep-Facing AI Model', cost:'$15–20 / month at current scale', cat:'ai', catLabel:'AI & Workflows',
+    desc:'The AI model generating outreach drafts, sales insights, and Sales Agent responses. Every prompt carries the Simple Genius revenue methodology — output reads like a trained athletics professional, not a generic chatbot. Usage-based pricing means cost scales with rep activity as schools are added. This is the primary variable in the forecast.' },
+  { num:'06', name:'Claude Max', sub:'AI Development Tool', cost:'$100 / month, fixed', cat:'fixed', catLabel:'Fixed — Does Not Scale',
+    desc:"The AI tool Simple Genius uses to design, build, and maintain the entire Playbook platform. This is Dee's development environment — writing code, debugging issues, and building new features. A fixed $100/month subscription doing the work of a full-time engineering resource. This cost does not change as schools are added." },
+  { num:'07', name:'GitHub', sub:'Version Control & Safety', cost:'$4 / month', cat:'fixed', catLabel:'Fixed Infrastructure',
+    desc:'The system storing every version of the platform code and managing how updates are deployed safely. Enforces a two-stage deployment process — development branch first, tested, then pushed to production. If an update breaks something, the platform rolls back instantly. Non-negotiable for a system handling live client revenue data.' },
+  { num:'08', name:'Cloudflare', sub:'Security & DNS', cost:'$0 / month, free tier', cat:'fixed', catLabel:'Fixed Infrastructure',
+    desc:"The layer protecting the platform from attacks, speeding up global load times, and managing the custom domain names. Makes simplegenius.io function as a proper business domain with DDoS protection and SSL at no cost. The free tier is appropriate for current staff-only traffic. Upgrade to Pro is planned at fan portal launch." },
+];
+
+const STACK_P2 = [
+  { num:'09', name:'Resend', sub:'Platform Email Delivery', cost:'$20 / month, flat', cat:'comms', catLabel:'CRM Communications',
+    desc:'The email delivery service that sends outreach emails directly through the platform rather than opening the rep\'s native email client. Moving to platform-sent email means every action is logged, tracked, and reportable — open rates, send timestamps, and follow-up triggers all become possible. Handles up to 50,000 emails per month at the flat rate.' },
+  { num:'10', name:'Twilio SMS', sub:'Text Message Outreach', cost:'$0.011–0.014 per text', cat:'comms', catLabel:'CRM Communications',
+    desc:'The service enabling reps to send AI-drafted text messages directly to donors and ticket buyers from within the CRM. Text open rates in the athletics donor space far exceed email. Twilio handles delivery, carrier compliance, and opt-out management. Requires 10DLC carrier registration ($10–15/month) before sending at volume — registered once, applies to all schools.' },
+  { num:'11', name:'Twilio Voice', sub:'Phone Call Outreach', cost:'$0.014 per minute, outbound', cat:'comms', catLabel:'CRM Communications',
+    desc:'The service enabling reps to make tracked outbound calls through the platform with logging inside the CRM. Phone calls remain the highest-conversion touchpoint in athletics fundraising and ticket sales. Every call is timestamped and associated with the correct contact record — closing the gap between what reps report and what actually happened.' },
+  { num:'12', name:'Cloudflare Pro', sub:'Security Upgrade — Fan Portal', cost:'$20 / month', cat:'comms', catLabel:'Planned — At Fan Portal Launch',
+    desc:'The upgrade from the free tier to Cloudflare Pro, triggered when the fan-facing portal launches and public traffic increases. The free tier handles staff-only usage. Once fans can purchase tickets and interact with the platform publicly, Pro provides a stronger Web Application Firewall, expanded security rules, and bot protection. This cost activates at fan portal launch.' },
+];
+
+// ── RENDER CARDS ──────────────────────────────────────────────────────────────
+function renderCards(data, containerId, phase) {
+  const container = document.getElementById(containerId);
+  const stepColor = { fixed:'gold', ai:'lime', comms:'am' };
+  const catLabel  = { fixed:'Fixed Infrastructure', ai:'AI & Workflows', comms:'CRM Communications' };
+  container.innerHTML = data.map(c => `
+    <div class="stack-card cat-${c.cat} reveal">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.1rem;">
+        <div class="stack-step ${stepColor[c.cat]}">${c.num} — ${catLabel[c.cat]}</div>
+        <span class="badge ${phase===1?'badge-live':'badge-planned'}">${phase===1?'LIVE':'PLANNED'}</span>
+      </div>
+      <div class="stack-name">${c.name}</div>
+      <div class="stack-subtitle">${c.sub}</div>
+      <div class="stack-cost">${c.cost}</div>
+      <div class="stack-desc">${c.desc}</div>
+    </div>
+  `).join('');
+  container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+// ── SCROLL REVEAL ─────────────────────────────────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── COST ENGINE ───────────────────────────────────────────────────────────────
+const calcCosts = (schools, phase) => {
+  const days = 22;
+  const vercel=20, supa=25, claude=100, github=4;
+  const fixed = vercel+supa+claude+github;
+  const n8n   = Math.round(10 + schools*4.2);
+  const gpt4o = Math.round(schools*3*15*days*0.018);
+  const ai    = n8n+gpt4o;
+  const p1    = fixed+ai;
+  if (phase===1) return {
+    total:p1, perSchool:Math.round(p1/schools),
+    cats:[ {label:'Fixed Infrastructure',val:fixed,color:'var(--gold)'},
+           {label:'AI & Workflows',val:ai,color:'var(--lime)'} ],
+    rows:[
+      {name:'Claude Max',cost:claude,color:'var(--gold)'},
+      {name:'Supabase',cost:supa,color:'var(--gold)'},
+      {name:'Vercel',cost:vercel,color:'var(--gold)'},
+      {name:'GitHub',cost:github,color:'var(--gold)'},
+      {name:'GPT-4o',cost:gpt4o,color:'var(--lime)'},
+      {name:'n8n / Railway',cost:n8n,color:'var(--lime)'},
+    ]
+  };
+  const resend=20, sms=Math.round(schools*3*10*days*0.013+schools*3),
+        voice=Math.round(schools*3*5*5*days*0.014), dLC=13, cfPro=20;
+  const comms=resend+sms+voice+dLC+cfPro, p2=p1+comms;
+  return {
+    total:p2, perSchool:Math.round(p2/schools),
+    cats:[ {label:'Fixed Infrastructure',val:fixed,color:'var(--gold)'},
+           {label:'AI & Workflows',val:ai,color:'var(--lime)'},
+           {label:'CRM Communications',val:comms,color:'#C084FC'} ],
+    rows:[
+      {name:'Claude Max',cost:claude,color:'var(--gold)'},
+      {name:'Supabase',cost:supa,color:'var(--gold)'},
+      {name:'Vercel',cost:vercel,color:'var(--gold)'},
+      {name:'GitHub',cost:github,color:'var(--gold)'},
+      {name:'GPT-4o',cost:gpt4o,color:'var(--lime)'},
+      {name:'n8n / Railway',cost:n8n,color:'var(--lime)'},
+      {name:'Twilio Voice',cost:voice,color:'#C084FC'},
+      {name:'Twilio SMS',cost:sms,color:'#C084FC'},
+      {name:'Resend (Email)',cost:resend,color:'#C084FC'},
+      {name:'Cloudflare Pro',cost:cfPro,color:'#C084FC'},
+      {name:'10DLC',cost:dLC,color:'#C084FC'},
+    ]
+  };
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let schools = 6, phase = 1, prevTotal = 0, prevPerSchool = 0;
+
+// ── ANIMATE NUMBER ────────────────────────────────────────────────────────────
+function animNum(el, from, to, prefix='$', dur=550) {
+  const t0 = Date.now();
+  const tick = () => {
+    const p = Math.min((Date.now()-t0)/dur, 1);
+    const e = 1 - Math.pow(1-p, 3);
+    el.textContent = prefix + Math.round(from+(to-from)*e).toLocaleString();
+    if (p<1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+// ── RENDER EXPLORER ───────────────────────────────────────────────────────────
+function renderExplorer() {
+  const d = calcCosts(schools, phase);
+  const maxCost = d.total;
+
+  // KPIs
+  animNum(document.getElementById('kpi-total'), prevTotal, d.total);
+  animNum(document.getElementById('kpi-perschool'), prevPerSchool, d.perSchool);
+  document.getElementById('kpi-sub-total').textContent = `at ${schools} ${schools===1?'school':'schools'}`;
+  prevTotal = d.total; prevPerSchool = d.perSchool;
+
+  // Schools badge + slider
+  document.getElementById('schools-badge').textContent = schools;
+  document.getElementById('schools-slider').value = schools;
+
+  // Milestone pills
+  document.querySelectorAll('.milestone-pill').forEach(p => {
+    p.classList.toggle('active', parseInt(p.dataset.s)===schools);
+  });
+
+  // Category bars
+  const catBars = document.getElementById('cat-bars');
+  catBars.innerHTML = d.cats.map(cat => `
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:8px;height:8px;border-radius:2px;background:${cat.color};flex-shrink:0;"></div>
+          <span style="font-size:0.78rem;color:#9ca3af;">${cat.label}</span>
+        </div>
+        <span style="font-size:0.78rem;font-weight:700;color:${cat.color};">$${cat.val.toLocaleString()}</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(cat.val/maxCost*100).toFixed(1)}%;background:${cat.color};"></div></div>
+      <div style="font-size:0.65rem;color:#374151;margin-top:3px;">${Math.round(cat.val/maxCost*100)}% of total</div>
+    </div>
+  `).join('');
+
+  // Line items
+  const maxBar = Math.max(...d.rows.map(r=>r.cost));
+  const lineItems = document.getElementById('line-items');
+  lineItems.innerHTML = [...d.rows].sort((a,b)=>b.cost-a.cost).map(row => `
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:80px;font-size:0.68rem;color:#555;text-align:right;flex-shrink:0;">${row.name}</div>
+      <div style="flex:1;"><div class="bar-track"><div class="bar-fill" style="width:${(row.cost/maxBar*100).toFixed(1)}%;background:${row.color};"></div></div></div>
+      <div style="width:40px;font-size:0.72rem;font-weight:700;color:${row.color};text-align:right;flex-shrink:0;">$${row.cost}</div>
+    </div>
+  `).join('');
+
+  // Summary table
+  const MILESTONES = [1,6,8,12,24];
+  const table = document.getElementById('milestone-table');
+  table.innerHTML = `
+    <thead><tr>
+      <th>Schools</th><th>Monthly</th><th>Per School</th><th>Annual</th>
+    </tr></thead>
+    <tbody>
+      ${MILESTONES.map(s => {
+        const sd = calcCosts(s, phase);
+        const isActive = s===schools;
+        return `<tr class="${isActive?'active-row':''}" onclick="setSchools(${s})">
+          <td>${isActive?'▶ ':''}${s} ${s===1?'school':'schools'}</td>
+          <td>$${sd.total.toLocaleString()}</td>
+          <td>$${sd.perSchool.toLocaleString()}</td>
+          <td>$${(sd.total*12).toLocaleString()}</td>
+        </tr>`;
+      }).join('')}
+    </tbody>`;
+}
+
+// ── STATE SETTERS ─────────────────────────────────────────────────────────────
+function setSchools(s) {
+  schools = s;
+  renderExplorer();
+}
+function setPhase(p) {
+  phase = p;
+  document.getElementById('btn-p1').classList.toggle('active', p===1);
+  document.getElementById('btn-p2').classList.toggle('active', p===2);
+  prevTotal = 0; prevPerSchool = 0;
+  renderExplorer();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderCards(STACK_P1, 'phase1-grid', 1);
+renderCards(STACK_P2, 'phase2-grid', 2);
+renderExplorer();
+renderChangelog();
+
+// ── PAGE SWITCHER ─────────────────────────────────────────────────────────────
+function showPage(page) {
+  document.getElementById('page-stack').style.display = page === 'stack' ? 'block' : 'none';
+  document.getElementById('page-log').style.display   = page === 'log'   ? 'block' : 'none';
+  document.getElementById('sw-stack').classList.toggle('active', page === 'stack');
+  document.getElementById('sw-log').classList.toggle('active',   page === 'log');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── PHASE DATA (grounded in git log: Mar 20 – Apr 11, 2026) ──────────────────
+// To add a new phase: push an object to PHASES and update WHATS_NEXT.
+// To update "What's Next": edit the WHATS_NEXT array below.
+const PHASES = [
+  {
+    num: 1,
+    name: 'Foundation',
+    dates: 'Mar 20–22, 2026',
+    commits: 13,
+    days: 3,
+    summary: 'Built The Playbook from zero. Premium dark-mode CRM, iPhone-framed Sales Agent, all 12 schools wired with dynamic contacts, and a light school-color theme across every tab.',
+    shipped: [
+      'React + Vite platform scaffolded in GitHub',
+      'Premium dark CRM — ThunderHub-inspired UI',
+      'Sales Agent with black iPhone frame and bubble campaigns',
+      'All 12 schools wired with dynamic contact data',
+      'Light school-color theme across all tabs',
+      'ShoppingCart import fixed — first clean production build',
+    ]
+  },
+  {
+    num: 2,
+    name: 'Wofford Goes Live',
+    dates: 'Mar 23–27, 2026',
+    commits: 26,
+    days: 5,
+    summary: '432 real Wofford contacts imported from Vivenue. Interactive stadium maps for Gibbs Stadium and Jerry Richardson Indoor Stadium built from real section layouts. Analytics rebuilt from Kyle\'s Time & Score report. Login gate and role-based school access deployed.',
+    shipped: [
+      '432 real Vivenue contacts imported (football, basketball, volleyball)',
+      'Gibbs Stadium interactive map — real section layout',
+      'Jerry Richardson Indoor Stadium map (basketball)',
+      'Real Wofford ticket pricing injected into Sales Agent context',
+      'AI chat bubble in Ticket Hub — context-aware, 4s delay',
+      'Analytics rebuilt from Kyle\'s Time & Score report, mobile-first',
+      'CRM rebuilt as sales pipeline with prospect entry and contact panel',
+      'Login gate + role-based school access control deployed',
+      'Touch history badges pulled from Supabase sequences',
+      'Sales agent school-aware context + fixed layout',
+      'Peak Sports logo and Wofford mascot photo in gallery header',
+    ]
+  },
+  {
+    num: 3,
+    name: 'Multi-School & Mobile',
+    dates: 'Mar 30 – Apr 1, 2026',
+    commits: 17,
+    days: 3,
+    summary: 'Expanded the platform beyond Wofford. Holy Cross added, generic stadium maps deployed for any non-Wofford school, mobile bottom nav launched, Priority Point System built, and Peak Sports branding established in demo sidebar.',
+    shipped: [
+      'Holy Cross added to school roster',
+      'Generic stadium map — works for any school without custom build',
+      'Mobile bottom nav — sidebar hidden on small screens',
+      'Priority Point System module built and wired into nav',
+      'Peak Sports logo in demo sidebar',
+      'Demo modules added and pointed to DemoApp',
+      'DemoConstants.js extracted to break circular import errors',
+      'CRM split panel, single page, mobile responsive',
+      'Mobile responsive fixes across Analytics, Insights, Ticketing',
+    ]
+  },
+  {
+    num: 4,
+    name: 'Design System & Full Ticketing',
+    dates: 'Apr 2–4, 2026',
+    commits: 24,
+    days: 3,
+    summary: 'Unified T token design system deployed across all modules. Full interactive ticketing built for 6 sports with stadium maps, seat picker, concessions, and bundle discounts. AI logic extracted to DemoCore.js and locked. Light theme with Peak Sports green rebuilt from scratch.',
+    shipped: [
+      'Unified T token system — consistent palette across all 6 modules',
+      'Full stadium map: 6 sports, interactive seat picker, seat view preview',
+      'Concessions module and bundle discount logic',
+      'CRM upgraded: urgency cards, pipeline bar, filter pills, SF-style record',
+      'Priority: near-upgrade filter, tier progress bar, category bars, action paths',
+      'DemoInsights module — light theme, campaign breakdown table',
+      'DemoCore.js extracted — AI webhook logic locked and safeguarded',
+      'Light theme rebuilt with Peak Sports green (prestige colors preserved)',
+      'Demo rebrand: Peak University / Mountaineers / Grip AI agent',
+      'Priority outreach button wired to DemoCore requestDraft',
+    ]
+  },
+  {
+    num: 5,
+    name: 'Staff Portal & Auth',
+    dates: 'Apr 6–11, 2026',
+    commits: 32,
+    days: 6,
+    summary: 'Production-grade authentication system live. Supabase Auth with email/password login, role-based module gating, school isolation via RLS. ExecutiveOutreach built for Peak staff. Geist enterprise typography deployed across the platform. Enterprise mobile nav with Lucide icons shipped.',
+    shipped: [
+      'Supabase Auth: email/password login, user_profiles, module gating',
+      'Role-based access — reps see one school, Peak staff see all',
+      'ExecutiveOutreach: fused CRM + inline AI draft for Peak staff',
+      'School Dashboard with real activity_log data',
+      'CRM activity logging wired to Supabase',
+      'Productivity tab built and wired into nav and routes',
+      'Geist font system — enterprise typography across all modules',
+      'Login: remember me, password reset, Playbook dark theme',
+      'Enterprise mobile nav with Lucide icons, role-aware tabs',
+      'Peak.ai branding in sidebar, Peak logo on login',
+      'West Georgia labeled in Analytics — FY24-25 data only',
+    ]
+  },
+];
+
+const WHATS_NEXT = [
+  {
+    num: 2,
+    label: 'Wofford on Staff Portal',
+    detail: 'Devin Foster live on playbook.simplegenius.io with real Wofford data and role-scoped access.'
+  },
+  {
+    num: 3,
+    label: 'Ticketing Backend + Payments',
+    detail: 'Bluefin/Clover payment abstraction layer. Real ticket transactions processed through the platform.'
+  },
+  {
+    num: 4,
+    label: 'Fan Portal',
+    detail: 'Fan-facing purchase and renewal experience. Public traffic → Cloudflare Pro upgrade triggered.'
+  },
+  {
+    num: 5,
+    label: 'Embeddable AI Agent',
+    detail: 'Lightweight widget embeddable on any school athletics website. Chris Kaberry sales vehicle.'
+  },
+];
+
+// ── PHASE CAROUSEL STATE ──────────────────────────────────────────────────────
+let currentPhaseIdx = 0;
+
+function goPhase(idx) {
+  currentPhaseIdx = idx;
+  renderPhaseDisplay();
+  // Update nav pills
+  document.querySelectorAll('.phase-pill-btn').forEach((btn, i) => {
+    btn.classList.toggle('p-active', i === idx);
+  });
+  // Update progress bar (phases 0-4 = shipped, phase 5 = next)
+  const pct = idx < PHASES.length ? ((idx + 1) / PHASES.length) * 100 : 100;
+  const fill = document.getElementById('phase-progress-fill');
+  if (fill) fill.style.width = pct + '%';
+}
+
+function renderPhaseDisplay() {
+  const el = document.getElementById('phase-display');
+  if (!el) return;
+
+  const isNext = currentPhaseIdx >= PHASES.length;
+  const isFirst = currentPhaseIdx === 0;
+  const isLast  = currentPhaseIdx >= PHASES.length;
+
+  if (!isNext) {
+    const p = PHASES[currentPhaseIdx];
+    const commitsPerDay = (p.commits / p.days).toFixed(1);
+    el.innerHTML = `
+      <div class="phase-card-main lime-card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:0.3em;text-transform:uppercase;color:var(--lime);margin-bottom:0.5rem;">Phase ${p.num} — ${p.dates}</div>
+            <h2 style="font-family:'Montserrat',sans-serif;font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:900;color:#fff;letter-spacing:-0.03em;line-height:1.1;margin:0 0 0.75rem;">${p.name}</h2>
+            <p style="font-size:0.9rem;color:#9ca3af;line-height:1.78;font-weight:300;max-width:620px;">${p.summary}</p>
+          </div>
+          <div style="display:flex;gap:1.25rem;flex-shrink:0;">
+            <div style="text-align:center;">
+              <div style="font-family:'Montserrat',sans-serif;font-size:2.2rem;font-weight:900;color:var(--lime);letter-spacing:-0.03em;line-height:1;">${p.commits}</div>
+              <div style="font-family:'Montserrat',sans-serif;font-size:0.48rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-top:4px;">Commits</div>
+            </div>
+            <div style="width:1px;background:rgba(255,255,255,0.06);"></div>
+            <div style="text-align:center;">
+              <div style="font-family:'Montserrat',sans-serif;font-size:2.2rem;font-weight:900;color:#fff;letter-spacing:-0.03em;line-height:1;">${commitsPerDay}</div>
+              <div style="font-family:'Montserrat',sans-serif;font-size:0.48rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-top:4px;">Per Day</div>
+            </div>
+            <div style="width:1px;background:rgba(255,255,255,0.06);"></div>
+            <div style="text-align:center;">
+              <div style="font-family:'Montserrat',sans-serif;font-size:2.2rem;font-weight:900;color:#fff;letter-spacing:-0.03em;line-height:1;">${p.days}</div>
+              <div style="font-family:'Montserrat',sans-serif;font-size:0.48rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-top:4px;">Days</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:var(--lime);margin-bottom:0.85rem;">What Shipped</div>
+        <div class="phase-shipped-grid">
+          ${p.shipped.map(item => `
+            <div class="phase-item">
+              <div class="phase-item-dot"></div>
+              <span>${item}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="phase-nav-btns">
+          ${!isFirst ? `<button class="phase-btn prev" onclick="goPhase(${currentPhaseIdx - 1})">← Phase ${currentPhaseIdx}</button>` : ''}
+          <button class="phase-btn next" onclick="goPhase(${currentPhaseIdx + 1})">${currentPhaseIdx + 1 < PHASES.length ? 'Phase ' + (currentPhaseIdx + 2) + ' →' : "What's Next →"}</button>
+          <span style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:700;color:#374151;letter-spacing:0.08em;margin-left:auto;">${currentPhaseIdx + 1} of ${PHASES.length} phases</span>
+        </div>
+      </div>
+    `;
+  } else {
+    // What's Next panel
+    el.innerHTML = `
+      <div class="phase-card-main gold-card">
+        <div style="margin-bottom:1.75rem;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">What's Next — Platform Roadmap</div>
+          <h2 style="font-family:'Montserrat',sans-serif;font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:900;letter-spacing:-0.03em;line-height:1.1;margin:0 0 0.75rem;background:linear-gradient(135deg,#F5E07A,#D4AF37,#AA8A2E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">The Road Ahead</h2>
+          <p style="font-size:0.9rem;color:#9ca3af;line-height:1.78;font-weight:300;max-width:620px;">5 phases complete. The infrastructure is live, auth is deployed, and the first client is running. Here's where the platform goes next.</p>
+        </div>
+
+        <div class="whats-next-grid">
+          ${WHATS_NEXT.map(w => `
+            <div class="whats-next-card">
+              <div style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Phase ${w.num}</div>
+              <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:0.4rem;">${w.label}</div>
+              <div style="font-size:0.8rem;color:#9ca3af;line-height:1.65;font-weight:300;">${w.detail}</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="phase-nav-btns">
+          <button class="phase-btn prev" onclick="goPhase(${PHASES.length - 1})">← Phase ${PHASES.length}</button>
+          <button class="phase-btn next gold-btn" onclick="goPhase(0)">Back to Phase 1</button>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function renderChangelog() { renderPhaseDisplay(); }
+</script>
+</body>
+</html>
