@@ -431,6 +431,39 @@ holycross: {
     emoji: '🏅',
   },
 
+  demo: {
+    id: 'demo',
+    name: 'Peak University',
+    short: 'Peak',
+    mascot: 'Mountaineers',
+    mascotName: 'Grip',
+    conference: 'World Conference',
+    location: 'Texas',
+    tier: 'Demo',
+    enrollment: 5000,
+    colors: {
+      primary: '#152E10',
+      accent: '#EFA020',
+      accent2: '#EFA020',
+      bg: '#F0F7EE',
+      border: '#C4D8BE',
+    },
+    agent: {
+      name: 'Grip',
+      title: 'Peak University Ticket Rep',
+      email: '',
+      phone: '',
+    },
+    venue: {
+      football: { name: 'Peak Sports Stadium', capacity: 12000 },
+      basketball: { name: 'Simple Genius Arena', capacity: 4500 },
+    },
+    vip: ['Champions Club Suite', 'Field Club', 'Press Box Suite'],
+    rivals: ['Riverside Hawks', 'Northgate Lions', 'Eastfield Bears'],
+    sponsors: [],
+    emoji: '🏔️',
+  },
+
 }
 
 export const SCHOOL_LIST = Object.values(SCHOOLS)

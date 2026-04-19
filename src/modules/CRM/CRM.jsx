@@ -1,16 +1,32 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { useSchool } from '../../context/SchoolContext'
+import { useUser } from '../../context/UserContext'
 import {
-  ShoppingCart, Trophy, Star, Users, ArrowLeft, Edit2,
+  ShoppingCart, Trophy, Star, Users, Edit2,
   RefreshCw, ExternalLink, Zap, ChevronRight, Search,
-  SlidersHorizontal, Plus, X, FileText, Send, UserPlus
+  Plus, X, UserPlus, Building2, Ticket, Users2, Pin,
+  ChevronDown, ChevronUp, MousePointerClick, Copy, Check,
+  TrendingUp
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
-import { getContacts } from '../../data/contacts'
 
 const PLAYBOOK_WEBHOOK = 'https://n8n-production-f9c2.up.railway.app/webhook/playbook'
 
-// ── Scoring ───────────────────────────────────────────────────────────────────
+// ── Silent activity logger ────────────────────────────────────────────────────
+const logActivity = async ({ schoolId, userId, action, contactId, contactName, metadata }) => {
+  try {
+    await supabase.from('activity_log').insert([{
+      school_id:    schoolId,
+      user_id:      userId,
+      action,
+      contact_id:   contactId   || null,
+      contact_name: contactName || null,
+      metadata:     metadata    || null,
+      created_at:   new Date().toISOString(),
+    }])
+  } catch (e) { /* silent — never block the UI */ }
+}
+
 const computeScore = (ct) => {
   let s = 30
   s += Math.min((ct.purchase_count || 0) * 10, 40)
@@ -21,36 +37,31 @@ const computeScore = (ct) => {
   else if ((ct.last_year || 0) >= 2023) s += 5
   return Math.min(100, Math.max(0, s))
 }
-const SCORE_COLOR = (s) => s >= 80 ? '#3CDB7A' : s >= 60 ? '#F5C842' : '#f97316'
 
-// ── Pipeline stages ───────────────────────────────────────────────────────────
-const STAGES = [
-  { id: 'prospect',   label: 'Prospect',   color: '#94a3b8', desc: 'New — not yet contacted' },
-  { id: 'contacted',  label: 'Contacted',  color: '#3b82f6', desc: 'T1 sent' },
-  { id: 'followup',   label: 'Follow-up',  color: '#f59e0b', desc: 'T2 sent' },
-  { id: 'hot',        label: 'Hot',        color: '#3CDB7A', desc: 'Engaged — ready to close' },
-  { id: 'closed',     label: 'Closed',     color: '#8b5cf6', desc: 'Deal won' },
-]
+const SCORE_COLOR  = (s) => s >= 80 ? '#16a34a' : s >= 60 ? '#d97706' : '#dc2626'
+const SCORE_BG     = (s) => s >= 80 ? '#dcfce7' : s >= 60 ? '#fef3c7' : '#fee2e2'
+const STATUS_COLOR = (status) => status === 'hot' ? '#16a34a' : status === 'warm' ? '#d97706' : '#94a3b8'
 
 const CAMPAIGNS = [
-  { id: 'TICKETS',     label: 'Ticket Sales',       icon: ShoppingCart },
-  { id: 'SPONSORSHIP', label: 'Sponsorship',         icon: Trophy       },
-  { id: 'HOSPITALITY', label: 'Hospitality',         icon: Star         },
-  { id: 'ALUMNI',      label: 'Alumni Outreach',     icon: Users        },
+  { id: 'TICKETS',     label: 'Ticket Sales',   icon: ShoppingCart },
+  { id: 'SPONSORSHIP', label: 'Sponsorship',     icon: Trophy       },
+  { id: 'HOSPITALITY', label: 'Hospitality',     icon: Star         },
+  { id: 'ALUMNI',      label: 'Alumni Outreach', icon: Users        },
 ]
 
-// ── Determine pipeline stage from contact data + touch history ────────────────
-const getStage = (ct, touchMap) => {
-  if (ct.pipeline_stage) return ct.pipeline_stage
-  const touches = touchMap[ct.id] || new Set()
-  if (ct.status === 'hot') return 'hot'
-  if (touches.has('2') || touches.has('3')) return 'followup'
-  if (touches.has('1')) return 'contacted'
-  if (ct.contact_type === 'prospect') return 'prospect'
-  return 'prospect'
+const TABS = [
+  { id: 'tickets',   label: 'Ticket Holders', icon: Ticket    },
+  { id: 'prospects', label: 'Prospects',       icon: Building2 },
+  { id: 'groups',    label: 'Group Buyers',    icon: Users2    },
+]
+
+const CATEGORY_LABEL = {
+  business: 'Business', professional_services: 'Professional Services',
+  financial: 'Financial', healthcare: 'Healthcare', retail: 'Retail',
+  property: 'Property', community: 'Community', youth_sports: 'Youth Sports',
+  group_mbb: 'MBB Group', group_wbb: 'WBB Group', group_fb: 'FB Group', group_vball: 'Volleyball Group',
 }
 
-// ── Parse AI draft ────────────────────────────────────────────────────────────
 const parseDraft = (raw) => {
   if (!raw) return { angle: '', reason: '', subject: '', body: '', followUp: '' }
   const lines = raw.split('\n')
@@ -66,56 +77,96 @@ const parseDraft = (raw) => {
   return { angle, reason, subject, body: body.trim(), followUp }
 }
 
-// ── CSS ───────────────────────────────────────────────────────────────────────
 const CSS = (primary) => `
-  .crm-shell { background:var(--pb-bg); min-height:100%; font-family:'DM Sans',Inter,sans-serif; color:var(--pb-text); }
-  .crm-btn { display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:10px; border:1px solid var(--pb-border); background:var(--pb-surface); color:var(--pb-text); cursor:pointer; font-size:13px; font-family:'DM Sans',sans-serif; font-weight:600; transition:all 0.15s; }
-  .crm-btn:hover { border-color:${primary}; color:${primary}; }
-  .crm-btn-primary { background:${primary}; border-color:${primary}; color:#fff !important; }
-  .crm-btn-primary:hover { opacity:0.9; }
-  .crm-label { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:${primary}; }
-  .crm-input { width:100%; padding:9px 13px; border-radius:9px; border:1px solid var(--pb-border); background:var(--pb-surface); color:var(--pb-text); font-size:13px; font-family:'DM Sans',sans-serif; outline:none; box-sizing:border-box; transition:border-color 0.15s; }
-  .crm-input:focus { border-color:${primary}; }
-  .crm-textarea { width:100%; min-height:80px; padding:9px 13px; border-radius:9px; border:1px solid var(--pb-border); background:var(--pb-surface); color:var(--pb-text); font-size:13px; font-family:'DM Sans',sans-serif; outline:none; box-sizing:border-box; resize:vertical; line-height:1.6; }
-  .crm-textarea:focus { border-color:${primary}; }
-  .crm-select { padding:9px 13px; border-radius:9px; border:1px solid var(--pb-border); background:var(--pb-surface); color:var(--pb-text); font-size:12px; font-family:'Space Mono',monospace; outline:none; cursor:pointer; width:100%; box-sizing:border-box; }
+  .crm-shell { background:var(--pb-bg); min-height:100%; font-family:'Geist','Geist',sans-serif; color:var(--pb-text); }
+
+  .crm-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:8px; border:1px solid var(--pb-border); background:var(--pb-surface); color:var(--pb-text2); cursor:pointer; font-size:12px; font-family:'Geist',sans-serif; font-weight:600; transition:all 0.12s; box-shadow:0 1px 2px rgba(0,0,0,0.04); }
+  .crm-btn:hover { border-color:${primary}66; color:${primary}; background:#fff; }
+  .crm-btn-primary { background:${primary}; border-color:${primary}; color:#fff !important; box-shadow:0 2px 8px ${primary}40; }
+  .crm-btn-primary:hover { opacity:0.9; box-shadow:0 4px 12px ${primary}50; }
+
+  .crm-label { font-family:'Geist Mono',monospace; font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--pb-muted); font-weight:600; }
+
+  .crm-input { width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-text); font-size:13px; font-family:'Geist',sans-serif; outline:none; box-sizing:border-box; transition:border-color 0.12s, box-shadow 0.12s; }
+  .crm-input:focus { border-color:${primary}; box-shadow:0 0 0 3px ${primary}18; }
+
+  .crm-textarea { width:100%; min-height:72px; padding:9px 12px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-text); font-size:13px; font-family:'Geist',sans-serif; outline:none; box-sizing:border-box; resize:vertical; line-height:1.6; transition:border-color 0.12s, box-shadow 0.12s; }
+  .crm-textarea:focus { border-color:${primary}; box-shadow:0 0 0 3px ${primary}18; }
+
+  .crm-select { padding:8px 12px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-text); font-size:12px; font-family:'Geist Mono',monospace; outline:none; cursor:pointer; box-sizing:border-box; transition:border-color 0.12s; }
   .crm-select:focus { border-color:${primary}; }
-  .crm-row { display:flex; align-items:center; padding:13px 16px; border-radius:11px; border:1px solid var(--pb-border); background:var(--pb-surface); cursor:pointer; transition:all 0.15s; gap:12px; width:100%; text-align:left; }
-  .crm-row:hover { border-color:${primary}44; background:var(--pb-surface2); transform:translateX(2px); }
-  .crm-row.active { border-color:${primary}; background:var(--pb-surface2); }
-  .crm-score { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:#fff; }
-  .crm-touch-btn { width:38px; height:38px; border-radius:9px; border:1px solid var(--pb-border); background:var(--pb-surface2); color:var(--pb-muted); cursor:pointer; font-weight:700; font-size:14px; transition:all 0.15s; }
-  .crm-touch-btn.active { background:${primary}; border-color:${primary}; color:#fff; }
-  .crm-stage-pill { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-family:'Space Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
-  .crm-cam-pill { display:inline-flex; align-items:center; gap:5px; padding:6px 14px; border-radius:20px; border:1px solid var(--pb-border); background:var(--pb-surface2); color:var(--pb-muted); cursor:pointer; font-family:'Space Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; transition:all 0.15s; }
-  .crm-cam-pill.active { background:${primary}; border-color:${primary}; color:#fff; }
-  .crm-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; }
-  .crm-modal { background:var(--pb-surface); border-radius:20px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+
+  .crm-row { display:flex; align-items:center; padding:10px 12px 10px 0; border-radius:10px; border:1px solid var(--pb-border); background:#fff; cursor:pointer; transition:all 0.12s; gap:10px; width:100%; text-align:left; position:relative; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
+  .crm-row::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--row-status-color, #e2e8f0); border-radius:10px 0 0 10px; transition:all 0.12s; }
+  .crm-row:hover { border-color:${primary}44; box-shadow:0 2px 8px rgba(0,0,0,0.06); transform:translateY(-1px); }
+  .crm-row:hover::before { background:${primary}; }
+  .crm-row.active { border-color:${primary}66; background:#fff; box-shadow:0 2px 12px ${primary}20; }
+  .crm-row.active::before { background:${primary}; }
+  .crm-row.pinned::before { background:${primary}; }
+
+  .crm-avatar { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Geist',sans-serif; font-weight:800; font-size:12px; flex-shrink:0; margin-left:12px; }
+
+  .crm-score { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Geist Mono',monospace; font-size:11px; font-weight:700; flex-shrink:0; }
+
+  .crm-touch-btn { width:36px; height:36px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-muted); cursor:pointer; font-weight:700; font-size:13px; transition:all 0.12s; box-shadow:0 1px 2px rgba(0,0,0,0.04); }
+  .crm-touch-btn:hover { border-color:${primary}44; }
+  .crm-touch-btn.active { background:${primary}; border-color:${primary}; color:#fff; box-shadow:0 2px 6px ${primary}40; }
+
+  .crm-cam-pill { display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:6px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-muted); cursor:pointer; font-family:'Geist Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; transition:all 0.12s; }
+  .crm-cam-pill:hover { border-color:${primary}44; color:${primary}; }
+  .crm-cam-pill.active { background:${primary}; border-color:${primary}; color:#fff; box-shadow:0 2px 6px ${primary}30; }
+
+  .crm-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .crm-modal { background:#fff; border-radius:16px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; padding:28px; box-shadow:0 24px 60px rgba(0,0,0,0.18), 0 8px 20px rgba(0,0,0,0.08); border:1px solid rgba(0,0,0,0.06); }
+
+  .crm-tab { display:flex; align-items:center; gap:7px; padding:8px 16px; border-radius:8px; border:1px solid var(--pb-border); background:#fff; color:var(--pb-muted); cursor:pointer; font-family:'Geist',sans-serif; font-size:13px; font-weight:600; transition:all 0.12s; white-space:nowrap; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
+  .crm-tab.active { background:${primary}; border-color:${primary}; color:#fff; box-shadow:0 2px 8px ${primary}40; }
+  .crm-tab:not(.active):hover { border-color:${primary}44; color:${primary}; }
+
+  .pin-btn { background:none; border:none; cursor:pointer; padding:4px; border-radius:5px; display:flex; align-items:center; justify-content:center; transition:all 0.12s; opacity:0.25; flex-shrink:0; margin-left:8px; }
+  .pin-btn:hover,.pin-btn.pinned { opacity:1; }
+
+  .cold-toggle { display:flex; align-items:center; gap:8px; padding:9px 14px; border-radius:8px; border:1px dashed var(--pb-border); background:transparent; color:var(--pb-muted); cursor:pointer; font-family:'Geist Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; width:100%; transition:all 0.12s; }
+  .cold-toggle:hover { border-color:${primary}44; color:${primary}; background:${primary}05; }
+
+  .stat-card { padding:16px 18px; border-radius:12px; background:#fff; border:1px solid var(--pb-border); box-shadow:0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03); position:relative; overflow:hidden; }
+  .stat-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:${primary}; border-radius:12px 0 0 12px; }
+
+  .section-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; padding-bottom:8px; }
+
+  .gen-btn-loading { animation:gen-pulse 1.5s ease-in-out infinite; }
+  @keyframes gen-pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
   @keyframes crm-bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-7px)} }
-  @media (max-width: 640px) {
-    .crm-stats-grid { grid-template-columns: 1fr 1fr !important; }
-    .crm-pipeline-grid { grid-template-columns: 1fr !important; }
-    .crm-modal { padding: 20px !important; }
-    .crm-modal-fields { grid-template-columns: 1fr !important; }
-    .crm-contact-panel { position:fixed !important; inset:auto 0 0 0 !important; border-radius:20px 20px 0 0 !important; max-height:80vh !important; overflow-y:auto !important; z-index:100; }
+  @keyframes fadeSlideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  .draft-appear { animation:fadeSlideIn 0.25s ease both; }
+
+  @media (max-width:900px) {
+    .crm-layout { grid-template-columns:1fr !important; }
+    .crm-panel { display:none !important; }
+    .crm-panel.has-contact { display:flex !important; position:fixed !important; inset:auto 0 0 0 !important; border-radius:20px 20px 0 0 !important; max-height:82vh !important; overflow-y:auto !important; z-index:100; flex-direction:column; }
+  }
+  @media (max-width:640px) {
+    .crm-stats-grid { grid-template-columns:1fr 1fr !important; }
+    .crm-tabs { overflow-x:auto; padding-bottom:4px; }
+    .crm-modal { padding:20px !important; }
+    .crm-modal-fields { grid-template-columns:1fr !important; }
   }
 `
 
-// ── Touch badges ──────────────────────────────────────────────────────────────
 const TouchBadges = ({ contactId, touchMap }) => {
   const touches = touchMap[contactId] || new Set()
   return (
     <div style={{ display: 'flex', gap: 3, flexShrink: 0 }}>
       {[1, 2, 3].map(t => {
-        const done = touches.has(String(t)) || touches.has(t)
+        const done = touches.has(String(t))
         return (
           <div key={t} style={{
-            width: 20, height: 20, borderRadius: 5,
+            width: 19, height: 19, borderRadius: 5,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: "'Space Mono', monospace", fontSize: 8, fontWeight: 700,
-            background: done ? 'rgba(60,219,122,0.15)' : 'rgba(0,0,0,0.06)',
-            border: done ? '1px solid rgba(60,219,122,0.4)' : '1px solid rgba(0,0,0,0.1)',
-            color: done ? '#3CDB7A' : '#bbb',
+            fontFamily: "'Geist Mono',monospace", fontSize: 8, fontWeight: 700,
+            background: done ? '#dcfce7' : '#f1f5f9',
+            border: done ? '1px solid #86efac' : '1px solid #e2e8f0',
+            color: done ? '#16a34a' : '#94a3b8',
           }}>T{t}</div>
         )
       })}
@@ -123,115 +174,86 @@ const TouchBadges = ({ contactId, touchMap }) => {
   )
 }
 
-// ── Add Prospect Modal ────────────────────────────────────────────────────────
 function AddProspectModal({ school, onClose, onAdd }) {
-  const c = school.colors
-  const [form, setForm] = useState({
-    name: '', email: '', phone: '', city: '',
-    sport: 'Football', campaign: 'TICKETS', notes: '',
-  })
+  const primary = school.colors.accent
+  const [form, setForm] = useState({ name: '', email: '', phone: '', organization: '', sport: 'Football', campaign: 'TICKETS', notes: '' })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
   const handleSave = async () => {
     if (!form.name.trim()) { setError('Name is required'); return }
-    if (!form.email.trim()) { setError('Email is required'); return }
     setSaving(true)
     try {
       const newContact = {
-        school_id: school.id,
-        name: form.name.trim(),
-        email: form.email.trim().toLowerCase(),
+        school_id: school.id, name: form.name.trim(),
+        email: form.email.trim().toLowerCase() || null,
         phone: form.phone.trim() || null,
+        organization: form.organization.trim() || null,
         title: `Prospect | ${form.sport}`,
-        contact_type: 'prospect',
-        status: 'warm',
-        tags: [form.campaign],
-        purchase_count: 0,
-        is_lapsed_season: false,
-        is_alumni: false,
-        current_touch: 0,
-        notes: form.notes.trim() || null,
-        pipeline_stage: 'prospect',
-        campaign: form.campaign,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        contact_type: 'prospect', status: 'warm',
+        tags: [form.campaign], purchase_count: 0,
+        is_lapsed_season: false, is_alumni: false, current_touch: 0,
+        notes: form.notes.trim() || null, pipeline_stage: 'prospect',
+        campaign: form.campaign, is_pinned: false,
+        created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
       }
-      const { data, error: err } = await supabase
-        .from('contacts')
-        .insert([newContact])
-        .select()
+      const { data, error: err } = await supabase.from('contacts').insert([newContact]).select()
       if (err) throw err
-      onAdd({ ...newContact, id: data?.[0]?.id || `temp-${Date.now()}`, sport: form.sport, last_year: 0 })
+      const newId = data?.[0]?.id
+      onAdd({ ...newContact, id: newId || `temp-${Date.now()}`, sport: form.sport, last_year: 0 })
+      // Log contact added — fire and forget
+      if (newId) {
+        supabase.from('activity_log').insert([{
+          school_id: school.id, user_id: null,
+          action: 'contact_added', contact_id: newId, contact_name: form.name.trim(),
+          created_at: new Date().toISOString(),
+        }]).then(() => {})
+      }
       onClose()
-    } catch (err) {
-      setError('Could not save — check Supabase connection')
-      console.error(err)
-    } finally {
-      setSaving(false)
-    }
+    } catch (err) { setError('Could not save — check Supabase connection'); console.error(err) }
+    finally { setSaving(false) }
   }
 
   return (
     <div className="crm-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="crm-modal">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
           <div>
             <p className="crm-label" style={{ marginBottom: 4 }}>New Prospect</p>
-            <h3 style={{ margin: 0, fontFamily: "'Bebas Neue',sans-serif", fontSize: 28, color: 'var(--pb-text)', letterSpacing: '0.04em' }}>Add Contact</h3>
+            <h3 style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontSize: 22, fontWeight: 800, color: '#0f172a' }}>Add Contact</h3>
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--pb-muted)' }}><X size={20} /></button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 4 }}><X size={20} /></button>
         </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div className="crm-modal-fields" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <div>
-              <p className="crm-label" style={{ marginBottom: 5 }}>Name *</p>
-              <input className="crm-input" placeholder="Full name" value={form.name} onChange={e => set('name', e.target.value)} />
-            </div>
-            <div>
-              <p className="crm-label" style={{ marginBottom: 5 }}>Email *</p>
-              <input className="crm-input" placeholder="email@example.com" value={form.email} onChange={e => set('email', e.target.value)} />
-            </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div className="crm-modal-fields" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div><p className="crm-label" style={{ marginBottom: 6 }}>Name *</p><input className="crm-input" placeholder="Full name" value={form.name} onChange={e => set('name', e.target.value)} /></div>
+            <div><p className="crm-label" style={{ marginBottom: 6 }}>Email</p><input className="crm-input" placeholder="email@example.com" value={form.email} onChange={e => set('email', e.target.value)} /></div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <div>
-              <p className="crm-label" style={{ marginBottom: 5 }}>Phone</p>
-              <input className="crm-input" placeholder="(000) 000-0000" value={form.phone} onChange={e => set('phone', e.target.value)} />
-            </div>
-            <div>
-              <p className="crm-label" style={{ marginBottom: 5 }}>City</p>
-              <input className="crm-input" placeholder="City, State" value={form.city} onChange={e => set('city', e.target.value)} />
-            </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div><p className="crm-label" style={{ marginBottom: 6 }}>Phone</p><input className="crm-input" placeholder="(000) 000-0000" value={form.phone} onChange={e => set('phone', e.target.value)} /></div>
+            <div><p className="crm-label" style={{ marginBottom: 6 }}>Organization</p><input className="crm-input" placeholder="Company / Church / School" value={form.organization} onChange={e => set('organization', e.target.value)} /></div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <p className="crm-label" style={{ marginBottom: 5 }}>Sport Interest</p>
-              <select className="crm-select" value={form.sport} onChange={e => set('sport', e.target.value)}>
-                <option>Football</option>
-                <option>Basketball</option>
-                <option>Volleyball</option>
-                <option>Multi-Sport</option>
+              <p className="crm-label" style={{ marginBottom: 6 }}>Sport</p>
+              <select className="crm-select" style={{ width: '100%' }} value={form.sport} onChange={e => set('sport', e.target.value)}>
+                <option>Football</option><option>Basketball</option><option>Volleyball</option><option>Multi-Sport</option>
               </select>
             </div>
             <div>
-              <p className="crm-label" style={{ marginBottom: 5 }}>Campaign</p>
-              <select className="crm-select" value={form.campaign} onChange={e => set('campaign', e.target.value)}>
+              <p className="crm-label" style={{ marginBottom: 6 }}>Campaign</p>
+              <select className="crm-select" style={{ width: '100%' }} value={form.campaign} onChange={e => set('campaign', e.target.value)}>
                 {CAMPAIGNS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
               </select>
             </div>
           </div>
-          <div>
-            <p className="crm-label" style={{ marginBottom: 5 }}>Notes</p>
-            <textarea className="crm-textarea" placeholder="How did you meet them? What did they say? Any details that help draft a better email..." value={form.notes} onChange={e => set('notes', e.target.value)} />
-          </div>
-          {error && <p style={{ color: '#ef4444', fontSize: 12, margin: 0 }}>{error}</p>}
+          <div><p className="crm-label" style={{ marginBottom: 6 }}>Notes</p><textarea className="crm-textarea" placeholder="Context for the AI..." value={form.notes} onChange={e => set('notes', e.target.value)} /></div>
+          {error && <p style={{ color: '#ef4444', fontSize: 12, margin: 0, padding: '8px 12px', background: '#fef2f2', borderRadius: 6 }}>{error}</p>}
           <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
             <button className="crm-btn" onClick={onClose} style={{ flex: 1, justifyContent: 'center' }}>Cancel</button>
             <button className="crm-btn crm-btn-primary" onClick={handleSave} disabled={saving} style={{ flex: 2, justifyContent: 'center' }}>
-              {saving ? 'Saving...' : <><UserPlus size={15} /> Add to Pipeline</>}
+              {saving ? 'Saving...' : <><UserPlus size={14} /> Add to Pipeline</>}
             </button>
           </div>
         </div>
@@ -240,43 +262,49 @@ function AddProspectModal({ school, onClose, onAdd }) {
   )
 }
 
-// ── Main CRM ──────────────────────────────────────────────────────────────────
 export default function CRM() {
   const { school } = useSchool()
+  const { user } = useUser()
   const c = school.colors
   const primary = c.accent
 
-  // ── View state ──────────────────────────────────────────────────────────────
-  const [view, setView]             = useState('pipeline') // pipeline | draft
+  const [activeTab, setActiveTab]             = useState('tickets')
   const [selectedContact, setSelectedContact] = useState(null)
-  const [campaign, setCampaign]     = useState('TICKETS')
-  const [touch, setTouch]           = useState(1)
-  const [parsed, setParsed]         = useState(null)
-  const [drafting, setDrafting]     = useState(false)
-  const [editMode, setEditMode]     = useState(false)
-  const [editedSubject, setEditedSubject] = useState('')
-  const [editedBody, setEditedBody] = useState('')
-  const [notes, setNotes]           = useState('')
-  const [savingNotes, setSavingNotes] = useState(false)
+  const [campaign, setCampaign]               = useState('TICKETS')
+  const [touch, setTouch]                     = useState(1)
+  const [parsed, setParsed]                   = useState(null)
+  const [drafting, setDrafting]               = useState(false)
+  const [editMode, setEditMode]               = useState(false)
+  const [editedSubject, setEditedSubject]     = useState('')
+  const [editedBody, setEditedBody]           = useState('')
+  const [notes, setNotes]                     = useState('')
+  const [savingNotes, setSavingNotes]         = useState(false)
+  const [search, setSearch]                   = useState('')
+  const [camFilter, setCamFilter]             = useState('all')
+  const [showAddModal, setShowAddModal]       = useState(false)
+  const [allContacts, setAllContacts]         = useState([])
+  const [loadingContacts, setLoadingContacts] = useState(true)
+  const [touchMap, setTouchMap]               = useState({})
+  const [newProspects, setNewProspects]       = useState([])
+  const [showCold, setShowCold]               = useState(false)
+  const [copied, setCopied]                   = useState(false)
 
-  // ── Pipeline filters ────────────────────────────────────────────────────────
-  const [search, setSearch]         = useState('')
-  const [stageFilter, setStageFilter] = useState('all')
-  const [camFilter, setCamFilter]   = useState('all')
-  const [showAddModal, setShowAddModal] = useState(false)
-
-  // ── Touch history ───────────────────────────────────────────────────────────
-  const [touchMap, setTouchMap] = useState({})
-
-  // ── Extra prospects added this session ──────────────────────────────────────
-  const [newProspects, setNewProspects] = useState([])
+  useEffect(() => {
+    const fetchContacts = async () => {
+      setLoadingContacts(true)
+      try {
+        const { data, error } = await supabase
+          .from('contacts').select('*').eq('school_id', school.id).order('name')
+        if (!error && data) setAllContacts(data)
+      } catch (e) { console.error(e) }
+      finally { setLoadingContacts(false) }
+    }
+    fetchContacts()
+  }, [school.id])
 
   const fetchTouchHistory = useCallback(async (schoolId) => {
     try {
-      const { data } = await supabase
-        .from('sequences')
-        .select('contact_id, touch_number')
-        .eq('school_id', schoolId)
+      const { data } = await supabase.from('sequences').select('contact_id, touch_number').eq('school_id', schoolId)
       if (!data) return
       const map = {}
       data.forEach(row => {
@@ -286,73 +314,70 @@ export default function CRM() {
       setTouchMap(map)
     } catch (e) { console.error(e) }
   }, [])
-
   useEffect(() => { fetchTouchHistory(school.id) }, [school.id, fetchTouchHistory])
 
-  // ── All contacts — merge Vivenue + new prospects ────────────────────────────
-  const allContacts = useMemo(() => {
-    const vivenue = getContacts(school.id, 'TICKETS')
-      .concat(getContacts(school.id, 'SPONSORSHIP'))
-    const seen = new Set()
-    const deduped = []
-    for (const ct of vivenue) {
-      if (!seen.has(ct.id)) { seen.add(ct.id); deduped.push(ct) }
-    }
-    return [...newProspects, ...deduped]
-  }, [school.id, newProspects])
+  const togglePin = async (e, ct) => {
+    e.stopPropagation()
+    const newVal = !ct.is_pinned
+    setAllContacts(prev => prev.map(c => c.id === ct.id ? { ...c, is_pinned: newVal } : c))
+    if (selectedContact?.id === ct.id) setSelectedContact(prev => ({ ...prev, is_pinned: newVal }))
+    await supabase.from('contacts').update({ is_pinned: newVal, updated_at: new Date().toISOString() }).eq('id', ct.id)
+  }
 
-  // ── Filtered + staged contacts ──────────────────────────────────────────────
-  const contacts = useMemo(() => {
-    let list = allContacts
+  const tabContacts = useMemo(() => {
+    const base = [...newProspects, ...allContacts]
+    if (activeTab === 'tickets')   return base.filter(ct => ct.contact_type === 'ticket_buyer' && !ct.business_category?.startsWith('group_'))
+    if (activeTab === 'groups')    return base.filter(ct => ct.contact_type === 'ticket_buyer' && ct.business_category?.startsWith('group_'))
+    if (activeTab === 'prospects') return base.filter(ct => ct.contact_type === 'prospect' || ct.contact_type === 'sponsor')
+    return base
+  }, [allContacts, newProspects, activeTab])
+
+  const filteredContacts = useMemo(() => {
+    let list = tabContacts
     if (search.trim()) {
       const q = search.toLowerCase()
       list = list.filter(ct =>
         (ct.name || '').toLowerCase().includes(q) ||
         (ct.email || '').toLowerCase().includes(q) ||
-        (ct.title || '').toLowerCase().includes(q)
+        (ct.organization || '').toLowerCase().includes(q)
       )
     }
     if (camFilter !== 'all') {
       list = list.filter(ct =>
-        (ct.tags || []).includes(camFilter) ||
-        ct.campaign === camFilter ||
+        (ct.tags || []).includes(camFilter) || ct.campaign === camFilter ||
         (camFilter === 'TICKETS' && ct.contact_type === 'ticket_buyer')
       )
     }
     return list
-  }, [allContacts, search, camFilter])
+  }, [tabContacts, search, camFilter])
 
-  // ── Group by pipeline stage ─────────────────────────────────────────────────
-  const grouped = useMemo(() => {
-    const g = {}
-    STAGES.forEach(s => { g[s.id] = [] })
-    contacts.forEach(ct => {
-      const stage = getStage(ct, touchMap)
-      if (g[stage]) g[stage].push(ct)
-      else g['prospect'].push(ct)
-    })
-    // Sort each group by score desc
-    Object.keys(g).forEach(k => {
-      g[k].sort((a, b) => computeScore(b) - computeScore(a))
-    })
-    return g
-  }, [contacts, touchMap])
+  const { pinned, queue, cold } = useMemo(() => {
+    const sorted = [...filteredContacts].sort((a, b) => computeScore(b) - computeScore(a))
+    const pinned   = sorted.filter(ct => ct.is_pinned)
+    const unpinned = sorted.filter(ct => !ct.is_pinned)
+    const queue    = unpinned.filter(ct => ct.status === 'hot' || ct.status === 'warm')
+    const cold     = unpinned.filter(ct => !ct.status || ct.status === 'cold' || ct.status === 'prospect')
+    return { pinned, queue, cold }
+  }, [filteredContacts])
 
-  const visibleStages = stageFilter === 'all'
-    ? STAGES
-    : STAGES.filter(s => s.id === stageFilter)
+  const tabCounts = useMemo(() => {
+    const base = [...newProspects, ...allContacts]
+    return {
+      tickets:   base.filter(ct => ct.contact_type === 'ticket_buyer' && !ct.business_category?.startsWith('group_')).length,
+      groups:    base.filter(ct => ct.contact_type === 'ticket_buyer' && ct.business_category?.startsWith('group_')).length,
+      prospects: base.filter(ct => ct.contact_type === 'prospect' || ct.contact_type === 'sponsor').length,
+    }
+  }, [allContacts, newProspects])
 
-  // ── Stats ───────────────────────────────────────────────────────────────────
   const stats = useMemo(() => ({
-    total:    allContacts.length,
-    hot:      allContacts.filter(ct => ct.status === 'hot').length,
-    prospects: newProspects.length,
+    queue:     pinned.length + queue.length,
+    pinned:    pinned.length,
     contacted: Object.values(touchMap).filter(t => t.size > 0).length,
-  }), [allContacts, newProspects, touchMap])
+    cold:      cold.length,
+  }), [pinned, queue, cold, touchMap])
 
-  // ── Generate AI draft ────────────────────────────────────────────────────────
   const requestDraft = async (ct, t, cam) => {
-    setDrafting(true); setParsed(null)
+    setDrafting(true); setParsed(null); setEditMode(false)
     try {
       const res = await fetch(PLAYBOOK_WEBHOOK, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -360,19 +385,19 @@ export default function CRM() {
           school_id: school.id, campaign: cam, touch: t,
           contact: {
             id: ct.id, name: ct.name, email: ct.email, phone: ct.phone || '',
-            title: ct.title || '', purchase_count: ct.purchase_count || 0,
+            title: ct.title || ct.organization || '', purchase_count: ct.purchase_count || 0,
             status: ct.status || 'warm', last_year: ct.last_year || 0,
             sport: ct.sport || 'Football', tags: ct.tags || '',
             membership_tier: ct.membership_tier || '',
-            notes: notes || '',
+            notes: notes || ct.notes_devin || '',
           },
         }),
       })
       const data = await res.json()
       const p = parseDraft(data.draft || '')
       setParsed(p); setEditedSubject(p.subject); setEditedBody(p.body)
-      setView('draft')
-      // Mark touch optimistically
+      logActivity({ schoolId: school.id, userId: user?.id, action: 'draft_generated', contactId: ct.id, contactName: ct.name, metadata: { touch: t, campaign: cam } })
+      logActivity({ schoolId: school.id, userId: user?.id, action: `touch_${t}`, contactId: ct.id, contactName: ct.name })
       setTouchMap(prev => {
         const updated = { ...prev }
         if (!updated[ct.id]) updated[ct.id] = new Set()
@@ -382,16 +407,21 @@ export default function CRM() {
       })
     } catch {
       setParsed({ angle: 'Connection Error', reason: 'Check n8n webhook', subject: '', body: 'Could not connect to AI.', followUp: '' })
-      setView('draft')
-    } finally {
-      setDrafting(false)
-    }
+    } finally { setDrafting(false) }
   }
 
   const openInEmail = () => {
     const subj = encodeURIComponent(editMode ? editedSubject : parsed?.subject || '')
     const body = encodeURIComponent(editMode ? editedBody : parsed?.body || '')
-    window.open(`mailto:${selectedContact.email}?subject=${subj}&body=${body}`)
+    window.open(`mailto:${selectedContact?.email}?subject=${subj}&body=${body}`)
+    logActivity({ schoolId: school.id, userId: user?.id, action: 'email_opened', contactId: selectedContact?.id, contactName: selectedContact?.name })
+  }
+
+  const copyDraft = () => {
+    const full = `Subject: ${editMode ? editedSubject : parsed?.subject}\n\n${editMode ? editedBody : parsed?.body}`
+    navigator.clipboard.writeText(full)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   const saveNotes = async () => {
@@ -399,321 +429,446 @@ export default function CRM() {
     setSavingNotes(true)
     try {
       await supabase.from('contacts').update({ notes, updated_at: new Date().toISOString() }).eq('id', selectedContact.id)
-    } catch (e) { console.error(e) }
+      logActivity({ schoolId: school.id, userId: user?.id, action: 'note_saved', contactId: selectedContact?.id, contactName: selectedContact?.name })
+    }
+    catch (e) { console.error(e) }
     finally { setSavingNotes(false) }
   }
 
-  const vars = { '--pb-bg': c.bg, '--pb-surface': '#ffffff', '--pb-surface2': c.bg, '--pb-border': c.border, '--pb-text': c.primary, '--pb-muted': c.accent }
+  // Cooler, more neutral enterprise palette
+  const vars = {
+    '--pb-bg':      '#F7F9FC',
+    '--pb-surface': '#FFFFFF',
+    '--pb-surface2':'#F1F5F9',
+    '--pb-border':  '#E2E8F0',
+    '--pb-text':    c.primary || '#0F172A',
+    '--pb-text2':   '#334155',
+    '--pb-muted':   '#64748B',
+  }
+
   const initials = (name) => (name || '??').split(' ').map(n => n[0]).slice(0, 2).join('')
 
-  // ── DRAFT VIEW ───────────────────────────────────────────────────────────────
-  if (view === 'draft' && selectedContact) {
-    return (
-      <div className="crm-shell" style={vars}>
-        <style>{CSS(primary)}</style>
-        <div style={{ maxWidth: 760, margin: '0 auto', padding: '20px 24px' }}>
-          <button className="crm-btn" onClick={() => setView('pipeline')} style={{ marginBottom: 16 }}>
-            <ArrowLeft size={15} /> Back to Pipeline
-          </button>
+  // ── Contact row ───────────────────────────────────────────────────────────
+  const ContactRow = ({ ct }) => {
+    const score    = computeScore(ct)
+    const isActive = selectedContact?.id === ct.id
+    const subtitle = ct.organization || ct.email || ''
+    const statusColor = STATUS_COLOR(ct.status)
 
-          {drafting ? (
-            <div style={{ textAlign: 'center', padding: '80px 0' }}>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', background: `${primary}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: 28 }}>{school.emoji}</div>
-              <h3 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 32, color: 'var(--pb-text)', marginBottom: 8, letterSpacing: '0.04em' }}>Drafting for {selectedContact.name}...</h3>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginTop: 20 }}>
-                {[0,1,2].map(i => <div key={i} style={{ width: 9, height: 9, borderRadius: '50%', background: primary, animation: `crm-bounce 1.2s ${i*0.2}s infinite` }} />)}
+    return (
+      <button
+        className={`crm-row${isActive ? ' active' : ''}${ct.is_pinned ? ' pinned' : ''}`}
+        style={{ '--row-status-color': statusColor }}
+        onClick={() => {
+          setSelectedContact(ct)
+          setNotes(ct.notes || '')
+          setCampaign(ct.campaign || 'TICKETS')
+          setParsed(null)
+          setEditMode(false)
+          logActivity({ schoolId: school.id, userId: user?.id, action: 'contact_worked', contactId: ct.id, contactName: ct.name })
+        }}
+      >
+        <button className={`pin-btn${ct.is_pinned ? ' pinned' : ''}`} onClick={e => togglePin(e, ct)} title={ct.is_pinned ? 'Unpin' : 'Pin to queue'}>
+          <Pin size={12} color={primary} fill={ct.is_pinned ? primary : 'none'} />
+        </button>
+
+        {/* Avatar */}
+        <div className="crm-avatar" style={{
+          background: isActive ? `${primary}15` : '#F1F5F9',
+          border: `1px solid ${isActive ? primary + '33' : '#E2E8F0'}`,
+          color: isActive ? primary : '#475569',
+        }}>
+          {initials(ct.name)}
+        </div>
+
+        {/* Info */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ margin: 0, fontWeight: 600, fontSize: 13, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>{ct.name}</p>
+          <p style={{ margin: '1px 0 0', fontSize: 11, color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{subtitle}</p>
+        </div>
+
+        {/* Touch badges */}
+        <TouchBadges contactId={ct.id} touchMap={touchMap} />
+
+        {/* Score */}
+        <div className="crm-score" style={{
+          background: SCORE_BG(score),
+          color: SCORE_COLOR(score),
+          boxShadow: score >= 80 ? `0 0 8px ${SCORE_COLOR(score)}30` : 'none',
+          border: `1px solid ${SCORE_COLOR(score)}30`,
+        }}>{score}</div>
+
+        <ChevronRight size={13} color={isActive ? primary : '#CBD5E1'} style={{ flexShrink: 0, marginRight: 10 }} />
+      </button>
+    )
+  }
+
+  // ── Section header ────────────────────────────────────────────────────────
+  const SectionHeader = ({ color, label, count, meta }) => (
+    <div className="section-header" style={{ borderBottom: `1px solid ${color}22` }}>
+      <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, flexShrink: 0 }} />
+      <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9.5, fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{label}</p>
+      <span style={{ padding: '1px 7px', borderRadius: 4, background: `${color}15`, fontFamily: "'Geist Mono',monospace", fontSize: 9, color, fontWeight: 700 }}>{count}</span>
+      {meta && <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{meta}</p>}
+    </div>
+  )
+
+  // ── PANEL ─────────────────────────────────────────────────────────────────
+  const renderPanel = () => {
+    if (!selectedContact) return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: 400, gap: 16, padding: 40 }}>
+        <div style={{ width: 64, height: 64, borderRadius: 20, background: '#F1F5F9', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <MousePointerClick size={26} color="#CBD5E1" />
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ margin: '0 0 6px', fontFamily: "'Geist',sans-serif", fontWeight: 700, fontSize: 15, color: '#334155' }}>No contact selected</p>
+          <p style={{ margin: 0, fontSize: 12, color: '#94a3b8', lineHeight: 1.6 }}>Select a contact from the list to view details and generate a personalized draft.</p>
+        </div>
+        <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+          {['Pin contacts', 'Generate drafts', 'Track touches'].map(tip => (
+            <span key={tip} style={{ padding: '4px 10px', borderRadius: 6, background: '#F1F5F9', border: '1px solid #E2E8F0', fontSize: 10, color: '#64748B', fontFamily: "'Geist Mono',monospace", fontWeight: 600 }}>{tip}</span>
+          ))}
+        </div>
+      </div>
+    )
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+
+        {/* Header */}
+        <div style={{ padding: '14px 16px', background: c.primary || '#0F172A', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, borderBottom: `1px solid rgba(255,255,255,0.08)` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: `${c.accent}20`, border: `1px solid ${c.accent}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 14, color: 'white', flexShrink: 0 }}>
+              {initials(selectedContact.name)}
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <p style={{ margin: 0, fontFamily: "'Geist',sans-serif", fontWeight: 800, fontSize: 15, color: 'white', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedContact.name}</p>
+              <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: `${c.accent}cc`, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedContact.organization || selectedContact.email || ''}</p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+            <button className="pin-btn" style={{ opacity: 1 }} onClick={e => togglePin(e, selectedContact)}>
+              <Pin size={15} color={selectedContact.is_pinned ? c.accent : 'rgba(255,255,255,0.35)'} fill={selectedContact.is_pinned ? c.accent : 'none'} />
+            </button>
+            <button onClick={() => { setSelectedContact(null); setParsed(null) }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.35)', padding: 4, borderRadius: 6, transition: 'color 0.12s' }}><X size={15} /></button>
+          </div>
+        </div>
+
+        {/* Scrollable body */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+          {/* Score row */}
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '12px 14px', background: '#F8FAFC', borderRadius: 10, border: '1px solid #E2E8F0' }}>
+            <div className="crm-score" style={{
+              background: SCORE_BG(computeScore(selectedContact)),
+              color: SCORE_COLOR(computeScore(selectedContact)),
+              border: `1px solid ${SCORE_COLOR(computeScore(selectedContact))}30`,
+              boxShadow: computeScore(selectedContact) >= 80 ? `0 0 12px ${SCORE_COLOR(computeScore(selectedContact))}25` : 'none',
+              width: 40, height: 40, fontSize: 13,
+            }}>{computeScore(selectedContact)}</div>
+            <div style={{ flex: 1 }}>
+              <p className="crm-label" style={{ marginBottom: 2 }}>Engagement Score</p>
+              <p style={{ margin: 0, fontSize: 12, color: '#334155', fontWeight: 500 }}>
+                {selectedContact.contact_type === 'ticket_buyer'
+                  ? `${selectedContact.purchase_count || 0} seasons · ${selectedContact.sport || 'Football'}`
+                  : CATEGORY_LABEL[selectedContact.business_category] || 'Prospect'}
+              </p>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+              <TouchBadges contactId={selectedContact.id} touchMap={touchMap} />
+              {selectedContact.status && (
+                <span style={{ padding: '2px 7px', borderRadius: 4, background: STATUS_COLOR(selectedContact.status) + '15', color: STATUS_COLOR(selectedContact.status), fontSize: 9, fontFamily: "'Geist Mono',monospace", fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  {selectedContact.status}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Contact info */}
+          {(selectedContact.phone || selectedContact.email) && (
+            <div style={{ padding: '10px 14px', background: '#F8FAFC', borderRadius: 10, border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {selectedContact.phone && (
+                <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 11, color: '#334155', fontWeight: 600 }}>{selectedContact.phone}</p>
+              )}
+              {selectedContact.email && (
+                <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 11, color: '#64748B' }}>{selectedContact.email}</p>
+              )}
+            </div>
+          )}
+
+          {/* Previous activity */}
+          {selectedContact.notes_devin && (
+            <div>
+              <p className="crm-label" style={{ marginBottom: 6 }}>Previous Activity</p>
+              <div style={{ padding: '10px 12px', background: '#fefce8', border: '1px solid #fde047', borderRadius: 8, fontSize: 12, color: '#713f12', lineHeight: 1.65 }}>
+                {selectedContact.notes_devin}
               </div>
             </div>
-          ) : parsed && (
-            <>
-              {/* Angle banner */}
-              <div style={{ padding: '13px 16px', borderRadius: 12, background: `${primary}18`, border: `1px solid ${primary}44`, marginBottom: 18, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                <Zap size={16} color={primary} style={{ marginTop: 2, flexShrink: 0 }} />
+          )}
+
+          {/* Campaign */}
+          <div>
+            <p className="crm-label" style={{ marginBottom: 8 }}>Campaign</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+              {CAMPAIGNS.map(cam => {
+                const Icon = cam.icon
+                return (
+                  <button key={cam.id} className={`crm-cam-pill${campaign === cam.id ? ' active' : ''}`} onClick={() => setCampaign(cam.id)}>
+                    <Icon size={9} /> {cam.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Touch */}
+          <div>
+            <p className="crm-label" style={{ marginBottom: 8 }}>Sequence Touch</p>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+              {[1, 2, 3].map(t => (
+                <button key={t} className={`crm-touch-btn${touch === t ? ' active' : ''}`} onClick={() => setTouch(t)}>{t}</button>
+              ))}
+              <span style={{ fontFamily: "'Geist Mono',monospace", fontSize: 9, color: '#64748B', marginLeft: 4, fontWeight: 600 }}>
+                {touch === 1 ? '· THE MOMENT' : touch === 2 ? '· THE IDENTITY' : '· THE DOOR'}
+              </span>
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+              <p className="crm-label" style={{ margin: 0 }}>Call Notes</p>
+              {notes !== (selectedContact.notes || '') && (
+                <button onClick={saveNotes} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: primary, fontFamily: "'Geist',sans-serif", fontWeight: 700 }}>
+                  {savingNotes ? 'Saving...' : '↑ Save'}
+                </button>
+              )}
+            </div>
+            <textarea className="crm-textarea" placeholder="Call notes, what they said, context for the AI..." value={notes} onChange={e => setNotes(e.target.value)} />
+          </div>
+
+          {/* Generate button */}
+          <button
+            className={`crm-btn crm-btn-primary${drafting ? ' gen-btn-loading' : ''}`}
+            onClick={() => requestDraft(selectedContact, touch, campaign)}
+            disabled={drafting}
+            style={{ width: '100%', justifyContent: 'center', padding: '13px', borderRadius: 10, fontFamily: "'Geist',sans-serif", fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em' }}
+          >
+            {drafting ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  {[0,1,2].map(i => <div key={i} style={{ width: 5, height: 5, borderRadius: '50%', background: '#fff', animation: `crm-bounce 1s ${i*0.15}s infinite` }} />)}
+                </div>
+                Generating draft...
+              </div>
+            ) : (
+              <><Zap size={15} /> Generate Draft</>
+            )}
+          </button>
+
+          {/* Draft output */}
+          {parsed && !drafting && (
+            <div className="draft-appear" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+
+              {/* Angle tag */}
+              <div style={{ padding: '10px 14px', borderRadius: 10, background: `${primary}08`, border: `1px solid ${primary}25`, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <TrendingUp size={13} color={primary} style={{ marginTop: 2, flexShrink: 0 }} />
                 <div>
-                  <p className="crm-label" style={{ marginBottom: 3 }}>{parsed.angle}</p>
-                  <p style={{ margin: 0, fontSize: 13, color: 'var(--pb-muted)', lineHeight: 1.5 }}>{parsed.reason}</p>
+                  <p className="crm-label" style={{ marginBottom: 2, color: primary }}>{parsed.angle}</p>
+                  <p style={{ margin: 0, fontSize: 11.5, color: '#334155', lineHeight: 1.55 }}>{parsed.reason}</p>
                 </div>
               </div>
 
               {/* Email card */}
-              <div style={{ background: '#fff', border: '1px solid var(--pb-border)', borderRadius: 16, overflow: 'hidden', marginBottom: 16 }}>
-                <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--pb-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
-                  <div>
-                    <p style={{ margin: 0, fontSize: 13, color: 'var(--pb-muted)' }}>
-                      <span style={{ color: 'var(--pb-text)', fontWeight: 600 }}>To:</span> {selectedContact.name} · <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11 }}>{selectedContact.email}</span>
-                    </p>
-                    <p style={{ margin: '3px 0 0', fontSize: 11, color: 'var(--pb-muted)', fontFamily: "'Space Mono',monospace" }}>
-                      Touch {touch} of 3 · {campaign}
-                    </p>
-                  </div>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <button className="crm-btn" onClick={() => requestDraft(selectedContact, touch, campaign)} style={{ padding: '6px 12px', fontSize: 11 }}>
-                      <RefreshCw size={12} /> Regenerate
-                    </button>
-                    <button className="crm-btn" onClick={() => setEditMode(!editMode)} style={{ padding: '6px 12px', fontSize: 11, ...(editMode ? { background: primary, borderColor: primary, color: '#fff' } : {}) }}>
-                      <Edit2 size={12} /> {editMode ? 'Preview' : 'Edit'}
-                    </button>
+              <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+                {/* Toolbar */}
+                <div style={{ padding: '9px 14px', borderBottom: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FAFBFC' }}>
+                  <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 9, color: '#94a3b8', fontWeight: 600 }}>TOUCH {touch} · {campaign}</p>
+                  <div style={{ display: 'flex', gap: 5 }}>
+                    <button className="crm-btn" onClick={() => requestDraft(selectedContact, touch, campaign)} style={{ padding: '4px 10px', fontSize: 10 }}><RefreshCw size={10} /> Redo</button>
+                    <button className="crm-btn" onClick={() => setEditMode(!editMode)} style={{ padding: '4px 10px', fontSize: 10, ...(editMode ? { background: primary, borderColor: primary, color: '#fff' } : {}) }}><Edit2 size={10} /> {editMode ? 'Preview' : 'Edit'}</button>
                   </div>
                 </div>
-                <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--pb-border)' }}>
-                  <p className="crm-label" style={{ marginBottom: 6 }}>Subject</p>
+
+                {/* Subject */}
+                <div style={{ padding: '12px 14px', borderBottom: '1px solid #F1F5F9' }}>
+                  <p className="crm-label" style={{ marginBottom: 5 }}>Subject Line</p>
                   {editMode
-                    ? <input className="crm-input" value={editedSubject} onChange={e => setEditedSubject(e.target.value)} />
-                    : <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: 'var(--pb-text)' }}>{parsed.subject}</p>
+                    ? <input className="crm-input" style={{ fontSize: 13 }} value={editedSubject} onChange={e => setEditedSubject(e.target.value)} />
+                    : <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#0F172A', lineHeight: 1.3 }}>{parsed.subject}</p>
                   }
                 </div>
-                <div style={{ padding: '18px 20px' }}>
-                  <p className="crm-label" style={{ marginBottom: 8 }}>Body</p>
+
+                {/* Body */}
+                <div style={{ padding: '12px 14px' }}>
+                  <p className="crm-label" style={{ marginBottom: 8 }}>Email Body</p>
                   {editMode
-                    ? <textarea className="crm-textarea" style={{ minHeight: 200 }} value={editedBody} onChange={e => setEditedBody(e.target.value)} />
-                    : <div style={{ fontSize: 14, lineHeight: 1.85, color: 'var(--pb-text)', whiteSpace: 'pre-wrap' }}>{parsed.body}</div>
+                    ? <textarea className="crm-textarea" style={{ minHeight: 180, fontSize: 13 }} value={editedBody} onChange={e => setEditedBody(e.target.value)} />
+                    : <div style={{ fontSize: 13, lineHeight: 1.85, color: '#1e293b', whiteSpace: 'pre-wrap' }}>{parsed.body}</div>
                   }
                 </div>
               </div>
 
+              {/* Rep note */}
               {parsed.followUp && (
-                <div style={{ padding: '12px 16px', borderRadius: 11, background: '#f0fdf4', border: '1px solid #86efac', marginBottom: 18 }}>
-                  <p style={{ margin: '0 0 3px', fontFamily: "'Space Mono',monospace", fontSize: 9, color: '#16a34a', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Rep Note</p>
-                  <p style={{ margin: 0, fontSize: 13, color: '#166534', lineHeight: 1.6 }}>{parsed.followUp}</p>
+                <div style={{ padding: '10px 14px', borderRadius: 8, background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+                  <p style={{ margin: '0 0 3px', fontFamily: "'Geist Mono',monospace", fontSize: 8.5, color: '#15803d', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Rep Note</p>
+                  <p style={{ margin: 0, fontSize: 12, color: '#166534', lineHeight: 1.6 }}>{parsed.followUp}</p>
                 </div>
               )}
 
-              <div style={{ display: 'flex', gap: 12 }}>
-                <button className="crm-btn crm-btn-primary" onClick={openInEmail} style={{ flex: 1, justifyContent: 'center', padding: '14px', borderRadius: 12, fontFamily: "'Bebas Neue',sans-serif", fontSize: 18, letterSpacing: '0.05em' }}>
-                  <ExternalLink size={18} /> Open in Email
+              {/* Actions */}
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button className="crm-btn crm-btn-primary" onClick={openInEmail} style={{ flex: 1, justifyContent: 'center', padding: '11px', borderRadius: 10, fontFamily: "'Geist',sans-serif", fontSize: 13, fontWeight: 800 }}>
+                  <ExternalLink size={14} /> Open in Email
+                </button>
+                <button className="crm-btn" onClick={copyDraft} style={{ padding: '11px 14px', borderRadius: 10 }} title="Copy to clipboard">
+                  {copied ? <Check size={14} color="#16a34a" /> : <Copy size={14} />}
                 </button>
                 {touch < 3 && (
-                  <button className="crm-btn" onClick={() => { const n = touch + 1; setTouch(n); requestDraft(selectedContact, n, campaign) }} style={{ padding: '14px 20px', borderRadius: 12, fontFamily: "'Bebas Neue',sans-serif", fontSize: 17 }}>
-                    Next Touch <ChevronRight size={16} />
+                  <button className="crm-btn" onClick={() => { const n = touch + 1; setTouch(n); requestDraft(selectedContact, n, campaign) }} style={{ padding: '11px 12px', borderRadius: 10, fontFamily: "'Geist',sans-serif", fontWeight: 700, fontSize: 12, gap: 4 }}>
+                    T{touch + 1} <ChevronRight size={12} />
                   </button>
                 )}
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
     )
   }
 
-  // ── PIPELINE VIEW ────────────────────────────────────────────────────────────
+  // ── RENDER ────────────────────────────────────────────────────────────────
   return (
     <div className="crm-shell" style={vars}>
       <style>{CSS(primary)}</style>
-      {showAddModal && (
-        <AddProspectModal
-          school={school}
-          onClose={() => setShowAddModal(false)}
-          onAdd={(ct) => setNewProspects(prev => [ct, ...prev])}
-        />
-      )}
+      {showAddModal && <AddProspectModal school={school} onClose={() => setShowAddModal(false)} onAdd={(ct) => setNewProspects(prev => [ct, ...prev])} />}
 
-      <div style={{ maxWidth: 1000, margin: '0 auto', padding: '20px 24px' }}>
+      <div style={{ maxWidth: 1140, margin: '0 auto', padding: '24px' }}>
 
-        {/* ── Header ── */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 22, flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <p className="crm-label" style={{ marginBottom: 5 }}>CRM · {school.short}</p>
-            <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(32px,5vw,48px)', color: 'var(--pb-text)', margin: 0, letterSpacing: '0.03em' }}>Sales Pipeline</h2>
+            <p className="crm-label" style={{ marginBottom: 6 }}>CRM · {school.short || school.name}</p>
+            <h2 style={{ fontFamily: "'Geist',sans-serif", fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.025em' }}>Sales Pipeline</h2>
           </div>
-          <button className="crm-btn crm-btn-primary" onClick={() => setShowAddModal(true)}>
+          <button className="crm-btn crm-btn-primary" onClick={() => setShowAddModal(true)} style={{ padding: '10px 18px' }}>
             <Plus size={15} /> Add Prospect
           </button>
         </div>
 
-        {/* ── Stats bar ── */}
+        {/* Tabs */}
+        <div className="crm-tabs" style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+          {TABS.map(tab => {
+            const Icon = tab.icon
+            return (
+              <button key={tab.id} className={`crm-tab${activeTab === tab.id ? ' active' : ''}`}
+                onClick={() => { setActiveTab(tab.id); setSelectedContact(null); setSearch(''); setShowCold(false); setParsed(null) }}>
+                <Icon size={13} />
+                {tab.label}
+                <span style={{ padding: '1px 7px', borderRadius: 4, background: activeTab === tab.id ? 'rgba(255,255,255,0.22)' : '#F1F5F9', fontFamily: "'Geist Mono',monospace", fontSize: 9, fontWeight: 700, color: activeTab === tab.id ? '#fff' : '#64748B' }}>
+                  {tabCounts[tab.id]}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Stats */}
         <div className="crm-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 20 }}>
           {[
-            { label: 'Total Contacts', value: stats.total },
-            { label: 'Hot Leads',      value: stats.hot },
-            { label: 'Contacted',      value: stats.contacted },
-            { label: 'Prospects Added', value: stats.prospects },
+            { label: 'My Queue',  value: stats.queue,     note: 'active contacts' },
+            { label: 'Pinned',    value: stats.pinned,    note: 'priority' },
+            { label: 'Contacted', value: stats.contacted, note: 'touches sent' },
+            { label: 'Cold',      value: stats.cold,      note: 'not yet warm' },
           ].map(s => (
-            <div key={s.label} style={{ padding: '14px 16px', borderRadius: 12, background: '#fff', border: '1px solid var(--pb-border)' }}>
-              <p className="crm-label" style={{ marginBottom: 4 }}>{s.label}</p>
-              <p style={{ margin: 0, fontFamily: "'Bebas Neue',sans-serif", fontSize: 28, color: primary, letterSpacing: '0.03em' }}>{s.value}</p>
+            <div key={s.label} className="stat-card">
+              <p className="crm-label" style={{ marginBottom: 6 }}>{s.label}</p>
+              <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 28, fontWeight: 700, color: '#0F172A', lineHeight: 1 }}>{s.value}</p>
+              <p style={{ margin: '4px 0 0', fontSize: 10.5, color: '#94a3b8', fontFamily: "'Geist',sans-serif" }}>{s.note}</p>
             </div>
           ))}
         </div>
 
-        {/* ── Filters ── */}
-        <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
-          {/* Search */}
-          <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
-            <Search size={13} color={c.accent} style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-            <input
-              className="crm-input"
-              style={{ paddingLeft: 32 }}
-              placeholder="Search contacts..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
+        {/* Search */}
+        <div style={{ display: 'flex', gap: 10, marginBottom: 18, alignItems: 'center' }}>
+          <div style={{ position: 'relative', flex: 1 }}>
+            <Search size={13} color="#94a3b8" style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+            <input className="crm-input" style={{ paddingLeft: 34 }} placeholder="Search by name, email, or organization..." value={search} onChange={e => setSearch(e.target.value)} />
           </div>
-          {/* Stage filter */}
-          <select className="crm-select" style={{ width: 'auto' }} value={stageFilter} onChange={e => setStageFilter(e.target.value)}>
-            <option value="all">All Stages</option>
-            {STAGES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
-          </select>
-          {/* Campaign filter */}
-          <select className="crm-select" style={{ width: 'auto' }} value={camFilter} onChange={e => setCamFilter(e.target.value)}>
+          <select className="crm-select" value={camFilter} onChange={e => setCamFilter(e.target.value)}>
             <option value="all">All Campaigns</option>
-            {CAMPAIGNS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+            {CAMPAIGNS.map(cam => <option key={cam.id} value={cam.id}>{cam.label}</option>)}
           </select>
         </div>
 
-        {/* ── Two-column layout: pipeline list + contact panel ── */}
-        <div className="crm-pipeline-grid" style={{ display: 'grid', gridTemplateColumns: selectedContact ? '1fr 340px' : '1fr', gap: 20, alignItems: 'start' }}>
-
-          {/* ── Pipeline stages ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {visibleStages.map(stage => {
-              const stageContacts = grouped[stage.id] || []
-              if (stageContacts.length === 0 && stageFilter === 'all') return null
-              return (
-                <div key={stage.id}>
-                  {/* Stage header */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, paddingBottom: 8, borderBottom: `2px solid ${stage.color}33` }}>
-                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: stage.color, flexShrink: 0 }} />
-                    <p style={{ margin: 0, fontFamily: "'Space Mono',monospace", fontSize: 10, fontWeight: 700, color: stage.color, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                      {stage.label}
-                    </p>
-                    <div style={{ padding: '1px 8px', borderRadius: 20, background: `${stage.color}18`, fontFamily: "'Space Mono',monospace", fontSize: 9, color: stage.color, fontWeight: 700 }}>
-                      {stageContacts.length}
-                    </div>
-                    <p style={{ margin: 0, fontSize: 11, color: 'var(--pb-muted)', opacity: 0.7 }}>{stage.desc}</p>
-                  </div>
-
-                  {/* Contact rows */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    {stageContacts.map(ct => {
-                      const score = computeScore(ct)
-                      const isActive = selectedContact?.id === ct.id
-                      return (
-                        <button
-                          key={ct.id}
-                          className={`crm-row${isActive ? ' active' : ''}`}
-                          onClick={() => {
-                            setSelectedContact(ct)
-                            setNotes(ct.notes || '')
-                            setCampaign(ct.campaign || 'TICKETS')
-                            setParsed(null)
-                            setView('pipeline')
-                          }}
-                        >
-                          {/* Avatar */}
-                          <div style={{ width: 38, height: 38, borderRadius: 10, background: isActive ? `${primary}22` : c.border, border: `1px solid ${primary}33`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Bebas Neue',sans-serif", fontSize: 14, color: primary, flexShrink: 0 }}>
-                            {initials(ct.name)}
-                          </div>
-                          {/* Info */}
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: 'var(--pb-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ct.name}</p>
-                            <p style={{ margin: 0, fontSize: 11, color: 'var(--pb-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ct.email}</p>
-                          </div>
-                          {/* Touch badges */}
-                          <TouchBadges contactId={ct.id} touchMap={touchMap} />
-                          {/* Score */}
-                          <div className="crm-score" style={{ background: SCORE_COLOR(score), flexShrink: 0 }}>{score}</div>
-                          <ChevronRight size={14} color={primary} style={{ flexShrink: 0 }} />
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          {/* ── Contact detail panel ── */}
-          {selectedContact && (
-            <div className="crm-contact-panel" style={{ position: 'sticky', top: 16 }}>
-              <div style={{ background: '#fff', border: '1px solid var(--pb-border)', borderRadius: 18, overflow: 'hidden' }}>
-                {/* Panel header */}
-                <div style={{ padding: '16px 18px', background: c.primary, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 12, background: `${c.accent}22`, border: `1px solid ${c.accent}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Bebas Neue',sans-serif", fontSize: 16, color: 'white' }}>
-                      {initials(selectedContact.name)}
-                    </div>
-                    <div>
-                      <p style={{ margin: 0, fontFamily: "'Bebas Neue',sans-serif", fontSize: 20, color: 'white', letterSpacing: '0.04em', lineHeight: 1.1 }}>{selectedContact.name}</p>
-                      <p style={{ margin: 0, fontFamily: "'Space Mono',monospace", fontSize: 9, color: c.accent }}>{selectedContact.email}</p>
-                    </div>
-                  </div>
-                  <button onClick={() => setSelectedContact(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)' }}>
-                    <X size={16} />
-                  </button>
-                </div>
-
-                <div style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  {/* Score + stage */}
-                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                    <div className="crm-score" style={{ background: SCORE_COLOR(computeScore(selectedContact)) }}>{computeScore(selectedContact)}</div>
-                    <div>
-                      <p className="crm-label" style={{ marginBottom: 2 }}>Score</p>
-                      <p style={{ margin: 0, fontSize: 12, color: 'var(--pb-muted)' }}>{selectedContact.title}</p>
-                    </div>
-                    <div style={{ marginLeft: 'auto' }}>
-                      <TouchBadges contactId={selectedContact.id} touchMap={touchMap} />
-                    </div>
-                  </div>
-
-                  {/* Campaign selector */}
-                  <div>
-                    <p className="crm-label" style={{ marginBottom: 8 }}>Campaign</p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                      {CAMPAIGNS.map(cam => {
-                        const Icon = cam.icon
-                        return (
-                          <button key={cam.id} className={`crm-cam-pill${campaign === cam.id ? ' active' : ''}`} onClick={() => setCampaign(cam.id)}>
-                            <Icon size={10} /> {cam.label}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Touch selector */}
-                  <div>
-                    <p className="crm-label" style={{ marginBottom: 8 }}>Touch</p>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      {[1, 2, 3].map(t => (
-                        <button key={t} className={`crm-touch-btn${touch === t ? ' active' : ''}`} onClick={() => setTouch(t)}>{t}</button>
-                      ))}
-                      <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, color: 'var(--pb-muted)', alignSelf: 'center', marginLeft: 4 }}>
-                        {touch === 1 ? 'The Moment' : touch === 2 ? 'The Identity' : 'The Door'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Notes */}
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                      <p className="crm-label" style={{ margin: 0 }}>Notes</p>
-                      {notes !== (selectedContact.notes || '') && (
-                        <button onClick={saveNotes} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: primary, fontFamily: "'DM Sans',sans-serif", fontWeight: 600 }}>
-                          {savingNotes ? 'Saving...' : 'Save'}
-                        </button>
-                      )}
-                    </div>
-                    <textarea
-                      className="crm-textarea"
-                      placeholder="Call notes, what they said, context for the AI..."
-                      value={notes}
-                      onChange={e => setNotes(e.target.value)}
-                    />
-                  </div>
-
-                  {/* Generate draft */}
-                  <button
-                    className="crm-btn crm-btn-primary"
-                    onClick={() => requestDraft(selectedContact, touch, campaign)}
-                    style={{ width: '100%', justifyContent: 'center', padding: '13px', borderRadius: 12, fontFamily: "'Bebas Neue',sans-serif", fontSize: 18, letterSpacing: '0.05em' }}
-                  >
-                    <Zap size={16} /> Generate Draft
-                  </button>
-                </div>
-              </div>
+        {loadingContacts ? (
+          <div style={{ textAlign: 'center', padding: '80px 0' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 16 }}>
+              {[0,1,2].map(i => <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: primary, animation: `crm-bounce 1s ${i*0.15}s infinite` }} />)}
             </div>
-          )}
-        </div>
+            <p style={{ fontFamily: "'Geist Mono',monospace", fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Loading contacts</p>
+          </div>
+        ) : (
+          <div className="crm-layout" style={{ display: 'grid', gridTemplateColumns: parsed ? '380px 1fr' : '1fr 460px', gap: 16, alignItems: 'start' }}>
+
+            {/* Contact list */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+
+              {pinned.length > 0 && (
+                <>
+                  <SectionHeader color={primary} label="Pinned" count={pinned.length} />
+                  {pinned.map(ct => <ContactRow key={ct.id} ct={ct} />)}
+                  <div style={{ height: 1, background: '#E2E8F0', margin: '8px 0 12px' }} />
+                </>
+              )}
+
+              {queue.length > 0 && (
+                <>
+                  <SectionHeader color="#16a34a" label="Active Queue" count={queue.length} meta="Hot & warm contacts" />
+                  {queue.map(ct => <ContactRow key={ct.id} ct={ct} />)}
+                </>
+              )}
+
+              {pinned.length === 0 && queue.length === 0 && (
+                <div style={{ textAlign: 'center', padding: '40px 24px', background: '#fff', borderRadius: 12, border: '1px solid #E2E8F0' }}>
+                  <p style={{ margin: '0 0 4px', fontWeight: 600, color: '#334155', fontSize: 14 }}>Queue is empty</p>
+                  <p style={{ margin: 0, fontSize: 12, color: '#94a3b8' }}>Show cold contacts below to start warming them up.</p>
+                </div>
+              )}
+
+              {cold.length > 0 && (
+                <div style={{ marginTop: 14 }}>
+                  <button className="cold-toggle" onClick={() => setShowCold(!showCold)}>
+                    {showCold ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                    {showCold ? 'Hide' : 'Show'} {cold.length} cold contacts
+                    {!showCold && <span style={{ marginLeft: 'auto', opacity: 0.6 }}>Pin to activate →</span>}
+                  </button>
+                  {showCold && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginTop: 10 }}>
+                      {cold.map(ct => <ContactRow key={ct.id} ct={ct} />)}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Right panel */}
+            <div className={`crm-panel${selectedContact ? ' has-contact' : ''}`} style={{
+              position: 'sticky', top: 16,
+              background: '#fff',
+              border: '1px solid #E2E8F0',
+              borderRadius: 14,
+              overflow: 'hidden',
+              height: 'calc(100vh - 100px)',
+              display: 'flex', flexDirection: 'column',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)',
+            }}>
+              {renderPanel()}
+            </div>
+
+          </div>
+        )}
       </div>
     </div>
   )

@@ -2,30 +2,48 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import { SCHOOLS } from '../data/schools'
 import { applyTheme } from '../lib/theme'
 import { useUser } from './UserContext'
+import { supabase } from '../lib/supabase'
 
 const SchoolContext = createContext(null)
 
 export function SchoolProvider({ children }) {
   const { allowedSchoolId, canSeeAllSchools } = useUser()
 
-  // Reps are locked to their school. Admins/staff default to wofford.
-  const defaultSchool = allowedSchoolId || 'wofford'
+  const defaultSchool = allowedSchoolId || (canSeeAllSchools ? 'demo' : 'wofford')
   const [activeSchoolId, setActiveSchoolId] = useState(defaultSchool)
-  const [memberTier, setMemberTier] = useState('platinum')
+  const [memberTier, setMemberTier]         = useState('platinum')
+  const [logoUrl, setLogoUrl]               = useState(null)
 
-  // If user changes (e.g. different login), reset to their allowed school
   useEffect(() => {
     setActiveSchoolId(defaultSchool)
   }, [defaultSchool])
 
-  const school = SCHOOLS[activeSchoolId] || SCHOOLS.wofford
+  // ── Fetch logo_url from Supabase whenever school changes ──────────────────
+  useEffect(() => {
+    const fetchSchoolExtras = async () => {
+      try {
+        const { data } = await supabase
+          .from('schools')
+          .select('logo_url')
+          .eq('id', activeSchoolId)
+          .single()
+        setLogoUrl(data?.logo_url || null)
+      } catch {
+        setLogoUrl(null)
+      }
+    }
+    fetchSchoolExtras()
+  }, [activeSchoolId])
+
+  // Merge static school data with Supabase-sourced logo
+  const baseSchool = SCHOOLS[activeSchoolId] || SCHOOLS.wofford
+  const school = { ...baseSchool, logo_url: logoUrl }
 
   useEffect(() => {
     applyTheme(school.colors)
   }, [activeSchoolId])
 
   const switchSchool = (id) => {
-    // Reps cannot switch — they are locked to their school_id
     if (!canSeeAllSchools) return
     if (SCHOOLS[id]) setActiveSchoolId(id)
   }

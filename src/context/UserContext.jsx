@@ -4,47 +4,35 @@ import { supabase } from '../lib/supabase'
 const UserContext = createContext(null)
 
 export function UserProvider({ children }) {
-  const [user,    setUser]    = useState(null)   // full profile from user_profiles
-  const [loading, setLoading] = useState(true)   // true on mount while session is checked
+  const [user,    setUser]    = useState(null)
+  const [loading, setLoading] = useState(true)
   const [error,   setError]   = useState(null)
 
-  // ── On mount — restore session from Supabase Auth ────────────────────────────
   useEffect(() => {
-    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        fetchProfile(session.user.id)
-      } else {
-        setLoading(false)
-      }
+      if (session) fetchProfile(session.user.id)
+      else setLoading(false)
     })
 
-    // Listen for auth state changes (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        fetchProfile(session.user.id)
-      } else {
-        setUser(null)
-        setLoading(false)
-      }
+      if (session) fetchProfile(session.user.id)
+      else { setUser(null); setLoading(false) }
     })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  // ── Fetch user profile from user_profiles table ───────────────────────────────
   const fetchProfile = async (authId) => {
     setLoading(true)
     try {
       const { data, error: err } = await supabase
         .from('user_profiles')
-        .select('id, auth_id, name, email, role, school_id, active, modules')
+        .select('id, auth_id, name, email, role, school_id, active, modules, title')
         .eq('auth_id', authId)
         .eq('active', true)
         .single()
 
       if (err || !data) {
-        // Profile missing or inactive — sign out
         await supabase.auth.signOut()
         setError('Your account is not active. Contact dee@simplegenius.io')
         setUser(null)
@@ -60,23 +48,14 @@ export function UserProvider({ children }) {
     }
   }
 
-  // ── Login with email + password ───────────────────────────────────────────────
   const login = async (email, password) => {
     setLoading(true)
     setError(null)
     try {
-      const { data, error: err } = await supabase.auth.signInWithPassword({
-        email: email.toLowerCase().trim(),
-        password,
+      const { error: err } = await supabase.auth.signInWithPassword({
+        email: email.toLowerCase().trim(), password,
       })
-
-      if (err) {
-        setError('Invalid email or password. Try again.')
-        setLoading(false)
-        return false
-      }
-
-      // Profile fetch is handled by onAuthStateChange
+      if (err) { setError('Invalid email or password. Try again.'); setLoading(false); return false }
       return true
     } catch {
       setError('Something went wrong. Try again.')
@@ -85,13 +64,11 @@ export function UserProvider({ children }) {
     }
   }
 
-  // ── Logout ────────────────────────────────────────────────────────────────────
   const logout = async () => {
     await supabase.auth.signOut()
     setUser(null)
   }
 
-  // ── Reset password — sends magic link to email ─────────────────────────────
   const resetPassword = async (email) => {
     setError(null)
     try {
@@ -102,12 +79,11 @@ export function UserProvider({ children }) {
       if (err) { setError(err.message); return false }
       return true
     } catch {
-      setError("Something went wrong. Try again.")
+      setError('Something went wrong. Try again.')
       return false
     }
   }
 
-  // ── Access rules ──────────────────────────────────────────────────────────────
   const canSeeAllSchools = user?.role === 'admin' || user?.role === 'peak_staff'
   const allowedSchoolId  = canSeeAllSchools ? null : user?.school_id || null
   const hasModule = (mod) => {
@@ -117,15 +93,9 @@ export function UserProvider({ children }) {
 
   return (
     <UserContext.Provider value={{
-      user,
-      loading,
-      error,
-      login,
-      logout,
-      canSeeAllSchools,
-      allowedSchoolId,
-      hasModule,
-      resetPassword,
+      user, loading, error,
+      login, logout, resetPassword,
+      canSeeAllSchools, allowedSchoolId, hasModule,
     }}>
       {children}
     </UserContext.Provider>
