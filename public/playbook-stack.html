@@ -527,11 +527,11 @@
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const STACK_P1 = [
   { num:'01', name:'React + Vite', sub:'Frontend Framework', cost:'No additional cost', cat:'fixed', catLabel:'Included in Development',
-    desc:'The framework that builds every screen, button, and interface your reps interact with. A single codebase serves all schools simultaneously — Wofford sees Wofford branding and data, Holy Cross sees theirs. Adding a new school is a single configuration entry with zero code change.' },
+    desc:'The framework that builds every screen, button, and interface your reps interact with. A single codebase serves all schools simultaneously — each school sees their own branding and data. Adding a new school is a single configuration entry with zero code change.' },
   { num:'02', name:'Vercel', sub:'Hosting & Deployment', cost:'$20 / month', cat:'fixed', catLabel:'Fixed Infrastructure',
     desc:'The service keeping the platform live on the internet 24/7. Handles global load speed, automatic deployments every time code is updated, and SSL security certificates. The platform never goes down for maintenance and does not require a more expensive tier as schools are added.' },
   { num:'03', name:'Supabase', sub:'Database & Login System', cost:'$25 / month', cat:'fixed', catLabel:'Fixed Infrastructure',
-    desc:'The secure database storing all school data, user accounts, contacts, and permissions — plus the login system controlling who sees what. A Wofford rep sees only Wofford data. Wes, Cara, and Kyle see every school. Also accumulates donor history and outreach records over time. Remove it and there is no secure, multi-school platform.' },
+    desc:'The secure database storing all school data, user accounts, contacts, and permissions — plus the login system controlling who sees what. A school rep sees only their school\'s data. Peak Sports staff see every school in the portfolio. Also accumulates donor history and outreach records over time. Remove it and there is no secure, multi-school platform.' },
   { num:'04', name:'n8n on Railway', sub:'AI Workflow Engine', cost:'$10–20 / month', cat:'ai', catLabel:'AI & Workflows',
     desc:'The automation engine that runs every time a rep triggers an AI-powered action. When a rep requests a renewal email for a lapsed donor, that request flows through n8n — it pulls contact history, applies the Simple Genius methodology, calls the AI model, and returns a finished draft in seconds. Railway is the always-on server it runs on.' },
   { num:'05', name:'OpenAI GPT-4o', sub:'Rep-Facing AI Model', cost:'$15–20 / month at current scale', cat:'ai', catLabel:'AI & Workflows',
@@ -766,14 +766,14 @@ const PHASES = [
     dates: 'Mar 23–27, 2026',
     commits: 26,
     days: 5,
-    summary: '432 real Wofford contacts imported from Vivenue. Interactive stadium maps for Gibbs Stadium and Jerry Richardson Indoor Stadium built from real section layouts. Analytics rebuilt from Kyle\'s Time & Score report. Login gate and role-based school access deployed.',
+    summary: '432 real Wofford contacts imported from Vivenue. Interactive stadium maps for Gibbs Stadium and Jerry Richardson Indoor Stadium built from real section layouts. Analytics rebuilt from the Peak Sports Time & Score report. Login gate and role-based school access deployed.',
     shipped: [
       '432 real Vivenue contacts imported (football, basketball, volleyball)',
       'Gibbs Stadium interactive map — real section layout',
       'Jerry Richardson Indoor Stadium map (basketball)',
       'Real Wofford ticket pricing injected into Sales Agent context',
       'AI chat bubble in Ticket Hub — context-aware, 4s delay',
-      'Analytics rebuilt from Kyle\'s Time & Score report, mobile-first',
+      'Analytics rebuilt from Peak Sports Time & Score report, mobile-first',
       'CRM rebuilt as sales pipeline with prospect entry and contact panel',
       'Login gate + role-based school access control deployed',
       'Touch history badges pulled from Supabase sequences',
@@ -787,10 +787,10 @@ const PHASES = [
     dates: 'Mar 30 – Apr 1, 2026',
     commits: 17,
     days: 3,
-    summary: 'Expanded the platform beyond Wofford. Holy Cross added, generic stadium maps deployed for any non-Wofford school, mobile bottom nav launched, Priority Point System built, and Peak Sports branding established in demo sidebar.',
+    summary: 'Expanded the platform beyond the first school. Multi-school roster support added, generic stadium maps deployed for any school without a custom build, mobile bottom nav launched, Priority Point System built, and Peak Sports branding established in demo sidebar.',
     shipped: [
-      'Holy Cross added to school roster',
-      'Generic stadium map — works for any school without custom build',
+      'Multi-school roster expanded — second client school added and validated',
+      'Generic stadium map — works for any school without a custom build',
       'Mobile bottom nav — sidebar hidden on small screens',
       'Priority Point System module built and wired into nav',
       'Peak Sports logo in demo sidebar',
@@ -838,31 +838,31 @@ const PHASES = [
       'Login: remember me, password reset, Playbook dark theme',
       'Enterprise mobile nav with Lucide icons, role-aware tabs',
       'Peak.ai branding in sidebar, Peak logo on login',
-      'West Georgia labeled in Analytics — FY24-25 data only',
+      'School-specific data labels in Analytics — FY24-25 data scoped correctly',
     ]
   },
 ];
 
 const WHATS_NEXT = [
   {
-    num: 2,
-    label: 'Wofford on Staff Portal',
-    detail: 'Devin Foster live on playbook.simplegenius.io with real Wofford data and role-scoped access.'
-  },
-  {
     num: 3,
-    label: 'Ticketing Backend + Payments',
-    detail: 'Bluefin/Clover payment abstraction layer. Real ticket transactions processed through the platform.'
+    label: 'CRM Outreach Upgrade — Phase 3A',
+    detail: 'Automated email send via Resend (replacing mailto). Batch outreach — select 10–20 contacts, parallel AI draft generation, bulk review queue, one-click send. Full activity logging to Supabase.'
   },
   {
     num: 4,
-    label: 'Fan Portal',
-    detail: 'Fan-facing purchase and renewal experience. Public traffic → Cloudflare Pro upgrade triggered.'
+    label: 'CRM Outreach Upgrade — Phase 3B',
+    detail: 'AI-drafted SMS outreach via Twilio. 10DLC carrier registration. Tracked outbound phone calls logged to CRM. Multi-channel outreach from a single contact record.'
   },
   {
     num: 5,
-    label: 'Embeddable AI Agent',
-    detail: 'Lightweight widget embeddable on any school athletics website. Chris Kaberry sales vehicle.'
+    label: 'Ticketing Backend + Payments',
+    detail: 'Bluefin/Clover payment abstraction layer. Real ticket transactions processed through the platform. Fan-facing purchase flow.'
+  },
+  {
+    num: 6,
+    label: 'Fan Portal + Embeddable Agent',
+    detail: 'Public fan-facing portal for ticket purchase and renewal. Lightweight AI agent widget embeddable on any school athletics website.'
   },
 ];
 
