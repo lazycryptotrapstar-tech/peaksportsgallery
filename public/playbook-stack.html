@@ -307,62 +307,6 @@
   </div>
 </section>
 
-<!-- ARCHITECTURE OVERVIEW -->
-<section style="padding:4rem 1.5rem;background:var(--obsidian3);">
-  <div style="max-width:1280px;margin:0 auto;">
-    <div class="reveal" style="margin-bottom:2.5rem;">
-      <span class="section-label"><span class="accent-line"></span>How It All Connects</span>
-      <h2 class="section-h2">One platform. <span class="grad-gold">Eight interlocking components.</span></h2>
-      <p class="section-body">Each layer is independently deployable and has a specific job. Remove any one piece and a critical capability disappears. Together they form a production-grade revenue intelligence platform.</p>
-    </div>
-    <div class="reveal" style="display:flex;flex-direction:column;gap:0.35rem;max-width:760px;">
-      <div class="arch-layer">
-        <div class="arch-layer-label" style="color:#6b7280;">User Layer</div>
-        <div class="arch-layer-items">
-          <span class="arch-pill">Reps</span>
-          <span class="arch-pill">Athletic Directors</span>
-          <span class="arch-pill">Peak Staff</span>
-          <span class="arch-pill">Fans (Phase 2)</span>
-        </div>
-      </div>
-      <div class="arch-arrow">↓</div>
-      <div class="arch-layer" style="border-color:rgba(92,184,50,0.2);">
-        <div class="arch-layer-label" style="color:var(--lime);">Interface</div>
-        <div class="arch-layer-items">
-          <span class="arch-pill" style="border-color:rgba(92,184,50,0.3);color:var(--lime-bright);">React + Vite — Frontend</span>
-          <span class="arch-pill" style="border-color:rgba(92,184,50,0.3);color:var(--lime-bright);">Vercel — Hosting</span>
-        </div>
-      </div>
-      <div class="arch-arrow">↓</div>
-      <div class="arch-layer" style="border-color:rgba(212,175,55,0.2);">
-        <div class="arch-layer-label" style="color:var(--gold);">Data &amp; Auth</div>
-        <div class="arch-layer-items">
-          <span class="arch-pill" style="border-color:rgba(212,175,55,0.3);color:var(--gold);">Supabase — Database</span>
-          <span class="arch-pill" style="border-color:rgba(212,175,55,0.3);color:var(--gold);">Supabase Auth — Roles &amp; Permissions</span>
-        </div>
-      </div>
-      <div class="arch-arrow">↓</div>
-      <div class="arch-layer" style="border-color:rgba(92,184,50,0.2);">
-        <div class="arch-layer-label" style="color:var(--lime);">AI Engine</div>
-        <div class="arch-layer-items">
-          <span class="arch-pill" style="border-color:rgba(92,184,50,0.3);color:var(--lime-bright);">n8n Workflows</span>
-          <span class="arch-pill" style="border-color:rgba(92,184,50,0.3);color:var(--lime-bright);">OpenAI GPT-4o</span>
-          <span class="arch-pill" style="border-color:rgba(92,184,50,0.3);color:var(--lime-bright);">Railway Server</span>
-        </div>
-      </div>
-      <div class="arch-arrow">↓</div>
-      <div class="arch-layer" style="border-color:rgba(212,175,55,0.15);">
-        <div class="arch-layer-label" style="color:#6b7280;">Infrastructure</div>
-        <div class="arch-layer-items">
-          <span class="arch-pill">GitHub</span>
-          <span class="arch-pill">Cloudflare</span>
-          <span class="arch-pill">Claude Max (Dev)</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- PHASE 1 — CURRENT STACK -->
 <section style="padding:5rem 1.5rem;background:var(--obsidian);">
   <div style="max-width:1280px;margin:0 auto;">
@@ -783,7 +727,8 @@ function setPhase(p) {
 renderCards(STACK_P1, 'phase1-grid', 1);
 renderCards(STACK_P2, 'phase2-grid', 2);
 renderExplorer();
-renderChangelog();
+// Note: phase carousel renders on-demand when Build Log tab is opened,
+// ensuring PHASES data is fully initialized before renderPhaseDisplay() runs.
 
 // ── PAGE SWITCHER ─────────────────────────────────────────────────────────────
 function showPage(page) {
@@ -791,6 +736,7 @@ function showPage(page) {
   document.getElementById('page-log').style.display   = page === 'log'   ? 'block' : 'none';
   document.getElementById('sw-stack').classList.toggle('active', page === 'stack');
   document.getElementById('sw-log').classList.toggle('active',   page === 'log');
+  if (page === 'log') renderPhaseDisplay();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
