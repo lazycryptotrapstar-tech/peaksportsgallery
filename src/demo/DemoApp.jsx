@@ -96,10 +96,10 @@ export default function DemoApp() {
         {/* User */}
         <div style={{padding:'14px 16px 0'}}>
           <div style={{display:'flex',alignItems:'center',gap:10}}>
-            <div style={{width:36,height:36,borderRadius:9,background:'rgba(196,136,42,0.18)',border:'1.5px solid rgba(196,136,42,0.32)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:13,color:T.gold,flexShrink:0}}>A</div>
+            <img src="/peak_logo.png" alt="Peak" style={{width:36,height:36,borderRadius:10,objectFit:'contain',background:'white',padding:3,flexShrink:0}}/>
             <div style={{minWidth:0}}>
-              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:14,color:'rgba(255,255,255,0.90)',lineHeight:1.2}}>Grip<span style={{color:T.gold}}>.ai</span></div>
-              <div style={{fontSize:11,color:'rgba(255,255,255,0.32)',marginTop:2,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>Peak University · Demo</div>
+              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:18,color:'white',lineHeight:1.1}}>Peak<span style={{color:T.gold}}>.ai</span></div>
+              <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:'rgba(255,255,255,0.3)',letterSpacing:'0.1em',marginTop:3,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>Peak University · World Conference</div>
             </div>
           </div>
           <div style={{marginTop:10,display:'inline-flex',alignItems:'center',gap:5,fontSize:9.5,fontWeight:600,letterSpacing:'0.10em',textTransform:'uppercase',color:T.gold,padding:'4px 9px 4px 7px',borderRadius:20,background:'rgba(196,136,42,0.11)',border:'1px solid rgba(196,136,42,0.24)'}}>
