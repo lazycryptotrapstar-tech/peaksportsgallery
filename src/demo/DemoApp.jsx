@@ -80,18 +80,7 @@ export default function DemoApp() {
       {/* SIDEBAR */}
       <aside className="demo-sidebar" style={{width:222,flexShrink:0,background:T.sidebar,display:'flex',flexDirection:'column',overflow:'hidden',borderRight:'1px solid rgba(255,255,255,0.05)'}}>
 
-        {/* Header */}
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'15px 16px 13px',borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
-          <div style={{display:'flex',alignItems:'center',gap:9}}>
-            <div style={{width:26,height:26,borderRadius:6,background:T.psGreen,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:'white',letterSpacing:'-0.03em',flexShrink:0}}>PS</div>
-            <div style={{width:1,height:14,background:'rgba(255,255,255,0.12)'}}/>
-            <div style={{display:'flex',alignItems:'center',gap:5}}>
-              <div style={{width:20,height:20,borderRadius:'50%',background:'rgba(255,255,255,0.10)',border:'1px solid rgba(255,255,255,0.12)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:'rgba(255,255,255,0.65)',fontFamily:"'Syne',sans-serif",flexShrink:0}}>M</div>
-              <span style={{fontSize:12,fontWeight:500,color:'rgba(255,255,255,0.60)'}}>Peak</span>
-            </div>
-          </div>
-          <div style={{fontSize:10.5,color:'rgba(255,255,255,0.28)',padding:'3px 9px',borderRadius:20,border:'1px solid rgba(255,255,255,0.09)'}}>Demo</div>
-        </div>
+        
 
         {/* User */}
         <div style={{padding:'14px 16px 0'}}>
