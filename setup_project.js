@@ -1,8 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   setup_project.js — Demo sidebar: Grip.ai → Peak.ai wordmark + logo swap
+   setup_project.js — Remove "PS | Peak | Demo" header bar from Demo sidebar
    ─────────────────────────────────────────────────────────────────────────
-   Uses three independent single-line replacements to be immune to
-   CRLF vs LF line-ending differences on Windows.
+   Strips the entire {/* Header */} block from src/demo/DemoApp.jsx.
+   Uses a regex anchored on the comment markers so it's immune to CRLF/LF.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 import fs from 'fs';
@@ -10,28 +10,14 @@ import path from 'path';
 
 const FILE = path.join('src', 'demo', 'DemoApp.jsx');
 
-/* ─── Three independent single-line replacements ──────────────────────────
-   Each anchor is unique within DemoApp.jsx, so order does not matter
-   and no multi-line template literal is needed.
-──────────────────────────────────────────────────────────────────────────*/
-
-const replacements = [
-  {
-    label: 'Logo tile (gold "A" → /peak_logo.png)',
-    old: `<div style={{width:36,height:36,borderRadius:9,background:'rgba(196,136,42,0.18)',border:'1.5px solid rgba(196,136,42,0.32)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:13,color:T.gold,flexShrink:0}}>A</div>`,
-    new: `<img src="/peak_logo.png" alt="Peak" style={{width:36,height:36,borderRadius:10,objectFit:'contain',background:'white',padding:3,flexShrink:0}}/>`,
-  },
-  {
-    label: 'Wordmark (Grip.ai → Peak.ai)',
-    old: `<div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:14,color:'rgba(255,255,255,0.90)',lineHeight:1.2}}>Grip<span style={{color:T.gold}}>.ai</span></div>`,
-    new: `<div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:18,color:'white',lineHeight:1.1}}>Peak<span style={{color:T.gold}}>.ai</span></div>`,
-  },
-  {
-    label: 'Subtitle (Peak University · Demo → World Conference)',
-    old: `<div style={{fontSize:11,color:'rgba(255,255,255,0.32)',marginTop:2,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>Peak University · Demo</div>`,
-    new: `<div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:'rgba(255,255,255,0.3)',letterSpacing:'0.1em',marginTop:3,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>Peak University · World Conference</div>`,
-  },
-];
+/* Regex explanation:
+   - Matches the {/* Header *∕} comment (escaped)
+   - Then any whitespace/newlines
+   - Then the opening <div …borderBottom…> … </div></div> closing the header
+   - Stops before the next {/* User *∕} comment
+   [\s\S]*? is a non-greedy "any character including newline"
+   This survives CRLF, LF, or any indentation differences. */
+const HEADER_REGEX = /\{\/\* Header \*\/\}[\s\S]*?(?=\s*\{\/\* User \*\/\})/;
 
 function run() {
   if (!fs.existsSync(FILE)) {
@@ -39,40 +25,38 @@ function run() {
     process.exit(1);
   }
 
-  let src = fs.readFileSync(FILE, 'utf8');
+  const src = fs.readFileSync(FILE, 'utf8');
 
-  // Idempotency check — already applied?
-  if (src.includes('<img src="/peak_logo.png" alt="Peak"') &&
-      src.includes('>Peak<span style={{color:T.gold}}>.ai</span>')) {
-    console.log('ℹ️  Change already applied. Nothing to do.');
+  // Idempotency — already removed?
+  if (!src.includes('{/* Header */}')) {
+    console.log('ℹ️  Header block already removed. Nothing to do.');
     return;
   }
 
-  // Pre-flight: verify every anchor exists exactly once before writing anything
-  for (const r of replacements) {
-    const count = src.split(r.old).length - 1;
-    if (count === 0) {
-      console.error(`❌ Anchor not found: ${r.label}`);
-      console.error(`   Expected string: ${r.old.slice(0, 90)}...`);
-      process.exit(1);
-    }
-    if (count > 1) {
-      console.error(`❌ Anchor matched ${count} times (expected 1): ${r.label}`);
-      process.exit(1);
-    }
+  const match = src.match(HEADER_REGEX);
+  if (!match) {
+    console.error('❌ Could not locate the {/* Header */} block.');
+    console.error('   The file may have been edited since this script was generated.');
+    process.exit(1);
   }
 
-  // All anchors verified — apply every replacement
-  for (const r of replacements) {
-    src = src.replace(r.old, r.new);
+  // Safety: the block we're removing should contain the unique PS+Peak+Demo markers
+  const block = match[0];
+  const expectedMarkers = ['>PS<', '>M<', '>Demo<'];
+  const missing = expectedMarkers.filter(m => !block.includes(m));
+  if (missing.length) {
+    console.error(`❌ Safety check failed. Expected markers missing from matched block: ${missing.join(', ')}`);
+    console.error('   Aborting to prevent removing the wrong section.');
+    process.exit(1);
   }
 
-  fs.writeFileSync(FILE, src, 'utf8');
+  const updated = src.replace(HEADER_REGEX, '');
+  fs.writeFileSync(FILE, updated, 'utf8');
 
-  console.log('✅ Updated src/demo/DemoApp.jsx');
-  for (const r of replacements) console.log(`   • ${r.label}`);
+  console.log('✅ Removed {/* Header */} block from src/demo/DemoApp.jsx');
+  console.log(`   • Deleted ${block.split('\n').length} lines containing PS | Peak | Demo bar`);
   console.log('');
-  console.log('Next: npm run dev   →   then hard-refresh the browser (Ctrl+Shift+R)');
+  console.log('Next: git add . && git commit -m "demo: remove top header bar" && git push');
 }
 
 run();
