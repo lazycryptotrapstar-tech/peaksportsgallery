@@ -340,12 +340,50 @@ export default function DemoCRM() {
             </button>
           </div>
 
-          {/* Empty state */}
+          {/* Empty state — example draft preview */}
           {!selectedContact&&(
-            <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:40,textAlign:'center'}}>
-              <div style={{width:56,height:56,borderRadius:16,background:T.goldBg,border:`1px solid ${T.goldBdr}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:26,marginBottom:14}}>📧</div>
-              <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:18,color:T.text,marginBottom:6}}>Select a Contact</div>
-              <div style={{fontSize:13,color:T.text3,maxWidth:260,lineHeight:1.6}}>Tap any contact to generate an AI-personalized email draft instantly.</div>
+            <div style={{flex:1,overflowY:'auto',padding:'22px 20px 40px'}}>
+              <div style={{maxWidth:640,margin:'0 auto'}}>
+
+                {/* Sample badge */}
+                <div style={{display:'flex',justifyContent:'center',marginBottom:16}}>
+                  <div style={{display:'inline-flex',alignItems:'center',gap:6,padding:'5px 12px',borderRadius:20,background:T.goldBg,border:`1px solid ${T.goldBdr}`,fontFamily:"'JetBrains Mono',monospace",fontSize:9.5,fontWeight:700,color:T.gold,letterSpacing:'0.09em',textTransform:'uppercase'}}>
+                    ✨ Sample Draft · Click a contact for a live one
+                  </div>
+                </div>
+
+                {/* Angle banner */}
+                <div style={{display:'flex',alignItems:'flex-start',gap:10,padding:'11px 14px',borderRadius:10,background:T.goldBg,border:`1px dashed ${T.goldBdr}`,marginBottom:14}}>
+                  <svg style={{width:14,height:14,color:T.gold,flexShrink:0,marginTop:2}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  <div>
+                    <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9.5,fontWeight:700,color:T.gold,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:3}}>Loyalty Reactivation</div>
+                    <div style={{fontSize:12,color:T.text2,lineHeight:1.6}}>12-year season ticket holder · lapsed 2 seasons · Platinum status intact</div>
+                  </div>
+                </div>
+
+                {/* Email card */}
+                <div style={{...CARD,overflow:'hidden',borderStyle:'dashed',marginBottom:18}}>
+                  <div style={{padding:'12px 14px',borderBottom:`1px solid ${T.border}`}}>
+                    <div style={{...LABEL}}>Subject</div>
+                    <div style={{fontSize:14,fontWeight:600,color:T.text,lineHeight:1.4}}>Big game coming up — thought of you first</div>
+                  </div>
+                  <div style={{padding:'14px 14px 16px'}}>
+                    <div style={{...LABEL}}>Body</div>
+                    <div style={{fontSize:14,lineHeight:1.8,color:T.text,whiteSpace:'pre-wrap'}}>{`Hey Linda,
+
+The Riverside Hawks rivalry game is this Saturday, and tickets are selling fast. Your Platinum Member status gets you first pick — so I held back 2 seats in Section 108 at the same price you had last year ($85 each).
+
+Let me know by Friday and I'll lock them in.
+
+Go Mountaineers,
+Devin`}</div>
+                  </div>
+                </div>
+
+                <div style={{textAlign:'center',fontSize:12,color:T.text3,lineHeight:1.6}}>
+                  👈 Pick any contact from the list to generate a live, personalized draft
+                </div>
+              </div>
             </div>
           )}
 

@@ -56,9 +56,18 @@ export default function DemoSalesAgent() {
   const [input, setInput]       = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [sessionId] = useState(()=>`demo-${Date.now()}`)
+  const [chatStep, setChatStep] = useState(0)
   const msgEnd = useRef(null)
 
   useEffect(()=>{ msgEnd.current?.scrollIntoView({behavior:'smooth'}) },[messages,isTyping])
+
+  // ── Phone-preview animation — cycles through 3 chat bubbles on landing ───
+  useEffect(() => {
+    if (campaign) return
+    const timings = [600, 2000, 2000, 2800]
+    const id = setTimeout(() => setChatStep(s => (s + 1) % 4), timings[chatStep])
+    return () => clearTimeout(id)
+  }, [chatStep, campaign])
 
   const topContact = [...DEMO_CONTACTS].sort((a,b)=>score(b)-score(a))[0]
   const topScore = topContact ? score(topContact) : 0
@@ -95,7 +104,22 @@ export default function DemoSalesAgent() {
         <div style={{fontFamily:"'Inter',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',textAlign:'center'}}>Choose a Campaign</div>
       </div>
       <div style={{textAlign:'center'}}>
-        <p style={{fontSize:13,color:T.text3,marginBottom:30}}>Start a live conversation with Grip</p>
+        <p style={{fontSize:13,color:T.text3,marginBottom:22}}>Start a live conversation with Grip</p>
+
+        {/* Hero stats — AI vs Manual */}
+        <div style={{display:'flex',gap:10,maxWidth:580,margin:'0 auto 28px',flexWrap:'wrap'}}>
+          {[
+            {big:'4.4×',  label:'More emails sent',   sub:'vs manual reps'},
+            {big:'+138%',      label:'Response-rate lift', sub:'vs 8% baseline'},
+            {big:'3.4×',  label:'Revenue generated',  sub:'$97.2k vs $28.4k'},
+          ].map((s,i)=>(
+            <div key={i} style={{flex:'1 1 150px',background:T.card,border:`1px solid ${T.border}`,borderRadius:12,padding:'13px 14px 11px',boxShadow:T.shSm,textAlign:'left',borderLeft:`3px solid ${T.gold}`}}>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:26,fontWeight:800,color:T.text,lineHeight:1,letterSpacing:'-0.025em',marginBottom:5}}>{s.big}</div>
+              <div style={{fontSize:12,fontWeight:600,color:T.text2,marginBottom:2,lineHeight:1.3}}>{s.label}</div>
+              <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:T.text3,letterSpacing:'0.06em',textTransform:'uppercase'}}>{s.sub}</div>
+            </div>
+          ))}
+        </div>
 
         {/* Campaign tiles */}
         <div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:14,maxWidth:580,margin:'0 auto 36px'}}>
@@ -128,14 +152,17 @@ export default function DemoSalesAgent() {
                 </div>
               </div>
               <div style={{padding:'14px 12px',display:'flex',flexDirection:'column',gap:10,minHeight:180,background:T.bg}}>
-                <div style={{display:'flex',gap:7,alignItems:'flex-end'}}>
+                {/* Bot bubble 1 — visible when chatStep >= 1 */}
+                <div style={{display:'flex',gap:7,alignItems:'flex-end',opacity:chatStep>=1?1:0,transform:chatStep>=1?'translateY(0)':'translateY(6px)',transition:'opacity 0.45s ease, transform 0.45s ease'}}>
                   <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:T.gold,fontFamily:"'Inter',sans-serif"}}>A</div>
                   <div style={{maxWidth:'78%',padding:'8px 11px',borderRadius:'13px 13px 13px 3px',background:T.card,border:`1px solid ${T.border}`,color:T.text,fontSize:11,lineHeight:1.45,boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>Hey! Grip here — your Peak Mountaineers ticket rep. Big game at Peak Sports Stadium coming up. What sports are you into?</div>
                 </div>
-                <div style={{display:'flex',justifyContent:'flex-end'}}>
+                {/* User bubble — visible when chatStep >= 2 */}
+                <div style={{display:'flex',justifyContent:'flex-end',opacity:chatStep>=2?1:0,transform:chatStep>=2?'translateY(0)':'translateY(6px)',transition:'opacity 0.45s ease, transform 0.45s ease'}}>
                   <div style={{maxWidth:'70%',padding:'8px 11px',borderRadius:'13px 13px 3px 13px',background:T.green,color:'white',fontSize:11,lineHeight:1.45}}>I'm interested in football!</div>
                 </div>
-                <div style={{display:'flex',gap:7,alignItems:'flex-end'}}>
+                {/* Bot bubble 2 — visible when chatStep >= 3 */}
+                <div style={{display:'flex',gap:7,alignItems:'flex-end',opacity:chatStep>=3?1:0,transform:chatStep>=3?'translateY(0)':'translateY(6px)',transition:'opacity 0.45s ease, transform 0.45s ease'}}>
                   <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:T.gold,fontFamily:"'Inter',sans-serif"}}>A</div>
                   <div style={{maxWidth:'78%',padding:'8px 11px',borderRadius:'13px 13px 13px 3px',background:T.card,border:`1px solid ${T.border}`,color:T.text,fontSize:11,lineHeight:1.45,boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>Perfect — the Riverside Hawks rivalry game is coming up. Want me to check availability near the 50?</div>
                 </div>
