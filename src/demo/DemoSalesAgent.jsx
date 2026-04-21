@@ -92,7 +92,7 @@ export default function DemoSalesAgent() {
     <div style={INNER}>
       <div style={{marginBottom:6}}>
         <div style={{...LABEL,marginBottom:5}}>Sales Agent · Peak</div>
-        <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',textAlign:'center'}}>Choose a Campaign</div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',textAlign:'center'}}>Choose a Campaign</div>
       </div>
       <div style={{textAlign:'center'}}>
         <p style={{fontSize:13,color:T.text3,marginBottom:30}}>Start a live conversation with Grip</p>
@@ -103,7 +103,7 @@ export default function DemoSalesAgent() {
             <button key={cam.id} className="dcamp" onClick={()=>selectCampaign(cam)}
               style={{background:T.card,borderRadius:15,padding:'22px 22px 18px',border:`1.5px solid ${T.border}`,boxShadow:T.shSm,cursor:'pointer',textAlign:'left',display:'flex',flexDirection:'column',gap:10,position:'relative',overflow:'hidden',transition:'all 0.18s ease'}}>
               <div style={{width:42,height:42,borderRadius:11,background:T.goldBg,display:'flex',alignItems:'center',justifyContent:'center',color:T.gold}}>{cam.svg}</div>
-              <div style={{fontFamily:"'Syne',sans-serif",fontSize:17,fontWeight:700,color:T.text}}>{cam.label}</div>
+              <div style={{fontFamily:"'Inter',sans-serif",fontSize:17,fontWeight:700,color:T.text}}>{cam.label}</div>
               <div style={{fontSize:11.5,color:T.text3,lineHeight:1.45}}>{cam.sub}</div>
               <svg style={{position:'absolute',right:16,bottom:16,width:18,height:18,color:T.text3,transition:'all 0.15s'}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
             </button>
@@ -116,7 +116,7 @@ export default function DemoSalesAgent() {
             <div style={{background:T.surface,borderRadius:31,overflow:'hidden'}}>
               <div style={{height:26,background:'#1A1512',borderRadius:'0 0 16px 16px',margin:'0 auto',width:76}}/>
               <div style={{background:T.green,padding:'11px 14px',display:'flex',alignItems:'center',gap:9}}>
-                <div style={{width:28,height:28,borderRadius:7,background:'rgba(196,136,42,0.22)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:11,color:T.gold,flexShrink:0}}>G</div>
+                <div style={{width:28,height:28,borderRadius:7,background:'rgba(196,136,42,0.22)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:11,color:T.gold,flexShrink:0}}>G</div>
                 <div>
                   <div style={{fontSize:12,fontWeight:600,color:'rgba(255,255,255,0.90)'}}>Ticket Sales</div>
                   <div style={{fontSize:9,color:'rgba(255,255,255,0.60)',display:'flex',alignItems:'center',gap:4}}>
@@ -129,14 +129,14 @@ export default function DemoSalesAgent() {
               </div>
               <div style={{padding:'14px 12px',display:'flex',flexDirection:'column',gap:10,minHeight:180,background:T.bg}}>
                 <div style={{display:'flex',gap:7,alignItems:'flex-end'}}>
-                  <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:T.gold,fontFamily:"'Syne',sans-serif"}}>A</div>
+                  <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:T.gold,fontFamily:"'Inter',sans-serif"}}>A</div>
                   <div style={{maxWidth:'78%',padding:'8px 11px',borderRadius:'13px 13px 13px 3px',background:T.card,border:`1px solid ${T.border}`,color:T.text,fontSize:11,lineHeight:1.45,boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>Hey! Grip here — your Peak Mountaineers ticket rep. Big game at Peak Sports Stadium coming up. What sports are you into?</div>
                 </div>
                 <div style={{display:'flex',justifyContent:'flex-end'}}>
                   <div style={{maxWidth:'70%',padding:'8px 11px',borderRadius:'13px 13px 3px 13px',background:T.green,color:'white',fontSize:11,lineHeight:1.45}}>I'm interested in football!</div>
                 </div>
                 <div style={{display:'flex',gap:7,alignItems:'flex-end'}}>
-                  <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:T.gold,fontFamily:"'Syne',sans-serif"}}>A</div>
+                  <div style={{width:22,height:22,borderRadius:6,background:'rgba(196,136,42,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:T.gold,fontFamily:"'Inter',sans-serif"}}>A</div>
                   <div style={{maxWidth:'78%',padding:'8px 11px',borderRadius:'13px 13px 13px 3px',background:T.card,border:`1px solid ${T.border}`,color:T.text,fontSize:11,lineHeight:1.45,boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>Perfect — the Riverside Hawks rivalry game is coming up. Want me to check availability near the 50?</div>
                 </div>
               </div>
@@ -192,9 +192,9 @@ export default function DemoSalesAgent() {
         {/* Chat header */}
         <div style={{padding:'10px 20px 12px',background:T.green,borderBottom:`1px solid rgba(255,255,255,0.12)`,display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
           <div style={{display:'flex',alignItems:'center',gap:10}}>
-            <div style={{width:36,height:36,borderRadius:10,background:'rgba(196,136,42,0.22)',border:'1px solid rgba(196,136,42,0.32)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:14,color:T.gold}}>G</div>
+            <div style={{width:36,height:36,borderRadius:10,background:'rgba(196,136,42,0.22)',border:'1px solid rgba(196,136,42,0.32)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:14,color:T.gold}}>G</div>
             <div>
-              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:15,color:'white',lineHeight:1.1}}>{campaign.label}</div>
+              <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:15,color:'white',lineHeight:1.1}}>{campaign.label}</div>
               <div style={{fontSize:9,color:'rgba(255,255,255,0.60)',display:'flex',alignItems:'center',gap:4}}>
                 {s.name} · <div style={{width:5,height:5,borderRadius:'50%',background:'#2ECC71',animation:'tp 1.5s ease-in-out infinite'}}/><span style={{color:'#2ECC71',fontSize:8.5,fontWeight:600}}>LIVE</span>
               </div>
@@ -208,14 +208,14 @@ export default function DemoSalesAgent() {
           {messages.map((msg,i)=>(
             <div key={i} style={{display:'flex',justifyContent:msg.role==='user'?'flex-end':'flex-start',gap:8}}>
               {msg.role==='assistant' && (
-                <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:T.gold,fontFamily:"'Syne',sans-serif",flexShrink:0,marginTop:2}}>G</div>
+                <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:T.gold,fontFamily:"'Inter',sans-serif",flexShrink:0,marginTop:2}}>G</div>
               )}
               <div style={{maxWidth:'78%',padding:'9px 13px',borderRadius:msg.role==='user'?'16px 16px 3px 16px':'16px 16px 16px 3px',background:msg.role==='user'?T.green:T.card,color:msg.role==='user'?'white':T.text,border:msg.role==='user'?'none':`1px solid ${T.border}`,fontSize:13,lineHeight:1.55,fontFamily:"'DM Sans',sans-serif",boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>{msg.content}</div>
             </div>
           ))}
           {isTyping && (
             <div style={{display:'flex',gap:8}}>
-              <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:T.gold,fontFamily:"'Syne',sans-serif",flexShrink:0}}>G</div>
+              <div style={{width:26,height:26,borderRadius:7,background:T.surface,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:T.gold,fontFamily:"'Inter',sans-serif",flexShrink:0}}>G</div>
               <div style={{padding:'9px 13px',borderRadius:'16px 16px 16px 3px',background:T.card,border:`1px solid ${T.border}`,display:'flex',gap:4,alignItems:'center'}}>
                 {[0,1,2].map(i=><div key={i} style={{width:5,height:5,borderRadius:'50%',background:T.gold,animation:`dbounce 1.2s ${i*0.2}s infinite`}}/>)}
               </div>

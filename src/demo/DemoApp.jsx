@@ -55,7 +55,7 @@ export default function DemoApp() {
   return (
     <div style={{display:'flex',height:'100vh',overflow:'hidden',background:T.bg,fontFamily:"'DM Sans',system-ui,sans-serif"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@500;600&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         body{-webkit-font-smoothing:antialiased}
         ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(45,110,28,0.20);border-radius:3px}
@@ -87,7 +87,7 @@ export default function DemoApp() {
           <div style={{display:'flex',alignItems:'center',gap:10}}>
             <img src="/peak_logo.png" alt="Peak" style={{width:36,height:36,borderRadius:10,objectFit:'contain',background:'white',padding:3,flexShrink:0}}/>
             <div style={{minWidth:0}}>
-              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:18,color:'white',lineHeight:1.1}}>Peak<span style={{color:T.gold}}>.ai</span></div>
+              <div style={{fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:18,color:'white',lineHeight:1.1}}>Peak<span style={{color:T.gold}}>.ai</span></div>
               <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:'rgba(255,255,255,0.3)',letterSpacing:'0.1em',marginTop:3,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>Peak University · World Conference</div>
             </div>
           </div>

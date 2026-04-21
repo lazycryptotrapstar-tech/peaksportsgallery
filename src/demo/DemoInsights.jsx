@@ -163,7 +163,7 @@ export default function DemoInsights() {
       }}>
         <div>
           <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,fontWeight:600,letterSpacing:'0.09em',textTransform:'uppercase',color:T.text3,marginBottom:5}}>Data Insights · Peak</div>
-          <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05}}>AI vs Manual Outreach</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05}}>AI vs Manual Outreach</div>
         </div>
         <div style={{fontSize:12,color:T.text3,textAlign:'right',lineHeight:1.8}}>
           Same reps · Same time period<br/>With and without Simple Genius
@@ -177,7 +177,7 @@ export default function DemoInsights() {
 
       {/* ── Bar chart ───────────────────────────────────────────────────── */}
       <div style={{...CARD,padding:'22px 24px',marginBottom:16}}>
-        <div style={{fontFamily:"'Syne',sans-serif",fontSize:18,fontWeight:700,color:T.text,marginBottom:2}}>Weekly Outreach Volume</div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:18,fontWeight:700,color:T.text,marginBottom:2}}>Weekly Outreach Volume</div>
         <div style={{fontSize:12,color:T.text3,marginBottom:16}}>Emails sent per week — Manual vs Simple Genius AI</div>
 
         {/* Legend */}
@@ -204,7 +204,7 @@ export default function DemoInsights() {
 
       {/* ── Campaign breakdown table ─────────────────────────────────────── */}
       <div style={{...CARD,padding:'22px 24px',overflow:'hidden'}}>
-        <div style={{fontFamily:"'Syne',sans-serif",fontSize:18,fontWeight:700,color:T.text,marginBottom:2}}>Campaign Breakdown</div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:18,fontWeight:700,color:T.text,marginBottom:2}}>Campaign Breakdown</div>
         <div style={{fontSize:12,color:T.text3,marginBottom:16}}>Emails sent by campaign type — FY25</div>
 
         {/* Table header */}
@@ -237,7 +237,7 @@ export default function DemoInsights() {
 
         {/* Summary row */}
         <div className="di-breakdown" style={{padding:'12px 14px',borderRadius:8,background:T.greenBg,border:`1px solid rgba(45,110,28,0.2)`,marginTop:10}}>
-          <div style={{fontFamily:"'Syne',sans-serif",fontSize:13,fontWeight:700,color:T.green}}>Total FY25</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:13,fontWeight:700,color:T.green}}>Total FY25</div>
           <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12,color:T.text2,fontWeight:600}}>420</div>
           <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:14,fontWeight:700,color:T.green}}>1,840</div>
           <div className="di-hide-mob" style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:T.green,fontWeight:600}}>19% avg response</div>

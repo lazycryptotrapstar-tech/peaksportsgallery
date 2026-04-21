@@ -268,7 +268,7 @@ export default function DemoPriority() {
       {/* ══ Header ══════════════════════════════════════════════════════════ */}
       <div style={{marginBottom:18,opacity:loaded?1:0,transform:loaded?'none':'translateY(-8px)',transition:'opacity 0.4s,transform 0.4s'}}>
         <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:T.text3,letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:4}}>Priority Points · Peak</div>
-        <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05,marginBottom:4}}>Priority Point System</div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05,marginBottom:4}}>Priority Point System</div>
         <div style={{fontSize:13,color:T.text3}}>Automated donor tier ranking · Replaces manual spreadsheets</div>
       </div>
 
@@ -388,7 +388,7 @@ export default function DemoPriority() {
                       background: cfg.badgeBg,
                       border:`1.5px solid ${cfg.badgeBdr}`,
                       display:'flex',alignItems:'center',justifyContent:'center',
-                      fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:12,
+                      fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:12,
                       color: cfg.numColor,
                       boxShadow: isPremium ? `0 0 12px ${cfg.dimColor}30` : 'none',
                     }}>
@@ -460,11 +460,11 @@ export default function DemoPriority() {
                     width:44,height:44,borderRadius:11,flexShrink:0,
                     background:cfg.badgeBg,border:`1.5px solid ${cfg.badgeBdr}`,
                     display:'flex',alignItems:'center',justifyContent:'center',
-                    fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:15,color:cfg.numColor,
+                    fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:15,color:cfg.numColor,
                     boxShadow:isPremium?`0 0 16px ${cfg.dimColor}40`:'none',
                   }}>{initials}</div>
                   <div>
-                    <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:15,color:T.text,lineHeight:1.2}}>{selected.name}</div>
+                    <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:15,color:T.text,lineHeight:1.2}}>{selected.name}</div>
                     <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9.5,color:T.text3,marginTop:2,letterSpacing:'0.06em'}}>
                       Rank #{PRIORITY_CONTACTS.indexOf(selected)+1} · {selected.tier}
                     </div>

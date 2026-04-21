@@ -137,7 +137,7 @@ export default function DemoAnalytics() {
       }}>
         <div>
           <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,fontWeight:600,letterSpacing:'0.09em',textTransform:'uppercase',color:T.text3,marginBottom:5}}>Performance · Peak</div>
-          <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05}}>Revenue Analytics</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05}}>Revenue Analytics</div>
         </div>
         <div className="da-period" style={{display:'flex',gap:6}}>
           {['FY23','FY24','FY25'].map(p=>(
@@ -161,7 +161,7 @@ export default function DemoAnalytics() {
 
       {/* Revenue by category */}
       <div style={{...CARD,padding:'20px 22px',marginBottom:16}}>
-        <div style={{fontFamily:"'Syne',sans-serif",fontSize:18,fontWeight:700,color:T.text,marginBottom:4}}>Revenue by Category</div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontSize:18,fontWeight:700,color:T.text,marginBottom:4}}>Revenue by Category</div>
         <div style={{fontSize:12,color:T.text3,marginBottom:20}}>FY25 actual vs goal</div>
         {categories.map((c,i)=>(
           <div key={i} style={{marginBottom:14,opacity:loaded?1:0,transform:loaded?'none':'translateX(-8px)',transition:`opacity 0.4s ease ${i*0.08}s,transform 0.4s ease ${i*0.08}s`}}>
@@ -180,7 +180,7 @@ export default function DemoAnalytics() {
       {/* Football breakdown */}
       <div style={{...CARD,padding:'20px 0',overflow:'hidden'}}>
         <div style={{padding:'0 20px 14px'}}>
-          <div style={{fontFamily:"'Syne',sans-serif",fontSize:18,fontWeight:700,color:T.text,marginBottom:4}}>Football Game Breakdown</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontSize:18,fontWeight:700,color:T.text,marginBottom:4}}>Football Game Breakdown</div>
           <div style={{fontSize:12,color:T.text3}}>★ Rivalry game</div>
         </div>
         <div className="da-game-head" style={{borderBottom:`1px solid ${T.border}`,background:T.bg}}>

@@ -25,7 +25,7 @@ const C = {
   info:        '#1A6A8A',
 }
 const F = {
-  head: "'Syne',sans-serif",
+  head: "'Inter',sans-serif",
   body: "'DM Sans',sans-serif",
   mono: "'JetBrains Mono',monospace",
 }

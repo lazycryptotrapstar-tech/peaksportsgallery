@@ -171,7 +171,7 @@ export default function DemoCRM() {
         <div className="crm-header-row" style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',marginBottom:14}}>
           <div>
             <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:T.text3,letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:3}}>CRM · Peak</div>
-            <div style={{fontFamily:"'Syne',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05}}>Sales Pipeline</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontSize:32,fontWeight:800,color:T.text,letterSpacing:'-0.03em',lineHeight:1.05}}>Sales Pipeline</div>
           </div>
           <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
             {CAMPAIGNS.map(c=>(
@@ -288,7 +288,7 @@ export default function DemoCRM() {
                         background:active?T.gold:ct.status==='hot'?`${T.red}20`:ct.status==='warm'?`${T.amber}18`:T.goldBg,
                         color:active?'white':ct.status==='hot'?T.red:ct.status==='warm'?T.amber:T.gold,
                         display:'flex',alignItems:'center',justifyContent:'center',
-                        fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:12,
+                        fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:12,
                       }}>{ini}</div>
                       {/* Info */}
                       <div style={{flex:1,minWidth:0}}>
@@ -344,7 +344,7 @@ export default function DemoCRM() {
           {!selectedContact&&(
             <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:40,textAlign:'center'}}>
               <div style={{width:56,height:56,borderRadius:16,background:T.goldBg,border:`1px solid ${T.goldBdr}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:26,marginBottom:14}}>📧</div>
-              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:18,color:T.text,marginBottom:6}}>Select a Contact</div>
+              <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:18,color:T.text,marginBottom:6}}>Select a Contact</div>
               <div style={{fontSize:13,color:T.text3,maxWidth:260,lineHeight:1.6}}>Tap any contact to generate an AI-personalized email draft instantly.</div>
             </div>
           )}
@@ -353,7 +353,7 @@ export default function DemoCRM() {
           {selectedContact&&loading&&(
             <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:40,textAlign:'center'}}>
               <div style={{width:56,height:56,borderRadius:'50%',background:T.goldBg,border:`1.5px solid ${T.goldBdr}`,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',fontSize:24}}>🏔️</div>
-              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:20,color:T.text,marginBottom:6}}>Grip is drafting…</div>
+              <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:20,color:T.text,marginBottom:6}}>Grip is drafting…</div>
               <div style={{fontSize:13,color:T.text3,marginBottom:24}}>Writing Touch {touch} for {selectedContact.name}</div>
               <div style={{display:'flex',gap:8}}>
                 {[0,1,2].map(i=><div key={i} style={{width:8,height:8,borderRadius:'50%',background:T.gold,animation:`dbounce 1.2s ${i*0.2}s infinite`}}/>)}
@@ -373,10 +373,10 @@ export default function DemoCRM() {
                     width:48,height:48,borderRadius:12,flexShrink:0,
                     background:T.gold,color:'white',
                     display:'flex',alignItems:'center',justifyContent:'center',
-                    fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:16,
+                    fontFamily:"'Inter',sans-serif",fontWeight:800,fontSize:16,
                   }}>{initials(selectedContact)}</div>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:16,color:T.text,marginBottom:2}}>{selectedContact.name}</div>
+                    <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:16,color:T.text,marginBottom:2}}>{selectedContact.name}</div>
                     <div style={{fontSize:11,color:T.text3,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{selectedContact.title||selectedContact.email}</div>
                   </div>
                   {/* Status badge */}
@@ -479,7 +479,7 @@ export default function DemoCRM() {
               )}
 
               {/* Send */}
-              <button onClick={openInEmail} style={{width:'100%',padding:'14px',borderRadius:11,border:'none',background:T.bg,color:T.gold,fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:15,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:8,transition:'opacity 0.15s'}}
+              <button onClick={openInEmail} style={{width:'100%',padding:'14px',borderRadius:11,border:'none',background:T.bg,color:T.gold,fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:15,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:8,transition:'opacity 0.15s'}}
                 onMouseEnter={e=>e.currentTarget.style.opacity='0.85'} onMouseLeave={e=>e.currentTarget.style.opacity='1'}>
                 <svg style={{width:15,height:15}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 Open in Email
