@@ -470,23 +470,23 @@
       <div class="reveal">
         <span class="section-label"><span class="accent-line"></span>The Playbook</span>
         <h1 style="font-family:'Montserrat',sans-serif;font-size:clamp(2.4rem,6vw,5rem);font-weight:900;line-height:1.05;letter-spacing:-0.03em;margin-top:0.75rem;margin-bottom:1rem;">
-          Build Log<br/><span class="grad-lime">22 Days of Velocity.</span>
+          Build Log<br/><span class="grad-lime">35 Days of Velocity.</span>
         </h1>
         <p style="font-size:1rem;color:#9ca3af;max-width:520px;line-height:1.8;font-weight:300;margin-bottom:2.5rem;">
-          March 20 → April 11, 2026. 112 commits. 5 phases shipped. This is what was built.
+          March 20 → April 24, 2026. 135 commits. 6 phases shipped. This is what was built.
         </p>
         <!-- Velocity stats -->
         <div style="display:flex;flex-wrap:wrap;gap:0;border:1px solid rgba(255,255,255,0.06);border-radius:1rem;overflow:hidden;width:fit-content;">
           <div style="padding:1rem 1.5rem;border-right:1px solid rgba(255,255,255,0.06);">
-            <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,#72d43e,#5cb832);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">22</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,#72d43e,#5cb832);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">35</div>
             <div style="font-family:'Montserrat',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-top:3px;">Days Active</div>
           </div>
           <div style="padding:1rem 1.5rem;border-right:1px solid rgba(255,255,255,0.06);">
-            <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,#F5E07A,#D4AF37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">112</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,#F5E07A,#D4AF37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">135</div>
             <div style="font-family:'Montserrat',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-top:3px;">Commits</div>
           </div>
           <div style="padding:1rem 1.5rem;border-right:1px solid rgba(255,255,255,0.06);">
-            <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-0.02em;color:#fff;">5</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-0.02em;color:#fff;">6</div>
             <div style="font-family:'Montserrat',sans-serif;font-size:0.5rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#4b5563;margin-top:3px;">Phases Shipped</div>
           </div>
           <div style="padding:1rem 1.5rem;">
@@ -504,7 +504,7 @@
 
       <!-- Progress bar -->
       <div class="phase-progress reveal">
-        <div class="phase-progress-fill" id="phase-progress-fill" style="width:83.3%"></div>
+        <div class="phase-progress-fill" id="phase-progress-fill" style="width:100%"></div>
       </div>
 
       <!-- Phase nav pills -->
@@ -518,8 +518,10 @@
         <button class="phase-pill-btn" onclick="goPhase(3)">04</button>
         <div class="phase-connector-line"></div>
         <button class="phase-pill-btn" onclick="goPhase(4)">05</button>
+        <div class="phase-connector-line"></div>
+        <button class="phase-pill-btn" onclick="goPhase(5)">06</button>
         <div class="phase-connector-line" style="background:rgba(212,175,55,0.15);"></div>
-        <button class="phase-pill-btn p-next" onclick="goPhase(5)" title="What's Next">→</button>
+        <button class="phase-pill-btn p-next" onclick="goPhase(6)" title="What's Next">→</button>
       </div>
 
       <!-- Phase display -->
@@ -863,26 +865,46 @@ const PHASES = [
       'Rep Training Guide v1.0 — 11-section onboarding document covering the 3-Touch System, reactivation methodology, call notes, and productivity tracking',
     ]
   },
+  {
+    num: 6,
+    name: 'Client Go-Live & Platform Documentation',
+    dates: 'Apr 12–24, 2026',
+    commits: 23,
+    days: 13,
+    summary: 'First school rep confirmed live on the authenticated staff portal. Rep Training Guide v1.0 published. Live status page built and deployed for Peak Sports MGMT leadership. Full infrastructure and cost forecast documented. Phase 3A CRM outreach upgrade scoped and handed off.',
+    shipped: [
+      'School rep confirmed live on playbook.simplegenius.io — role and school access verified',
+      'user_profiles role and school_id corrected — access scoped correctly in Supabase',
+      'Rep Training Guide v1.0 — 11 sections covering the 3-Touch System, reactivation methodology, call notes, and productivity tracking',
+      'Live status page built and deployed — Tech Stack tab with interactive cost explorer',
+      'Build Log tab — phase-by-phase carousel with commit velocity stats',
+      'Mobile responsive fixes — sticky bottom tab bar, equal-width stat blocks, 44px tap targets',
+      'Infrastructure and cost forecast document — enterprise Word format for leadership',
+      'Platform roadmap updated — CRM comms layer (Phase 3A/3B) prioritized ahead of ticketing backend',
+      'Phase 3A fully scoped — automated email send, batch outreach 10–20 contacts, Resend integration',
+      'Phase 3A handoff document published — ready for next development sprint',
+    ]
+  },
 ];
 
 const WHATS_NEXT = [
   {
-    num: 3,
+    num: 7,
     label: 'CRM Outreach Upgrade — Phase 3A',
     detail: 'Automated email send via Resend (replacing mailto). Batch outreach — select 10–20 contacts, parallel AI draft generation, bulk review queue, one-click send. Full activity logging to Supabase.'
   },
   {
-    num: 4,
+    num: 8,
     label: 'CRM Outreach Upgrade — Phase 3B',
     detail: 'AI-drafted SMS outreach via Twilio. 10DLC carrier registration. Tracked outbound phone calls logged to CRM. Multi-channel outreach from a single contact record.'
   },
   {
-    num: 5,
+    num: 9,
     label: 'Ticketing Backend + Payments',
     detail: 'Bluefin/Clover payment abstraction layer. Real ticket transactions processed through the platform. Fan-facing purchase flow.'
   },
   {
-    num: 6,
+    num: 10,
     label: 'Fan Portal + Embeddable Agent',
     detail: 'Public fan-facing portal for ticket purchase and renewal. Lightweight AI agent widget embeddable on any school athletics website.'
   },
