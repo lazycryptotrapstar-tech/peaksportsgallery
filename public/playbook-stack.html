@@ -156,26 +156,47 @@
     .whats-next-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-top:1.5rem; }
     .whats-next-card { background:rgba(212,175,55,0.04); border:1px solid rgba(212,175,55,0.12); border-radius:0.75rem; padding:1.25rem 1.5rem; }
     @media(max-width:640px) {
-      .phase-card-main { padding:1.5rem; }
+      .phase-card-main { padding:1.25rem; }
       .phase-shipped-grid { grid-template-columns:1fr; }
       .whats-next-grid { grid-template-columns:1fr; }
-      .phase-nav-row { gap:0.35rem; }
-      .phase-pill-btn { width:34px; height:34px; font-size:0.6rem; }
+      .phase-nav-row { gap:0.3rem; }
+      .phase-pill-btn { width:44px; height:44px; font-size:0.6rem; }
+      .phase-connector-line { max-width:20px; }
     }
     .nav-switcher { display:flex; gap:4px; background:rgba(255,255,255,0.04); padding:3px; border-radius:8px; }
     .nav-sw-btn   { font-family:'Montserrat',sans-serif; font-size:0.58rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:6px 14px; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:#555; }
     .nav-sw-btn.active { background:var(--gold); color:#000; }
+    /* ── BOTTOM TAB BAR — mobile only ──────────────────────────────────── */
+    .mob-tab-bar { display:none; position:fixed; bottom:0; left:0; right:0; z-index:100; background:rgba(5,5,5,0.97); backdrop-filter:blur(20px); border-top:1px solid rgba(255,255,255,0.08); height:60px; }
+    .mob-tab-inner { display:flex; height:100%; }
+    .mob-tab-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; border:none; background:transparent; cursor:pointer; transition:all 0.2s; padding:0; -webkit-tap-highlight-color:transparent; }
+    .mob-tab-icon { font-size:1rem; line-height:1; }
+    .mob-tab-label { font-family:'Montserrat',sans-serif; font-size:0.48rem; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:#3a3a3a; transition:color 0.2s; }
+    .mob-tab-btn.mob-active .mob-tab-label { color:var(--gold); }
+    .mob-tab-btn.mob-active .mob-tab-icon { filter:brightness(1.5); }
+    .mob-tab-divider { width:1px; background:rgba(255,255,255,0.06); margin:14px 0; }
     @media(max-width:640px) {
+      .mob-tab-bar { display:block; }
       .nav-switcher { display:none; }
+      .nav-prepared-for { display:none !important; }
+      .nav-phase-badge { display:none !important; }
+      .nav-divider-mob { display:none !important; }
+      #page-stack, #page-log { padding-bottom:72px; }
+      .hero-stats-row { flex-wrap:wrap !important; }
+      .hero-stat-block { min-width:calc(50% - 0.5rem) !important; flex:none !important; }
       .tl-wrap { padding-left:1.5rem; }
       .tl-dot { left:-2rem; }
       .current-box { padding:1.5rem; }
+      .stack-grid { grid-template-columns:1fr; }
+      .explorer-kpi { grid-template-columns:1fr; }
+      .kpi-block:first-child { border-right:none; border-bottom:1px solid rgba(255,255,255,0.04); }
+      .kpi-value { font-size:2.2rem; }
+      .milestone-pill { padding:5px 10px !important; font-size:0.58rem !important; }
+      .arch-layer { flex-direction:column; align-items:flex-start; }
     }
-      .stack-grid { grid-template-columns: 1fr; }
-      .explorer-kpi { grid-template-columns: 1fr; }
-      .kpi-block:first-child { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.04); }
-      .kpi-value { font-size: 2.2rem; }
-      .arch-layer { flex-direction: column; align-items: flex-start; }
+    @media(max-width:380px) {
+      .phase-pill-btn { width:38px; height:38px; font-size:0.52rem; }
+      .phase-connector-line { max-width:10px; }
     }
   </style>
 </head>
@@ -259,13 +280,13 @@
           <button class="nav-sw-btn active" id="sw-stack" onclick="showPage('stack')">Tech Stack</button>
           <button class="nav-sw-btn" id="sw-log" onclick="showPage('log')">Build Log</button>
         </div>
-        <div style="width:1px;height:28px;background:rgba(255,255,255,0.07);"></div>
-        <div style="text-align:right;">
+        <div style="width:1px;height:28px;background:rgba(255,255,255,0.07);" class="nav-divider-mob"></div>
+        <div style="text-align:right;" class="nav-prepared-for">
           <div style="font-size:0.5rem;color:#4b5563;letter-spacing:0.15em;text-transform:uppercase;">Prepared for</div>
           <div style="font-size:0.7rem;font-weight:700;color:var(--gold);">Peak Sports MGMT</div>
         </div>
-        <div style="width:1px;height:28px;background:rgba(255,255,255,0.07);"></div>
-        <div style="background:rgba(92,184,50,0.12);border:1px solid rgba(92,184,50,0.25);border-radius:999px;padding:0.3rem 0.85rem;">
+        <div style="width:1px;height:28px;background:rgba(255,255,255,0.07);" class="nav-divider-mob"></div>
+        <div style="background:rgba(92,184,50,0.12);border:1px solid rgba(92,184,50,0.25);border-radius:999px;padding:0.3rem 0.85rem;" class="nav-phase-badge">
           <span style="font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--lime);">Phase 1 Live</span>
         </div>
       </div>
@@ -289,16 +310,16 @@
       <p style="font-size:1rem;color:#9ca3af;max-width:560px;line-height:1.8;font-weight:300;margin-bottom:2.5rem;">
         Every component powering The Playbook — what it is, what it does, and exactly what it costs. Written for business leaders, not engineers.
       </p>
-      <div style="display:flex;flex-wrap:wrap;gap:1rem;">
-        <div style="border:1px solid rgba(212,175,55,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(212,175,55,0.04);">
+      <div style="display:flex;flex-wrap:wrap;gap:1rem;" class="hero-stats-row">
+        <div style="border:1px solid rgba(212,175,55,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(212,175,55,0.04);" class="hero-stat-block">
           <div style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#F5E07A,#D4AF37,#AA8A2E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">$174–189</div>
           <div style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#6b7280;margin-top:0.4rem;">Current Monthly Cost</div>
         </div>
-        <div style="border:1px solid rgba(92,184,50,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(92,184,50,0.04);">
+        <div style="border:1px solid rgba(92,184,50,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(92,184,50,0.04);" class="hero-stat-block">
           <div style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#72d43e,#5cb832);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">8</div>
           <div style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#6b7280;margin-top:0.4rem;">Live Components</div>
         </div>
-        <div style="border:1px solid rgba(168,85,247,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(168,85,247,0.04);">
+        <div style="border:1px solid rgba(168,85,247,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(168,85,247,0.04);" class="hero-stat-block">
           <div style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#C084FC,#A855F7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">24</div>
           <div style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#6b7280;margin-top:0.4rem;">School Capacity</div>
         </div>
@@ -967,5 +988,28 @@ function renderPhaseDisplay() {
 
 function renderChangelog() { renderPhaseDisplay(); }
 </script>
+<!-- MOBILE BOTTOM TAB BAR -->
+<div class="mob-tab-bar" id="mob-tab-bar">
+  <div class="mob-tab-inner">
+    <button class="mob-tab-btn mob-active" id="mob-sw-stack" onclick="mobShowPage('stack')">
+      <span class="mob-tab-icon">⚙️</span>
+      <span class="mob-tab-label">Tech Stack</span>
+    </button>
+    <div class="mob-tab-divider"></div>
+    <button class="mob-tab-btn" id="mob-sw-log" onclick="mobShowPage('log')">
+      <span class="mob-tab-icon">📋</span>
+      <span class="mob-tab-label">Build Log</span>
+    </button>
+  </div>
+</div>
+
+<script>
+function mobShowPage(page) {
+  showPage(page);
+  document.getElementById('mob-sw-stack').classList.toggle('mob-active', page === 'stack');
+  document.getElementById('mob-sw-log').classList.toggle('mob-active', page === 'log');
+}
+</script>
+
 </body>
 </html>
