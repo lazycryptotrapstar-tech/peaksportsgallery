@@ -181,6 +181,7 @@
       .nav-phase-badge { display:none !important; }
       .nav-divider-mob { display:none !important; }
       #page-stack, #page-log { padding-bottom:72px; }
+      .hero-section-mob { padding-bottom:2rem !important; }
       .hero-stats-row { flex-wrap:wrap !important; }
       .hero-stat-block { min-width:calc(50% - 0.5rem) !important; flex:none !important; }
       .tl-wrap { padding-left:1.5rem; }
@@ -297,7 +298,7 @@
 <div id="page-stack">
 
 <!-- HERO -->
-<section style="padding:8rem 1.5rem 5rem;position:relative;overflow:hidden;">
+<section style="padding:8rem 1.5rem 5rem;position:relative;overflow:hidden;" class="hero-section-mob">
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 0%, var(--amethyst-dim) 0%, transparent 60%);pointer-events:none;"></div>
   <div style="position:absolute;bottom:0;left:30%;width:50vw;height:40vh;background:radial-gradient(ellipse, var(--lime-dim) 0%, transparent 70%);pointer-events:none;"></div>
   <div style="max-width:1280px;margin:0 auto;position:relative;z-index:1;">
@@ -310,16 +311,16 @@
         Every component powering The Playbook — what it is, what it does, and exactly what it costs. Written for business leaders, not engineers.
       </p>
       <div style="display:flex;flex-wrap:wrap;gap:1rem;" class="hero-stats-row">
-        <div style="border:1px solid rgba(212,175,55,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(212,175,55,0.04);" class="hero-stat-block">
-          <div style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#F5E07A,#D4AF37,#AA8A2E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">$174–189</div>
+        <div style="border:1px solid rgba(212,175,55,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(212,175,55,0.04);flex:1;min-width:0;" class="hero-stat-block">
+          <div style="font-family:'Montserrat',sans-serif;font-size:clamp(1.4rem,5vw,2.5rem);font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#F5E07A,#D4AF37,#AA8A2E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">$174–189</div>
           <div style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#6b7280;margin-top:0.4rem;">Current Monthly Cost</div>
         </div>
-        <div style="border:1px solid rgba(92,184,50,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(92,184,50,0.04);" class="hero-stat-block">
-          <div style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#72d43e,#5cb832);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">8</div>
+        <div style="border:1px solid rgba(92,184,50,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(92,184,50,0.04);flex:1;min-width:0;" class="hero-stat-block">
+          <div style="font-family:'Montserrat',sans-serif;font-size:clamp(1.4rem,5vw,2.5rem);font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#72d43e,#5cb832);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">8</div>
           <div style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#6b7280;margin-top:0.4rem;">Live Components</div>
         </div>
-        <div style="border:1px solid rgba(168,85,247,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(168,85,247,0.04);" class="hero-stat-block">
-          <div style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#C084FC,#A855F7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">24</div>
+        <div style="border:1px solid rgba(168,85,247,0.2);border-radius:0.75rem;padding:1.1rem 1.5rem;background:rgba(168,85,247,0.04);flex:1;min-width:0;" class="hero-stat-block">
+          <div style="font-family:'Montserrat',sans-serif;font-size:clamp(1.4rem,5vw,2.5rem);font-weight:900;line-height:1;letter-spacing:-0.02em;background:linear-gradient(135deg,#C084FC,#A855F7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">24</div>
           <div style="font-family:'Montserrat',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#6b7280;margin-top:0.4rem;">School Capacity</div>
         </div>
       </div>
