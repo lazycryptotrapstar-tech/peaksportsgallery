@@ -376,7 +376,7 @@ The Riverside Hawks rivalry game is this Saturday, and tickets are selling fast.
 Let me know by Friday and I'll lock them in.
 
 Go Mountaineers,
-Devin`}</div>
+Grip`}</div>
                   </div>
                 </div>
 
